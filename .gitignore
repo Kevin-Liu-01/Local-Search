@@ -1,0 +1,7 @@
+/target/
+/.local-browser/
+/artifacts/
+*.har
+*.mhtml
+*.png
+*.pdf
