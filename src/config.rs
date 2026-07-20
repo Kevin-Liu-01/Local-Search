@@ -34,6 +34,10 @@ pub fn managed_devtools_file() -> Result<PathBuf> {
     Ok(managed_profile_dir()?.join("DevToolsActivePort"))
 }
 
+pub fn managed_pid_file() -> Result<PathBuf> {
+    Ok(config_dir()?.join("managed-chrome.pid"))
+}
+
 pub fn display_path(path: &Path) -> String {
     path.display().to_string()
 }

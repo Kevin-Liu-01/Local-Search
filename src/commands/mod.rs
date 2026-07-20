@@ -43,6 +43,7 @@ pub async fn run(cli: Cli) -> Result<()> {
         Some(Command::Doctor) => print_json(&discovery::doctor().await, cli.pretty),
         Some(Command::Connect(args)) => connect(&cli, args).await,
         Some(Command::Launch(args)) => launch(&cli, args).await,
+        Some(Command::Cleanup(args)) => cleanup(&cli, args).await,
         Some(Command::Tabs(command)) => tabs(&cli, command).await,
         Some(command) => {
             let mut client = cdp_client(&cli).await?;
@@ -137,9 +138,11 @@ pub async fn run(cli: Cli) -> Result<()> {
                     print_json(&json!({ "ok": true, "page": value }), cli.pretty)
                 }
                 Command::Cookies(command) => cookies(&cli, &mut client, command).await,
-                Command::Doctor | Command::Connect(_) | Command::Launch(_) | Command::Tabs(_) => {
-                    unreachable!("handled before cdp attach")
-                }
+                Command::Doctor
+                | Command::Connect(_)
+                | Command::Launch(_)
+                | Command::Cleanup(_)
+                | Command::Tabs(_) => unreachable!("handled before cdp attach"),
             }
         }
     }
@@ -245,6 +248,7 @@ async fn start_managed_browser(args: &LaunchArgs) -> Result<ManagedLaunch> {
             target_id: None,
         })
         .await?;
+        write_managed_pid(child.id())?;
     }
 
     Ok(ManagedLaunch {
@@ -255,17 +259,140 @@ async fn start_managed_browser(args: &LaunchArgs) -> Result<ManagedLaunch> {
     })
 }
 
+async fn cleanup(cli: &Cli, args: &crate::cli::CleanupArgs) -> Result<()> {
+    let profile = args
+        .profile
+        .clone()
+        .unwrap_or(config::managed_profile_dir()?);
+    let marker_files = managed_profile_marker_files(&profile);
+    let existing_marker_files = marker_files
+        .iter()
+        .filter(|path| path.exists())
+        .map(|path| config::display_path(path))
+        .collect::<Vec<_>>();
+    let pids = managed_browser_pids(args.port)?;
+    let pid_file = config::managed_pid_file()?;
+
+    if args.kill {
+        for pid in &pids {
+            terminate_pid(*pid, args.force).await?;
+        }
+        for path in &marker_files {
+            if path.exists() {
+                std::fs::remove_file(path).at(config::display_path(path))?;
+            }
+        }
+        if pid_file.exists() {
+            std::fs::remove_file(&pid_file).at(config::display_path(&pid_file))?;
+        }
+        config::save(&Config::default()).await?;
+    }
+
+    print_json(
+        &json!({
+            "ok": true,
+            "dryRun": !args.kill,
+            "port": args.port,
+            "pids": pids,
+            "profile": config::display_path(&profile),
+            "pidFile": config::display_path(&pid_file),
+            "profileMarkerFiles": existing_marker_files,
+            "actions": if args.kill {
+                json!(["terminated managed browser pids", "removed stale profile marker files", "cleared saved endpoint"])
+            } else {
+                json!(["pass --kill to terminate managed browser pids and remove stale profile marker files"])
+            },
+        }),
+        cli.pretty,
+    )
+}
+
 fn clear_stale_chrome_profile_markers(profile: &Path) -> Result<()> {
-    for name in [
+    for path in managed_profile_marker_files(profile) {
+        if path.exists() {
+            std::fs::remove_file(&path).at(config::display_path(&path))?;
+        }
+    }
+    Ok(())
+}
+
+fn managed_profile_marker_files(profile: &Path) -> Vec<PathBuf> {
+    [
         "DevToolsActivePort",
         "SingletonCookie",
         "SingletonLock",
         "SingletonSocket",
-    ] {
-        let path = profile.join(name);
-        if path.exists() {
-            std::fs::remove_file(&path).at(config::display_path(&path))?;
+    ]
+    .iter()
+    .map(|name| profile.join(name))
+    .collect()
+}
+
+fn write_managed_pid(pid: u32) -> Result<()> {
+    let path = config::managed_pid_file()?;
+    if let Some(parent) = path.parent() {
+        std::fs::create_dir_all(parent).at(config::display_path(parent))?;
+    }
+    std::fs::write(&path, pid.to_string()).at(config::display_path(&path))
+}
+
+fn managed_browser_pids(port: u16) -> Result<Vec<u32>> {
+    let mut pids = Vec::new();
+    let pid_file = config::managed_pid_file()?;
+    if let Ok(raw) = std::fs::read_to_string(&pid_file)
+        && let Ok(pid) = raw.trim().parse::<u32>()
+        && pid_is_live(pid)
+    {
+        pids.push(pid);
+    }
+
+    let output = std::process::Command::new("lsof")
+        .args(["-nP", "-tiTCP", &format!(":{port}"), "-sTCP:LISTEN"])
+        .output();
+    if let Ok(output) = output
+        && output.status.success()
+    {
+        let raw = String::from_utf8_lossy(&output.stdout);
+        for line in raw.lines() {
+            if let Ok(pid) = line.trim().parse::<u32>()
+                && pid_is_live(pid)
+                && !pids.contains(&pid)
+            {
+                pids.push(pid);
+            }
         }
+    }
+    Ok(pids)
+}
+
+fn pid_is_live(pid: u32) -> bool {
+    std::process::Command::new("ps")
+        .args(["-p", &pid.to_string()])
+        .output()
+        .is_ok_and(|output| output.status.success())
+}
+
+async fn terminate_pid(pid: u32, force: bool) -> Result<()> {
+    if pid == std::process::id() {
+        return Ok(());
+    }
+    let signal = if force { "-KILL" } else { "-TERM" };
+    std::process::Command::new("kill")
+        .args([signal, &pid.to_string()])
+        .status()
+        .map_err(|source| Error::Io {
+            path: "kill".to_owned(),
+            source,
+        })?;
+    tokio::time::sleep(Duration::from_millis(750)).await;
+    if !force && pid_is_live(pid) {
+        std::process::Command::new("kill")
+            .args(["-KILL", &pid.to_string()])
+            .status()
+            .map_err(|source| Error::Io {
+                path: "kill".to_owned(),
+                source,
+            })?;
     }
     Ok(())
 }

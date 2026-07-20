@@ -26,12 +26,17 @@ session.
 - Keep successful structured output under an `{ "ok": true, ... }` JSON envelope.
 - Keep failures as stable JSON on stderr via `output::render_error`.
 - Redact credential-bearing values by default. Generated artifacts are ignored.
-- Default transport is an already-running Chromium-family browser CDP endpoint,
-  not a launched clean profile.
+- Default transport uses the managed `local-search` Chrome profile unless the
+  user explicitly passes `--cdp`.
+- Before ending work that launched or used the managed browser, run
+  `lsearch cleanup --pretty`; only use `lsearch cleanup --kill` when cleanup is
+  in scope or the user asked for it.
 
 ## Common tasks → first action
 - CLI shape change: edit `src/cli.rs`, then add the command handler in
   `src/commands/mod.rs`.
+- Cleanup script change: read `scripts/SKILL.md`; keep scripts as thin wrappers
+  around Rust commands.
 - Browser capability change: read `src/browser/SKILL.md`, then edit CDP helpers
   or scripts.
 - Output contract change: update README examples and integration tests.

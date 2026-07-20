@@ -10,7 +10,8 @@ Application code for the CLI, including argument parsing, command dispatch,
 typed errors, browser control, and output rendering.
 
 ## Mental model & key files
-- `main.rs` parses Clap arguments and turns typed errors into stable stderr JSON.
+- `src/bin/lsearch.rs` parses Clap arguments and turns typed errors into stable
+  stderr JSON.
 - `lib.rs` exposes the async `run` entry point.
 - `cli.rs` is declarative command/argument structure.
 - `commands/mod.rs` is orchestration: attach browser, execute command, print
@@ -28,6 +29,8 @@ typed errors, browser control, and output rendering.
 
 ## Common tasks → first action
 - New command: add Clap args, add command branch, update README, add CLI test.
+- Managed browser cleanup: keep `cleanup` dry-run by default, kill exact managed
+  listener PIDs only, and never delete profile cookies/data.
 - New output mode: update `output.rs` only if the envelope contract changes.
 - New error: add variant in `error.rs` and stable `code()` mapping.
 

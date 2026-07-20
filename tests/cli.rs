@@ -7,6 +7,7 @@ fn help_includes_search_and_artifact_commands() {
     cmd.arg("--help").assert().success().stdout(
         predicate::str::contains("search")
             .and(predicate::str::contains("screenshot"))
+            .and(predicate::str::contains("cleanup"))
             .and(predicate::str::contains("mhtml")),
     );
 }

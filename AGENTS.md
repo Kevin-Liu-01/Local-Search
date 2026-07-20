@@ -8,6 +8,8 @@ This is a standalone Rust CLI repo.
   HAR, MHTML, screenshots, PDFs, and local target output are ignored.
 - Prefer the managed `lsearch launch` profile for stable day-to-day use. Direct
   CDP attachment remains supported for users who explicitly choose it.
+- Run `lsearch cleanup --pretty` after work that starts or uses managed browser
+  instances; use `--kill` only when cleanup is requested or clearly in scope.
 - Do not add paid search/API dependencies for search. Search is performed in the
   user's local browser.
 
@@ -30,6 +32,7 @@ This is a standalone Rust CLI repo.
 | Directory | Skill | Purpose |
 |---|---|---|
 | `src/` | [`src/SKILL.md`](src/SKILL.md) | How to work in `src/`. Read before editing here. |
+| `scripts/` | [`scripts/SKILL.md`](scripts/SKILL.md) | Thin cleanup/maintenance wrappers around the Rust CLI. |
 | `src/bin/` | [`src/bin/SKILL.md`](src/bin/SKILL.md) | CLI binary shims for `lsearch`, `local-search`, and legacy `local-browser`. |
 | `src/browser/` | [`src/browser/SKILL.md`](src/browser/SKILL.md) | How to work in `src/browser/`. Read before editing here. |
 <!-- agent-docs:auto:dirmap end -->

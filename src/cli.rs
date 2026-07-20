@@ -49,6 +49,8 @@ pub enum Command {
     Connect(ConnectArgs),
     /// Start a managed local Chrome profile for prompt-free automation.
     Launch(LaunchArgs),
+    /// Inspect or stop the managed local-search browser instance.
+    Cleanup(CleanupArgs),
     /// Search the web in the local browser and return normalized results.
     Search(SearchArgs),
     /// Map links from a website without a hosted crawler.
@@ -136,6 +138,25 @@ pub struct LaunchArgs {
     /// Do not persist this endpoint as the default.
     #[arg(long)]
     pub no_persist: bool,
+}
+
+#[derive(Debug, Args)]
+pub struct CleanupArgs {
+    /// CDP port for the managed local browser.
+    #[arg(long, default_value_t = 9322)]
+    pub port: u16,
+
+    /// Persistent profile directory. Defaults to the local-search config dir.
+    #[arg(long)]
+    pub profile: Option<PathBuf>,
+
+    /// Stop the managed browser and remove stale profile marker files.
+    #[arg(long)]
+    pub kill: bool,
+
+    /// Use SIGKILL instead of SIGTERM.
+    #[arg(long, short = 'f')]
+    pub force: bool,
 }
 
 #[derive(Debug, Args)]

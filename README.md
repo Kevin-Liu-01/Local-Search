@@ -61,6 +61,7 @@ lsearch search "best browser search APIs for agents" --with-content --limit 3 --
 lsearch read https://example.com
 lsearch extract "a[href]" --field title=text --field url=href --pretty
 lsearch map https://example.com --depth 1 --limit 25 --pretty
+lsearch cleanup --pretty
 ```
 
 ## Why This Exists
@@ -181,6 +182,8 @@ Recommended:
 
 ```sh
 lsearch launch
+lsearch cleanup --pretty       # dry-run managed browser cleanup
+lsearch cleanup --kill         # stop managed browser and clear stale markers
 ```
 
 This avoids Chrome's default-profile remote debugging prompts by using a
@@ -190,6 +193,13 @@ endpoint when needed:
 ```sh
 lsearch --cdp 9222 doctor
 lsearch --cdp ws://127.0.0.1:9222/devtools/browser/... tabs list
+```
+
+Agents can call the cleanup wrapper directly:
+
+```sh
+scripts/local-search-cleanup.sh --pretty
+scripts/local-search-cleanup.sh --kill --pretty
 ```
 
 Safari is intentionally limited. Its official WebDriver automation uses isolated

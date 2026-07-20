@@ -21,7 +21,9 @@ Browser transport and runtime scripts for local signed-in browser control.
 - Keep JavaScript snippets deterministic and return JSON-serializable values.
 - Resolve `@eN` refs through `data-local-browser-ref`; `snapshot` is what assigns
   those refs.
-- Discovery should prefer existing browser endpoints over launching browsers.
+- Default command discovery should prefer the managed local-search profile unless
+  the user explicitly passes `--cdp`; direct discovery still supports explicit
+  endpoints.
 
 ## Common tasks → first action
 - Add a CDP primitive: implement it on `CdpClient`, then call it from commands.
