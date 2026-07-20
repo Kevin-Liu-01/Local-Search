@@ -1,6 +1,6 @@
 # Security
 
-`local-browser` controls a browser profile that may already be signed in to your
+`local-search` controls a browser profile that may already be signed in to your
 accounts. Treat the Chrome DevTools Protocol endpoint as sensitive local
 authority.
 
@@ -17,7 +17,7 @@ unless browser debugging is explicitly enabled or a separate `--user-data-dir` i
 used. The most reliable normal-profile path is the dynamic endpoint Chrome writes
 to `DevToolsActivePort` after local remote debugging is enabled.
 
-For daily use, prefer `local-browser launch`. It starts a separate persistent
-Chrome profile under the local-browser config directory, binds CDP to
+For daily use, prefer `lsearch launch`. It starts a separate persistent
+Chrome profile under the local-search config directory, binds CDP to
 `127.0.0.1`, and avoids repeatedly attaching a debugger to your main Chrome
 profile.

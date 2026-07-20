@@ -1,4 +1,4 @@
-//! Local browser control and structured search primitives.
+//! Local search and browser-backed structured retrieval primitives.
 
 #![allow(
     clippy::missing_errors_doc,

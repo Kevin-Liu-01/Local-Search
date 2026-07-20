@@ -1,123 +1,151 @@
-# local-browser
+# local-search
 
-Free structured search and browser automation through a local signed-in browser.
+Free structured web search for agents, powered by your local browser.
 
-`local-browser` is a Rust CLI for agents that need web search, page scraping,
-authenticated fetches, screenshots, MHTML, and light browser control without
-paid search APIs. It talks directly to a local Chromium-family browser over the
-Chrome DevTools Protocol, so the browser can reuse accounts you are already
-signed in to.
+`local-search` gives agents Exa/Firecrawl/Brave/Tavily-style search, read, and
+extract outputs without an API key or metered search bill. The primary CLI is
+`lsearch`. It searches through a local Chrome/Chromium profile, so it can use the
+same public web, logged-in sessions, cookies, and regional results you can see in
+the browser.
 
-## Why
-
-The reference points were:
-
-- [`browse.sh`](https://browse.sh/): a browser CLI for agents with primitives for
-  page interaction, screenshots, console/network inspection, and structured
-  fetch/search.
-- [`agent-browser`](https://github.com/vercel-labs/agent-browser): local
-  Chromium profile control, accessibility refs, cookies, network capture, and
-  scriptable browser operations.
-- [`_ontologic` on X](https://x.com/_ontologic/status/2078849784123977799):
-  MHTML is useful when scraping DOM-heavy sites.
-- [`thdxr` on X](https://x.com/thdxr/status/2078727284865827140): record browser
-  network traffic and derive direct clients instead of replaying the UI every
-  time.
-- [`N0V4Dev` on X](https://x.com/N0V4Dev/status/2078064761766363183): native Rust
-  browser tooling with accessibility-tree-like interaction is a good agent
-  primitive.
+Browser automation is implementation support, not the product category. The
+wedge is local, free, structured search for agents.
 
 ## Install
 
 ```sh
-cargo install --git https://github.com/Kevin-Liu-01/local-browser
+cargo install --git https://github.com/Kevin-Liu-01/local-search
 ```
 
-Or from a checkout:
+From a checkout:
 
 ```sh
-cargo build --release
-./target/release/local-browser doctor
+cargo install --path . --force
+lsearch doctor --pretty
 ```
 
-## Browser Setup
-
-Chrome and Chromium-family browsers are supported through CDP.
-
-Recommended prompt-free workflow:
+Compatibility binaries are also installed:
 
 ```sh
-local-browser launch
+local-search --help
+local-browser --help
 ```
 
-This starts a persistent Chrome profile owned by `local-browser`, stores its
-localhost CDP endpoint, and makes later commands use it automatically. Sign in
-to any accounts you want inside that Chrome window once; future commands can
-reuse those sessions without repeatedly approving debugging on your main Chrome
-profile.
+## Quick Start
 
-You can pick a port or profile directory:
+Start the managed browser profile once:
 
 ```sh
-local-browser launch --port 9322
-local-browser launch --profile ~/Library/Application\ Support/local-browser/chrome-profile
+lsearch launch
 ```
 
-If you intentionally want to attach to an already-running browser endpoint, run:
+This opens a persistent Chrome profile owned by `local-search` at:
 
-```sh
-local-browser doctor
-local-browser connect
+```txt
+~/Library/Application Support/local-search/chrome-profile
 ```
 
-You can also pass an endpoint explicitly:
+Sign in to accounts there once if you want authenticated search/read/extract.
+After that:
 
 ```sh
-local-browser --cdp 9222 doctor
-local-browser --cdp ws://127.0.0.1:9222/devtools/browser/... tabs list
+lsearch "latest rust cdp browser automation"
+lsearch search "site:docs.rs tokio Runtime" --limit 5 --pretty
+lsearch search "best browser search APIs for agents" --with-content --limit 3 --pretty
+lsearch read https://example.com
+lsearch extract "a[href]" --field title=text --field url=href --pretty
+lsearch map https://example.com --depth 1 --limit 25 --pretty
 ```
 
-Safari is detected as an intentional limitation: its official WebDriver
-automation uses isolated automation sessions, not the normal signed-in browsing
-profile this project targets.
+## Why This Exists
 
-## Examples
+Agent search is dominated by paid or hosted APIs:
 
-Structured search:
+- [Exa](https://exa.ai/docs/reference/search) offers search plus extracted
+  contents/highlights and deeper research modes.
+- [Firecrawl](https://docs.firecrawl.dev/api-reference/v2-introduction) offers
+  search, scrape, crawl, map, extract, and agentic web data features.
+- [Brave Search API](https://api-dashboard.search.brave.com/documentation)
+  exposes Brave's independent index, including LLM-oriented context endpoints.
+- [Tavily](https://docs.tavily.com/documentation/api-reference/introduction)
+  offers search, extract, crawl, and research APIs for agents.
+
+Those are useful production services. `local-search` is for the cases where an
+agent should use the browser already on the machine and spend zero API credits.
+
+The browser-tooling neighbors are different:
+
+- [browse.sh](https://browse.sh/) / Browserbase Browse CLI is a broader browser
+  skills and browser automation surface.
+- [agent-browser](https://github.com/vercel-labs/agent-browser) is an
+  agent-first browser automation CLI with snapshots, refs, tabs, forms, and
+  network tools.
+- [browser-use CLI](https://docs.browser-use.com/open-source/browser-use-cli)
+  gives coding agents direct browser control using local or cloud browsers.
+- [AgentWebSearch](https://mcpmarket.com/server/agentwebsearch) is the closest
+  local-search neighbor: local LLM web search through real Chrome/CDP.
+
+`local-search` keeps the browser controls, but frames them as search
+infrastructure.
+
+## Comparison
+
+| Tool | Primary job | Hosted/API key | What local-search optimizes for |
+|---|---|---:|---|
+| Exa | AI-native web search, contents, highlights, deep search | Yes | Zero-cost local search and browser-session auth |
+| Firecrawl | Search, scrape, crawl, map, extract at scale | Hosted or self-hosted | Single-machine agent search without service setup |
+| Brave Search API | Independent search index and LLM context | Yes | Consumer search surfaces through your own browser |
+| Tavily | Search/extract/crawl/research APIs | Yes | No account, no metered usage, local browser state |
+| browse.sh / Browse CLI | Browser skills and browser/cloud automation | Optional cloud | Search-first CLI with paid-search replacement framing |
+| agent-browser | General browser automation for agents | No | Structured search/read/extract as the main product |
+| browser-use CLI | Agent browser control via Python workflows | Optional cloud | Native Rust, JSON-first search API replacement |
+| AgentWebSearch | Local Chrome search for LLMs | No | CLI-first structured outputs plus extraction/artifacts |
+
+## Commands
+
+Search:
 
 ```sh
-local-browser search "site:docs.rs tokio Runtime" --engine google --limit 5 --pretty
+lsearch "hi"
+lsearch search "open source browser automation rust" --engine google --limit 10
+lsearch search "firecrawl alternatives" --engine duckduckgo --with-content --limit 5
 ```
 
-Scrape a page:
+Read and extract:
 
 ```sh
-local-browser open https://browse.sh/
-local-browser read --format json --pretty
-local-browser extract "a[href]" --field title=text --field url=href --limit 20 --pretty
+lsearch read https://example.com --format markdown
+lsearch read https://example.com --format json --pretty
+lsearch extract "article" --field title="h1=>text" --field url="a=>href"
 ```
 
-Agent interaction loop:
+Map a site locally:
 
 ```sh
-local-browser snapshot --pretty
-local-browser click @e3
-local-browser fill "input[name=q]" "local browser search cli"
-local-browser press Enter
+lsearch map https://docs.rs --depth 1 --limit 50 --pretty
 ```
 
-Authenticated browser request:
+Authenticated browser fetch:
 
 ```sh
-local-browser request https://example.com/api/me --header "Accept: application/json" --pretty
+lsearch request https://example.com/api/me --header "Accept: application/json" --pretty
 ```
 
 Artifacts:
 
 ```sh
-local-browser screenshot artifacts/page.png --full-page
-local-browser mhtml artifacts/page.mhtml
-local-browser record https://browse.sh/ --har artifacts/browse.har --mhtml artifacts/browse.mhtml
+lsearch screenshot artifacts/page.png --full-page
+lsearch mhtml artifacts/page.mhtml
+lsearch record https://browse.sh/ --har artifacts/browse.har --mhtml artifacts/browse.mhtml
+```
+
+Browser primitives for debugging workflows:
+
+```sh
+lsearch snapshot --pretty
+lsearch click @e3
+lsearch fill "input[name=q]" "local search cli"
+lsearch press Enter
 ```
 
 ## Output Contract
@@ -136,3 +164,24 @@ Failures are JSON on stderr:
 
 Human-readable `read --format markdown`, `read --format text`, and `html`
 without a path write raw content to stdout.
+
+## Browser Setup
+
+Recommended:
+
+```sh
+lsearch launch
+```
+
+This avoids Chrome's default-profile remote debugging prompts by using a
+separate persistent `local-search` profile. You can still attach to an existing
+endpoint when needed:
+
+```sh
+lsearch --cdp 9222 doctor
+lsearch --cdp ws://127.0.0.1:9222/devtools/browser/... tabs list
+```
+
+Safari is intentionally limited. Its official WebDriver automation uses isolated
+automation sessions, not the normal signed-in browsing profile this project
+targets.

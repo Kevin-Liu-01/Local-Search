@@ -6,7 +6,8 @@ use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
 use tokio::net::TcpStream;
 use tokio_tungstenite::{
-    MaybeTlsStream, WebSocketStream, connect_async, tungstenite::protocol::Message,
+    MaybeTlsStream, WebSocketStream, connect_async,
+    tungstenite::{client::IntoClientRequest, protocol::Message},
 };
 
 use crate::error::{Error, Result};
@@ -35,7 +36,15 @@ pub struct CdpClient {
 impl CdpClient {
     pub async fn connect(websocket_url: &str, timeout_ms: u64) -> Result<Self> {
         let timeout = Duration::from_millis(timeout_ms);
-        let (socket, _) = tokio::time::timeout(timeout, connect_async(websocket_url))
+        let mut request = websocket_url.into_client_request()?;
+        if let Some(origin) = websocket_origin(websocket_url) {
+            let value = http::HeaderValue::from_str(&origin).map_err(|err| Error::Protocol {
+                method: "websocket connect".to_owned(),
+                message: err.to_string(),
+            })?;
+            request.headers_mut().insert("Origin", value);
+        }
+        let (socket, _) = tokio::time::timeout(timeout, connect_async(request))
             .await
             .map_err(|_| Error::Timeout {
                 operation: "websocket connect".to_owned(),
@@ -358,6 +367,13 @@ impl CdpClient {
             }
         }
     }
+}
+
+fn websocket_origin(websocket_url: &str) -> Option<String> {
+    let parsed = url::Url::parse(websocket_url).ok()?;
+    let host = parsed.host_str()?;
+    let port = parsed.port()?;
+    Some(format!("http://{host}:{port}"))
 }
 
 fn parse_response(method: &str, response: &Value) -> Result<Value> {

@@ -1,18 +1,18 @@
 ---
-name: local-browser-skill
+name: local-search-skill
 description: How to work in this repository. Read before editing here.
 ---
 
-# local-browser — working here
+# local-search — working here
 
 ## Purpose
-Build and maintain the `local-browser` CLI: free structured search, scraping,
+Build and maintain the `local-search` CLI: free structured search, scraping,
 artifacts, and browser interaction through a user's existing local browser
 session.
 
 ## Mental model & key files
-- `src/cli.rs` owns the public command surface and output-oriented argument
-  names.
+- `src/cli.rs` owns the public command surface. The primary binary is `lsearch`;
+  compatibility binaries are `local-search` and `local-browser`.
 - `src/commands/mod.rs` maps CLI commands to browser actions and JSON/text
   output contracts.
 - `src/browser/` is the transport and browser-runtime layer. Keep CDP protocol

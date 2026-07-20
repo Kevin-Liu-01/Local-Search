@@ -15,11 +15,15 @@ pub fn config_dir() -> Result<PathBuf> {
         .ok_or_else(|| {
             crate::error::Error::InvalidArgument("cannot resolve config dir".to_owned())
         })?
-        .join("local-browser"))
+        .join("local-search"))
 }
 
 pub fn config_path() -> Result<PathBuf> {
     Ok(config_dir()?.join("config.json"))
+}
+
+fn legacy_config_path() -> Option<PathBuf> {
+    dirs::config_dir().map(|dir| dir.join("local-browser/config.json"))
 }
 
 pub fn managed_profile_dir() -> Result<PathBuf> {
@@ -36,9 +40,17 @@ pub fn display_path(path: &Path) -> String {
 
 pub async fn load() -> Result<Config> {
     let path = config_path()?;
-    if !path.exists() {
+    let path = if path.exists() {
+        path
+    } else if let Some(legacy) = legacy_config_path() {
+        if legacy.exists() {
+            legacy
+        } else {
+            return Ok(Config::default());
+        }
+    } else {
         return Ok(Config::default());
-    }
+    };
     let raw = tokio::fs::read_to_string(&path)
         .await
         .map_err(|source| crate::error::Error::Io {

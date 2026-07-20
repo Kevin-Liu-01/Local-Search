@@ -2,12 +2,12 @@ use std::path::PathBuf;
 
 use clap::{Args, Parser, Subcommand, ValueEnum};
 
-/// Free structured search and automation through a local signed-in browser.
+/// Free structured web search for agents through a local browser.
 #[derive(Debug, Parser)]
-#[command(name = "local-browser", version, about, long_about = None)]
+#[command(name = "lsearch", version, about, long_about = None)]
 pub struct Cli {
     /// CDP port, HTTP endpoint, or browser WebSocket URL.
-    #[arg(long, global = true, env = "LOCAL_BROWSER_CDP")]
+    #[arg(long, global = true, env = "LOCAL_SEARCH_CDP")]
     pub cdp: Option<String>,
 
     /// Browser transport to use.
@@ -26,8 +26,12 @@ pub struct Cli {
     #[arg(long, global = true)]
     pub pretty: bool,
 
+    /// Search query. Used when no subcommand is provided.
+    #[arg(value_name = "QUERY")]
+    pub query: Vec<String>,
+
     #[command(subcommand)]
-    pub command: Command,
+    pub command: Option<Command>,
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq, ValueEnum)]
@@ -47,6 +51,8 @@ pub enum Command {
     Launch(LaunchArgs),
     /// Search the web in the local browser and return normalized results.
     Search(SearchArgs),
+    /// Map links from a website without a hosted crawler.
+    Map(MapArgs),
     /// Navigate the current tab.
     Open(OpenArgs),
     /// Extract readable article/page content.
@@ -111,7 +117,7 @@ pub struct LaunchArgs {
     #[arg(long, default_value_t = 9322)]
     pub port: u16,
 
-    /// Persistent profile directory. Defaults to the local-browser config dir.
+    /// Persistent profile directory. Defaults to the local-search config dir.
     #[arg(long)]
     pub profile: Option<PathBuf>,
 
@@ -139,9 +145,26 @@ pub struct SearchArgs {
     pub engine: SearchEngine,
     #[arg(long, default_value_t = 10)]
     pub limit: usize,
+    /// Also read each result page and include local extracted content.
+    #[arg(long)]
+    pub with_content: bool,
+    /// Maximum characters of extracted content per result.
+    #[arg(long, default_value_t = 2_000)]
+    pub content_chars: usize,
     /// Use a new tab and leave the current tab untouched.
     #[arg(long)]
     pub new_tab: bool,
+}
+
+#[derive(Debug, Args)]
+pub struct MapArgs {
+    pub url: String,
+    /// Maximum same-origin link traversal depth.
+    #[arg(long, default_value_t = 1)]
+    pub depth: usize,
+    /// Maximum URLs to return.
+    #[arg(long, default_value_t = 100)]
+    pub limit: usize,
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq, ValueEnum)]

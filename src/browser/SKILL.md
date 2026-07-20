@@ -3,7 +3,7 @@ name: src-browser-skill
 description: How to work in `src/browser/`. Read before editing here.
 ---
 
-# local-browser / src/browser
+# local-search / src/browser
 
 ## Purpose
 Browser transport and runtime scripts for local signed-in browser control.

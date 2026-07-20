@@ -3,7 +3,7 @@ use predicates::prelude::*;
 
 #[test]
 fn help_includes_search_and_artifact_commands() {
-    let mut cmd = Command::cargo_bin("local-browser").unwrap();
+    let mut cmd = Command::cargo_bin("lsearch").unwrap();
     cmd.arg("--help").assert().success().stdout(
         predicate::str::contains("search")
             .and(predicate::str::contains("screenshot"))

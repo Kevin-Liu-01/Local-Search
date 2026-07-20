@@ -179,6 +179,31 @@ return { url: location.href, title: document.title, results, blocked: /captcha|u
 })()"#
 }
 
+pub fn map_links() -> &'static str {
+    r#"(() => {
+const clean = (s) => (s || '').trim().replace(/\s+/g, ' ');
+const links = Array.from(document.querySelectorAll('a[href]')).map((a) => {
+  try {
+    const url = new URL(a.href, location.href);
+    url.hash = '';
+    return { url: url.href, text: clean(a.innerText || a.textContent).slice(0, 160) };
+  } catch {
+    return null;
+  }
+}).filter(Boolean);
+const seen = new Set();
+return {
+  url: location.href,
+  title: document.title,
+  links: links.filter((link) => {
+    if (seen.has(link.url)) return false;
+    seen.add(link.url);
+    return true;
+  })
+};
+})()"#
+}
+
 pub fn extract(selector: &str, fields: &[Field], limit: usize) -> String {
     let fields_json = serde_json::to_string(fields).expect("fields serialize");
     format!(

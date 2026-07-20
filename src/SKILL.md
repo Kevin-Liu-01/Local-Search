@@ -3,7 +3,7 @@ name: src-skill
 description: How to work in `src/`. Read before editing here.
 ---
 
-# local-browser / src
+# local-search / src
 
 ## Purpose
 Application code for the CLI, including argument parsing, command dispatch,
