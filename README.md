@@ -33,10 +33,10 @@ the browser.
 cargo install local-search
 ```
 
-Until the crates.io release has propagated, install directly from GitHub:
+For the latest unreleased build, install directly from GitHub:
 
 ```sh
-cargo install --git https://github.com/Kevin-Liu-01/local-search
+cargo install --git https://github.com/Kevin-Liu-01/Local-Search
 ```
 
 From a checkout:
@@ -88,6 +88,59 @@ lsearch search "example domain" --limit 1 --with-content --content-chars 240 --p
 lsearch map https://example.com --depth 1 --limit 10 --pretty
 lsearch cleanup --kill --pretty
 ```
+
+## Switching Search Engines vs Browsers
+
+`lsearch` has two separate choices that are easy to mix up:
+
+- Search engine: the search site queried inside the browser.
+- Browser backend: the local browser automation transport used to load pages.
+
+Search engines are switched with `--engine`. DuckDuckGo is the built-in default
+because it is usually less hostile to local CLI search sessions. Persistent
+per-user default search-engine config is not implemented yet, so pass `--engine`
+on commands where you want Google or Bing:
+
+```sh
+lsearch search "open source browser automation" --engine duckduckgo
+lsearch search "open source browser automation" --engine google
+lsearch search "open source browser automation" --engine bing
+```
+
+The shorthand form uses the default search engine:
+
+```sh
+lsearch "open source browser automation"
+```
+
+Browser backend is different. Today, `local-search` is built around
+Chrome/Chromium's Chrome DevTools Protocol because it can control a normal local
+profile. The recommended setup is still:
+
+```sh
+lsearch launch
+```
+
+To use a different Chromium-family app, pass its executable path when launching
+the managed profile:
+
+```sh
+lsearch launch --browser-path "/Applications/Brave Browser.app/Contents/MacOS/Brave Browser"
+lsearch launch --browser-path "/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge"
+```
+
+To attach to an already-running Chromium/CDP endpoint:
+
+```sh
+lsearch --cdp 9222 search "open source browser automation" --engine google
+lsearch --cdp ws://127.0.0.1:9222/devtools/browser/... search "browser tooling" --engine duckduckgo
+```
+
+Safari is not currently a supported local signed-in browser backend. Safari's
+official WebDriver automation uses isolated automation sessions, not the normal
+profile state this project depends on. In practice: use Google, DuckDuckGo, or
+Bing as the search engine inside a managed Chrome/Chromium profile; do not expect
+`--browser safari` to reuse your normal Safari session.
 
 ## Why This Exists
 
