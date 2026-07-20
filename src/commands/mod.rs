@@ -144,9 +144,24 @@ async fn cdp_client(cli: &Cli) -> Result<CdpClient> {
     let endpoint = discovery::discover(cli.browser, cli.cdp.as_deref()).await?;
     let mut client = CdpClient::connect(&endpoint.websocket_url, cli.timeout).await?;
     let stored = config::load().await.ok().and_then(|cfg| cfg.target_id);
-    client
-        .attach_or_create(cli.target.as_deref().or(stored.as_deref()))
-        .await?;
+    if let Some(target_id) = cli.target.as_deref() {
+        client.attach_or_create(Some(target_id)).await?;
+    } else if let Some(target_id) = stored.as_deref() {
+        match client.attach_or_create(Some(target_id)).await {
+            Ok(_) => {}
+            Err(Error::TargetNotFound(_)) => {
+                config::save(&Config {
+                    endpoint: Some(endpoint.websocket_url),
+                    target_id: None,
+                })
+                .await?;
+                client.attach_or_create(None).await?;
+            }
+            Err(error) => return Err(error),
+        }
+    } else {
+        client.attach_or_create(None).await?;
+    }
     Ok(client)
 }
 
@@ -343,11 +358,6 @@ async fn tabs(cli: &Cli, command: &TabsCommand) -> Result<()> {
             let target = client
                 .create_target(url.as_deref().unwrap_or("about:blank"))
                 .await?;
-            config::save(&Config {
-                endpoint: Some(endpoint.websocket_url),
-                target_id: Some(target.target_id.clone()),
-            })
-            .await?;
             print_json(&json!({ "ok": true, "tab": target }), cli.pretty)
         }
         TabsCommand::Use { target_id } => {
