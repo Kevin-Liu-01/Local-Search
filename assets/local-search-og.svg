@@ -3,78 +3,54 @@
   <desc id="desc">A black and white Reticle-style card for local-search, a free structured web search CLI for agents.</desc>
   <defs>
     <pattern id="dot-grid" width="32" height="32" patternUnits="userSpaceOnUse">
-      <circle cx="1" cy="1" r="1" fill="#111111" fill-opacity="0.11"/>
+      <circle cx="1" cy="1" r="1" fill="#1F1F1F" fill-opacity="0.07"/>
     </pattern>
     <filter id="soft-shadow" x="-12%" y="-12%" width="124%" height="124%" color-interpolation-filters="sRGB">
-      <feDropShadow dx="0" dy="24" stdDeviation="30" flood-color="#000000" flood-opacity="0.10"/>
+      <feDropShadow dx="0" dy="18" stdDeviation="28" flood-color="#000000" flood-opacity="0.08"/>
     </filter>
   </defs>
 
   <rect width="1200" height="630" rx="34" fill="#FFFFFF"/>
   <rect x="24" y="24" width="1152" height="582" rx="24" fill="url(#dot-grid)"/>
-  <rect x="24" y="24" width="1152" height="582" rx="24" stroke="#111111" stroke-width="2"/>
-
-  <!-- Reticle frame -->
-  <path d="M76 76H178" stroke="#111111" stroke-width="3" stroke-linecap="square"/>
-  <path d="M76 76V178" stroke="#111111" stroke-width="3" stroke-linecap="square"/>
-  <path d="M1124 76H1022" stroke="#111111" stroke-width="3" stroke-linecap="square"/>
-  <path d="M1124 76V178" stroke="#111111" stroke-width="3" stroke-linecap="square"/>
-  <path d="M76 554H178" stroke="#111111" stroke-width="3" stroke-linecap="square"/>
-  <path d="M76 554V452" stroke="#111111" stroke-width="3" stroke-linecap="square"/>
-  <path d="M1124 554H1022" stroke="#111111" stroke-width="3" stroke-linecap="square"/>
-  <path d="M1124 554V452" stroke="#111111" stroke-width="3" stroke-linecap="square"/>
+  <rect x="24" y="24" width="1152" height="582" rx="24" stroke="#1F1F1F" stroke-opacity="0.20" stroke-width="1.5"/>
 
   <!-- Subtle measurement rails -->
-  <path d="M104 315H280" stroke="#111111" stroke-opacity="0.14" stroke-width="1"/>
-  <path d="M916 315H1096" stroke="#111111" stroke-opacity="0.14" stroke-width="1"/>
-  <path d="M676 88V196" stroke="#111111" stroke-opacity="0.14" stroke-width="1"/>
-  <path d="M676 434V542" stroke="#111111" stroke-opacity="0.14" stroke-width="1"/>
-  <circle cx="676" cy="315" r="7" fill="#111111"/>
-  <circle cx="676" cy="315" r="48" stroke="#111111" stroke-opacity="0.16" stroke-width="1"/>
-  <circle cx="676" cy="315" r="94" stroke="#111111" stroke-opacity="0.08" stroke-width="1"/>
+  <path d="M684 118V512" stroke="#1F1F1F" stroke-opacity="0.10" stroke-width="1"/>
+  <circle cx="684" cy="315" r="6" fill="#2A2A2A"/>
+  <circle cx="684" cy="315" r="44" stroke="#1F1F1F" stroke-opacity="0.12" stroke-width="1"/>
+  <circle cx="684" cy="315" r="86" stroke="#1F1F1F" stroke-opacity="0.06" stroke-width="1"/>
 
   <!-- Left content -->
   <g font-family="Geist, Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">
-    <text x="112" y="144" fill="#111111" font-size="20" font-weight="650" letter-spacing="4">LOCAL-FIRST AGENT INFRA</text>
-    <text x="108" y="242" fill="#111111" font-size="82" font-weight="780" letter-spacing="-4">local-search</text>
-    <text x="114" y="307" fill="#111111" fill-opacity="0.72" font-size="30" font-weight="480" letter-spacing="-0.7">Free structured web search for agents,</text>
-    <text x="114" y="346" fill="#111111" fill-opacity="0.72" font-size="30" font-weight="480" letter-spacing="-0.7">powered by your local browser.</text>
+    <text x="108" y="218" fill="#1F1F1F" font-size="82" font-weight="760" letter-spacing="-4">local-search</text>
+    <text x="114" y="286" fill="#1F1F1F" fill-opacity="0.68" font-size="30" font-weight="480" letter-spacing="-0.7">Free structured web search for agents,</text>
+    <text x="114" y="326" fill="#1F1F1F" fill-opacity="0.68" font-size="30" font-weight="480" letter-spacing="-0.7">powered by your local browser.</text>
   </g>
 
   <g font-family="'Geist Mono', GeistMono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace">
-    <rect x="112" y="416" width="480" height="68" rx="14" fill="#111111"/>
-    <text x="138" y="459" fill="#FFFFFF" font-size="24" font-weight="600">lsearch "browser automation"</text>
-    <text x="112" y="530" fill="#111111" fill-opacity="0.68" font-size="20" font-weight="520">No API key · No search bill · Local browser</text>
+    <rect x="112" y="392" width="464" height="66" rx="14" fill="#2A2A2A"/>
+    <text x="138" y="435" fill="#FFFFFF" font-size="22" font-weight="560">$ lsearch "browser automation"</text>
+    <text x="112" y="506" fill="#1F1F1F" fill-opacity="0.62" font-size="22" font-weight="520">No API key needed</text>
   </g>
 
   <!-- Right result card -->
   <g filter="url(#soft-shadow)">
-    <rect x="742" y="118" width="342" height="394" rx="26" fill="#FFFFFF" stroke="#111111" stroke-width="2"/>
-    <rect x="766" y="142" width="294" height="56" rx="16" fill="#111111"/>
-    <text x="790" y="178" fill="#FFFFFF" font-family="'Geist Mono', GeistMono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="19" font-weight="650">structured results</text>
+    <rect x="744" y="124" width="340" height="382" rx="26" fill="#FFFFFF" stroke="#2A2A2A" stroke-opacity="0.56" stroke-width="1.5"/>
+    <rect x="768" y="148" width="292" height="54" rx="16" fill="#2A2A2A"/>
+    <text x="792" y="183" fill="#FFFFFF" font-family="'Geist Mono', GeistMono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="19" font-weight="600">structured results</text>
 
     <g font-family="'Geist Mono', GeistMono, ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" font-weight="520">
-      <text x="770" y="244" fill="#111111">{</text>
-      <text x="798" y="276" fill="#111111" fill-opacity="0.64">"ok"</text>
-      <text x="856" y="276" fill="#111111">: true,</text>
-      <text x="798" y="314" fill="#111111" fill-opacity="0.64">"engine"</text>
-      <text x="892" y="314" fill="#111111">: "local",</text>
-      <text x="798" y="352" fill="#111111" fill-opacity="0.64">"results"</text>
-      <text x="892" y="352" fill="#111111">: [</text>
-      <rect x="814" y="376" width="218" height="68" rx="12" fill="#F4F4F4" stroke="#111111" stroke-opacity="0.13"/>
-      <text x="836" y="416" fill="#111111">search · read · map</text>
-      <text x="798" y="476" fill="#111111">]</text>
-      <text x="770" y="476" fill="#111111">}</text>
+      <text x="776" y="252" fill="#2A2A2A">{</text>
+      <text x="804" y="286" fill="#2A2A2A" fill-opacity="0.58">"ok"</text>
+      <text x="862" y="286" fill="#2A2A2A">: true,</text>
+      <text x="804" y="322" fill="#2A2A2A" fill-opacity="0.58">"query"</text>
+      <text x="886" y="322" fill="#2A2A2A">: "...",</text>
+      <text x="804" y="358" fill="#2A2A2A" fill-opacity="0.58">"results"</text>
+      <text x="898" y="358" fill="#2A2A2A">: [</text>
+      <text x="832" y="394" fill="#2A2A2A">{ "title": "..." },</text>
+      <text x="832" y="430" fill="#2A2A2A">{ "url": "..." }</text>
+      <text x="804" y="466" fill="#2A2A2A">]</text>
+      <text x="776" y="466" fill="#2A2A2A">}</text>
     </g>
-  </g>
-
-  <!-- Bottom labels -->
-  <g font-family="'Geist Mono', GeistMono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="18" font-weight="620">
-    <rect x="758" y="536" width="86" height="34" rx="17" fill="#FFFFFF" stroke="#111111" stroke-width="1.5"/>
-    <text x="780" y="559" fill="#111111">read</text>
-    <rect x="860" y="536" width="112" height="34" rx="17" fill="#FFFFFF" stroke="#111111" stroke-width="1.5"/>
-    <text x="883" y="559" fill="#111111">extract</text>
-    <rect x="988" y="536" width="82" height="34" rx="17" fill="#FFFFFF" stroke="#111111" stroke-width="1.5"/>
-    <text x="1013" y="559" fill="#111111">map</text>
   </g>
 </svg>
