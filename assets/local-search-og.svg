@@ -26,7 +26,14 @@
 
   <rect width="1200" height="630" fill="#FFFFFF"/>
   <rect x="24" y="24" width="1152" height="582" fill="url(#dot-grid)"/>
-  <rect x="24" y="24" width="1152" height="582" stroke="#1F1F1F" stroke-opacity="0.16" stroke-width="1"/>
+
+  <!-- Surrounding frame, drawn as crossing rules instead of a boxed border -->
+  <g stroke="#1F1F1F" stroke-opacity="0.18" stroke-width="1.5" stroke-linecap="square">
+    <path d="M76 24V606"/>
+    <path d="M1124 24V606"/>
+    <path d="M24 76H1176"/>
+    <path d="M24 554H1176"/>
+  </g>
 
   <!-- Subtle measurement rails -->
   <path d="M684 118V512" stroke="#1F1F1F" stroke-opacity="0.10" stroke-width="1"/>
@@ -47,16 +54,8 @@
     <text x="112" y="506" fill="#1F1F1F" fill-opacity="0.62" font-size="22" font-weight="520">No API key needed</text>
   </g>
 
-  <!-- Structured results, drawn as crossing rules instead of a card box -->
+  <!-- Structured results -->
   <g font-family="'Geist Mono', GeistMono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace">
-    <g stroke="#2A2A2A" stroke-opacity="0.54" stroke-width="1.5" stroke-linecap="square">
-      <path d="M790 122V508"/>
-      <path d="M1054 122V508"/>
-      <path d="M744 168H1088"/>
-      <path d="M744 314H1088"/>
-      <path d="M744 460H1088"/>
-    </g>
-
     <text x="808" y="148" fill="#1F1F1F" font-size="21" font-weight="620">structured results</text>
 
     <g font-size="18" font-weight="520">
