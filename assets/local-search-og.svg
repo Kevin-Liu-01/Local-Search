@@ -29,10 +29,10 @@
 
   <!-- Surrounding frame, drawn as crossing rules instead of a boxed border -->
   <g stroke="#1F1F1F" stroke-opacity="0.18" stroke-width="1.5" stroke-linecap="square">
-    <path d="M0.75 0V630"/>
-    <path d="M1199.25 0V630"/>
-    <path d="M0 0.75H1200"/>
-    <path d="M0 629.25H1200"/>
+    <path d="M76 0V630"/>
+    <path d="M1124 0V630"/>
+    <path d="M0 76H1200"/>
+    <path d="M0 554H1200"/>
   </g>
 
   <!-- Left content -->
