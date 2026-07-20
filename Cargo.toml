@@ -1,6 +1,6 @@
 [package]
 name = "local-search"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2024"
 autobins = false
 description = "Free structured web search for agents through a local browser"
