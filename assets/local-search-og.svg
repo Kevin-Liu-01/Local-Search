@@ -52,35 +52,24 @@
   <g font-family="'Geist Mono', GeistMono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace">
     <rect x="708" y="124" width="372" height="382" fill="#FFFFFF" fill-opacity="0.72" stroke="#2A2A2A" stroke-opacity="0.32" stroke-width="1.5"/>
 
-    <g font-size="12.8" font-weight="520">
-      <text x="736" y="152" fill="#2A2A2A">{</text>
-      <text x="760" y="172" fill="#2A2A2A" fill-opacity="0.58">"ok"</text>
-      <text x="812" y="172" fill="#2A2A2A">: true,</text>
-      <text x="760" y="192" fill="#2A2A2A" fill-opacity="0.58">"query"</text>
-      <text x="832" y="192" fill="#2A2A2A">: "browser automation",</text>
-      <text x="760" y="212" fill="#2A2A2A" fill-opacity="0.58">"engine"</text>
-      <text x="840" y="212" fill="#2A2A2A">: "duckduckgo",</text>
-      <text x="760" y="232" fill="#2A2A2A" fill-opacity="0.58">"search"</text>
-      <text x="840" y="232" fill="#2A2A2A">: {</text>
-      <text x="784" y="252" fill="#2A2A2A" fill-opacity="0.58">"blocked"</text>
-      <text x="872" y="252" fill="#2A2A2A">: false,</text>
-      <text x="784" y="272" fill="#2A2A2A" fill-opacity="0.58">"results"</text>
-      <text x="872" y="272" fill="#2A2A2A">: [</text>
-      <text x="808" y="292" fill="#2A2A2A">{</text>
-      <text x="832" y="312" fill="#2A2A2A" fill-opacity="0.58">"rank"</text>
-      <text x="896" y="312" fill="#2A2A2A">: 1,</text>
-      <text x="832" y="332" fill="#2A2A2A" fill-opacity="0.58">"title"</text>
-      <text x="904" y="332" fill="#2A2A2A">: "Playwright",</text>
-      <text x="832" y="352" fill="#2A2A2A" fill-opacity="0.58">"domain"</text>
-      <text x="912" y="352" fill="#2A2A2A">: "playwright.dev",</text>
-      <text x="832" y="372" fill="#2A2A2A" fill-opacity="0.58">"url"</text>
-      <text x="880" y="372" fill="#2A2A2A">: "https://playwright.dev",</text>
-      <text x="832" y="392" fill="#2A2A2A" fill-opacity="0.58">"snippet"</text>
-      <text x="920" y="392" fill="#2A2A2A">: "Fast browser..."</text>
-      <text x="808" y="412" fill="#2A2A2A">}</text>
-      <text x="784" y="432" fill="#2A2A2A">]</text>
-      <text x="760" y="452" fill="#2A2A2A">}</text>
-      <text x="736" y="472" fill="#2A2A2A">}</text>
+    <g font-size="13" font-weight="520">
+      <text x="730" y="154" fill="#2A2A2A">{</text>
+      <text x="748" y="174" fill="#2A2A2A"><tspan fill-opacity="0.58">"ok"</tspan>: true,</text>
+      <text x="748" y="194" fill="#2A2A2A"><tspan fill-opacity="0.58">"query"</tspan>: "browser automation",</text>
+      <text x="748" y="214" fill="#2A2A2A"><tspan fill-opacity="0.58">"engine"</tspan>: "duckduckgo",</text>
+      <text x="748" y="234" fill="#2A2A2A"><tspan fill-opacity="0.58">"search"</tspan>: {</text>
+      <text x="766" y="254" fill="#2A2A2A"><tspan fill-opacity="0.58">"blocked"</tspan>: false,</text>
+      <text x="766" y="274" fill="#2A2A2A"><tspan fill-opacity="0.58">"results"</tspan>: [</text>
+      <text x="784" y="294" fill="#2A2A2A">{</text>
+      <text x="802" y="314" fill="#2A2A2A"><tspan fill-opacity="0.58">"rank"</tspan>: 1,</text>
+      <text x="802" y="334" fill="#2A2A2A"><tspan fill-opacity="0.58">"title"</tspan>: "Playwright",</text>
+      <text x="802" y="354" fill="#2A2A2A"><tspan fill-opacity="0.58">"domain"</tspan>: "playwright.dev",</text>
+      <text x="802" y="374" fill="#2A2A2A"><tspan fill-opacity="0.58">"url"</tspan>: "https://playwright.dev",</text>
+      <text x="802" y="394" fill="#2A2A2A"><tspan fill-opacity="0.58">"snippet"</tspan>: "Fast browser..."</text>
+      <text x="784" y="414" fill="#2A2A2A">}</text>
+      <text x="766" y="434" fill="#2A2A2A">]</text>
+      <text x="748" y="454" fill="#2A2A2A">}</text>
+      <text x="730" y="474" fill="#2A2A2A">}</text>
     </g>
   </g>
 </svg>
