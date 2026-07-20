@@ -42,8 +42,28 @@ cargo build --release
 
 ## Browser Setup
 
-Chrome and Chromium-family browsers are supported through CDP. Enable local
-remote debugging in Chrome, then run:
+Chrome and Chromium-family browsers are supported through CDP.
+
+Recommended prompt-free workflow:
+
+```sh
+local-browser launch
+```
+
+This starts a persistent Chrome profile owned by `local-browser`, stores its
+localhost CDP endpoint, and makes later commands use it automatically. Sign in
+to any accounts you want inside that Chrome window once; future commands can
+reuse those sessions without repeatedly approving debugging on your main Chrome
+profile.
+
+You can pick a port or profile directory:
+
+```sh
+local-browser launch --port 9322
+local-browser launch --profile ~/Library/Application\ Support/local-browser/chrome-profile
+```
+
+If you intentionally want to attach to an already-running browser endpoint, run:
 
 ```sh
 local-browser doctor

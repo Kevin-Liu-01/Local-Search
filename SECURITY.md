@@ -16,3 +16,8 @@ Chrome 136 and newer ignore remote debugging flags against the default profile
 unless browser debugging is explicitly enabled or a separate `--user-data-dir` is
 used. The most reliable normal-profile path is the dynamic endpoint Chrome writes
 to `DevToolsActivePort` after local remote debugging is enabled.
+
+For daily use, prefer `local-browser launch`. It starts a separate persistent
+Chrome profile under the local-browser config directory, binds CDP to
+`127.0.0.1`, and avoids repeatedly attaching a debugger to your main Chrome
+profile.

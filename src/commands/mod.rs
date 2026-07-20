@@ -1,4 +1,9 @@
-use std::{collections::BTreeMap, path::Path, time::Duration};
+use std::{
+    collections::BTreeMap,
+    path::{Path, PathBuf},
+    process::Stdio,
+    time::Duration,
+};
 
 use chrono::Utc;
 use serde_json::{Value, json};
@@ -6,9 +11,9 @@ use serde_json::{Value, json};
 use crate::{
     browser::{CdpClient, discovery, scripts},
     cli::{
-        BrowserKind, Cli, Command, ConnectArgs, CookiesCommand, OpenArgs, OptionalPathArgs,
-        PathArgs, ReadArgs, ReadFormat, RecordArgs, RequestArgs, ScreenshotArgs, ScrollDirection,
-        SearchArgs, SearchEngine, TabsCommand, WaitArgs,
+        BrowserKind, Cli, Command, ConnectArgs, CookiesCommand, LaunchArgs, OpenArgs,
+        OptionalPathArgs, PathArgs, ReadArgs, ReadFormat, RecordArgs, RequestArgs, ScreenshotArgs,
+        ScrollDirection, SearchArgs, SearchEngine, TabsCommand, WaitArgs,
     },
     config::{self, Config},
     error::{Error, IoContext, Result},
@@ -19,6 +24,7 @@ pub async fn run(cli: Cli) -> Result<()> {
     match &cli.command {
         Command::Doctor => print_json(&discovery::doctor().await, cli.pretty),
         Command::Connect(args) => connect(&cli, args).await,
+        Command::Launch(args) => launch(&cli, args).await,
         Command::Tabs(command) => tabs(&cli, command).await,
         command => {
             let mut client = cdp_client(&cli).await?;
@@ -112,7 +118,7 @@ pub async fn run(cli: Cli) -> Result<()> {
                     print_json(&json!({ "ok": true, "page": value }), cli.pretty)
                 }
                 Command::Cookies(command) => cookies(&cli, &mut client, command).await,
-                Command::Doctor | Command::Connect(_) | Command::Tabs(_) => {
+                Command::Doctor | Command::Connect(_) | Command::Launch(_) | Command::Tabs(_) => {
                     unreachable!("handled before cdp attach")
                 }
             }
@@ -130,6 +136,94 @@ async fn connect(cli: &Cli, args: &ConnectArgs) -> Result<()> {
     .await?;
     print_json(
         &json!({ "ok": true, "endpoint": endpoint, "config": path.display().to_string() }),
+        cli.pretty,
+    )
+}
+
+async fn launch(cli: &Cli, args: &LaunchArgs) -> Result<()> {
+    if let Ok(endpoint) =
+        discovery::discover(BrowserKind::Chromium, Some(&args.port.to_string())).await
+    {
+        if !args.no_persist {
+            config::save(&Config {
+                endpoint: Some(endpoint.websocket_url.clone()),
+                target_id: None,
+            })
+            .await?;
+        }
+        return print_json(
+            &json!({ "ok": true, "alreadyRunning": true, "endpoint": endpoint }),
+            cli.pretty,
+        );
+    }
+
+    let profile = args
+        .profile
+        .clone()
+        .unwrap_or(config::managed_profile_dir()?);
+    std::fs::create_dir_all(&profile).at(config::display_path(&profile))?;
+    let browser_path = args
+        .browser_path
+        .clone()
+        .or_else(default_chrome_path)
+        .ok_or_else(|| {
+            Error::InvalidArgument("could not find Chrome; pass --browser-path".to_owned())
+        })?;
+
+    let mut command = std::process::Command::new(&browser_path);
+    command
+        .arg(format!("--remote-debugging-address={}", "127.0.0.1"))
+        .arg(format!("--remote-debugging-port={}", args.port))
+        .arg(format!(
+            "--remote-allow-origins=http://127.0.0.1:{},http://localhost:{}",
+            args.port, args.port
+        ))
+        .arg(format!("--user-data-dir={}", profile.display()))
+        .arg("--no-first-run")
+        .arg("--no-default-browser-check")
+        .arg(&args.url)
+        .stdin(Stdio::null())
+        .stdout(Stdio::null())
+        .stderr(Stdio::null());
+    if args.headless {
+        command.arg("--headless=new");
+    }
+    let child = command.spawn().map_err(|source| Error::Io {
+        path: config::display_path(&browser_path),
+        source,
+    })?;
+
+    let mut endpoint = None;
+    for _ in 0..50 {
+        if let Ok(found) =
+            discovery::discover(BrowserKind::Chromium, Some(&args.port.to_string())).await
+        {
+            endpoint = Some(found);
+            break;
+        }
+        tokio::time::sleep(Duration::from_millis(200)).await;
+    }
+    let endpoint = endpoint.ok_or_else(|| Error::Timeout {
+        operation: "managed Chrome startup".to_owned(),
+        timeout_ms: 10_000,
+    })?;
+
+    if !args.no_persist {
+        config::save(&Config {
+            endpoint: Some(endpoint.websocket_url.clone()),
+            target_id: None,
+        })
+        .await?;
+    }
+
+    print_json(
+        &json!({
+            "ok": true,
+            "pid": child.id(),
+            "profile": profile.display().to_string(),
+            "endpoint": endpoint,
+            "persisted": !args.no_persist,
+        }),
         cli.pretty,
     )
 }
@@ -420,6 +514,25 @@ fn write_bytes(path: &Path, data: &[u8]) -> Result<()> {
         std::fs::create_dir_all(parent).at(parent.display().to_string())?;
     }
     std::fs::write(path, data).at(path.display().to_string())
+}
+
+fn default_chrome_path() -> Option<PathBuf> {
+    std::env::var_os("LOCAL_BROWSER_CHROME")
+        .map(PathBuf::from)
+        .filter(|path| path.exists())
+        .or_else(|| {
+            [
+                "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+                "/Applications/Google Chrome Canary.app/Contents/MacOS/Google Chrome Canary",
+                "/Applications/Chromium.app/Contents/MacOS/Chromium",
+                "/usr/bin/google-chrome",
+                "/usr/bin/chromium",
+                "/usr/bin/chromium-browser",
+            ]
+            .iter()
+            .map(PathBuf::from)
+            .find(|path| path.exists())
+        })
 }
 
 fn parse_headers(headers: &[String]) -> Result<BTreeMap<String, String>> {

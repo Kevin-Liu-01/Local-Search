@@ -43,6 +43,8 @@ pub enum Command {
     Doctor,
     /// Discover and persist a browser connection.
     Connect(ConnectArgs),
+    /// Start a managed local Chrome profile for prompt-free automation.
+    Launch(LaunchArgs),
     /// Search the web in the local browser and return normalized results.
     Search(SearchArgs),
     /// Navigate the current tab.
@@ -101,6 +103,33 @@ pub enum Command {
 pub struct ConnectArgs {
     /// Optional endpoint; auto-discovery is used when omitted.
     pub endpoint: Option<String>,
+}
+
+#[derive(Debug, Args)]
+pub struct LaunchArgs {
+    /// CDP port for the managed local browser.
+    #[arg(long, default_value_t = 9322)]
+    pub port: u16,
+
+    /// Persistent profile directory. Defaults to the local-browser config dir.
+    #[arg(long)]
+    pub profile: Option<PathBuf>,
+
+    /// Chrome executable path.
+    #[arg(long)]
+    pub browser_path: Option<PathBuf>,
+
+    /// Start Chrome in headless mode.
+    #[arg(long)]
+    pub headless: bool,
+
+    /// Initial page to open.
+    #[arg(long, default_value = "about:blank")]
+    pub url: String,
+
+    /// Do not persist this endpoint as the default.
+    #[arg(long)]
+    pub no_persist: bool,
 }
 
 #[derive(Debug, Args)]

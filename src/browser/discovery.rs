@@ -47,6 +47,11 @@ pub async fn discover(kind: BrowserKind, explicit: Option<&str>) -> Result<Brows
 
 pub async fn doctor() -> serde_json::Value {
     let mut endpoints = Vec::new();
+    if let Ok(path) = config::managed_devtools_file()
+        && let Ok(endpoint) = managed_endpoint_from_devtools_file(&path).await
+    {
+        endpoints.push(endpoint);
+    }
     for path in devtools_files() {
         if let Ok(endpoint) = endpoint_from_devtools_file(&path).await {
             endpoints.push(endpoint);
@@ -71,6 +76,12 @@ pub async fn doctor() -> serde_json::Value {
 }
 
 async fn discover_chromium() -> Result<BrowserEndpoint> {
+    if let Ok(path) = config::managed_devtools_file()
+        && let Ok(endpoint) = managed_endpoint_from_devtools_file(&path).await
+    {
+        return Ok(endpoint);
+    }
+
     for path in devtools_files() {
         if let Ok(endpoint) = endpoint_from_devtools_file(&path).await {
             return Ok(endpoint);
@@ -85,6 +96,22 @@ async fn discover_chromium() -> Result<BrowserEndpoint> {
     }
 
     Err(Error::BrowserNotFound)
+}
+
+async fn managed_endpoint_from_devtools_file(path: &Path) -> Result<BrowserEndpoint> {
+    let endpoint = endpoint_from_devtools_file(path).await?;
+    let port = endpoint
+        .websocket_url
+        .split(':')
+        .nth(2)
+        .and_then(|rest| rest.split('/').next())
+        .ok_or_else(|| Error::InvalidArgument("invalid managed websocket URL".to_owned()))?;
+    resolve_http(&format!("http://127.0.0.1:{port}"))
+        .await
+        .map(|found| BrowserEndpoint {
+            source: endpoint.source,
+            ..found
+        })
 }
 
 async fn resolve_explicit(value: &str) -> Result<BrowserEndpoint> {
