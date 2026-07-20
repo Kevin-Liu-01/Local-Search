@@ -32,7 +32,7 @@ pub async fn run(cli: Cli) -> Result<()> {
             let mut client = cdp_client(&cli).await?;
             let args = SearchArgs {
                 query,
-                engine: SearchEngine::Google,
+                engine: SearchEngine::Duckduckgo,
                 limit: 10,
                 with_content: false,
                 content_chars: 2_000,
@@ -327,15 +327,10 @@ async fn cdp_client(cli: &Cli) -> Result<CdpClient> {
 }
 
 async fn connect_or_launch_managed(cli: &Cli) -> Result<(BrowserEndpoint, CdpClient)> {
-    let discovered = discovery::discover(cli.browser, cli.cdp.as_deref()).await;
-    if let Ok(endpoint) = discovered {
-        match CdpClient::connect(&endpoint.websocket_url, cli.timeout).await {
-            Ok(client) => return Ok((endpoint, client)),
-            Err(error) if cli.cdp.is_some() => return Err(error),
-            Err(_) => {}
-        }
-    } else if cli.cdp.is_some() {
-        return Err(discovered.expect_err("checked error"));
+    if cli.cdp.is_some() || !matches!(cli.browser, BrowserKind::Auto | BrowserKind::Chromium) {
+        let endpoint = discovery::discover(cli.browser, cli.cdp.as_deref()).await?;
+        let client = CdpClient::connect(&endpoint.websocket_url, cli.timeout).await?;
+        return Ok((endpoint, client));
     }
 
     let args = LaunchArgs {
@@ -373,7 +368,10 @@ async fn search(cli: &Cli, client: &mut CdpClient, args: &SearchArgs) -> Result<
         ),
         SearchEngine::Bing => format!("https://www.bing.com/search?q={}", urlencoding(&args.query)),
         SearchEngine::Duckduckgo => {
-            format!("https://duckduckgo.com/?q={}", urlencoding(&args.query))
+            format!(
+                "https://html.duckduckgo.com/html/?q={}",
+                urlencoding(&args.query)
+            )
         }
     };
     if args.new_tab {
@@ -384,7 +382,9 @@ async fn search(cli: &Cli, client: &mut CdpClient, args: &SearchArgs) -> Result<
         client.navigate(&url).await?;
     }
     client
-        .wait_for_js("document.querySelectorAll('a[href]').length > 5 || document.body.innerText.length > 100")
+        .wait_for_js(
+            "document.querySelectorAll('a[href]').length > 5 || (document.body && document.body.innerText.length > 100)",
+        )
         .await?;
     let mut value = client.evaluate(scripts::search_results(), true).await?;
     if let Some(results) = value.get_mut("results").and_then(Value::as_array_mut) {
@@ -607,8 +607,7 @@ async fn record(cli: &Cli, client: &mut CdpClient, args: &RecordArgs) -> Result<
 }
 
 async fn tabs(cli: &Cli, command: &TabsCommand) -> Result<()> {
-    let endpoint = discovery::discover(cli.browser, cli.cdp.as_deref()).await?;
-    let mut client = CdpClient::connect(&endpoint.websocket_url, cli.timeout).await?;
+    let (endpoint, mut client) = connect_or_launch_managed(cli).await?;
     match command {
         TabsCommand::List => {
             let targets = client.targets().await?;

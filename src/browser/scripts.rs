@@ -159,8 +159,18 @@ pub fn search_results() -> &'static str {
     r#"(() => {
 const clean = (s) => (s || '').trim().replace(/\s+/g, ' ');
 const abs = (href) => { try { return new URL(href, location.href).href; } catch { return null; } };
+const normalizeSearchUrl = (href) => {
+  const url = abs(href);
+  if (!url) return null;
+  try {
+    const parsed = new URL(url);
+    const uddg = parsed.searchParams.get('uddg');
+    if (/duckduckgo\.com$/i.test(parsed.hostname) && uddg) return new URL(uddg).href;
+  } catch {}
+  return url;
+};
 const candidates = Array.from(document.querySelectorAll('a[href]')).map((a) => {
-  const url = abs(a.href);
+  const url = normalizeSearchUrl(a.href);
   const title = clean(a.innerText || a.textContent);
   if (!url || !title || title.length < 3) return null;
   if (/google\..*\/search|bing\.com\/search|duckduckgo\.com\/?|javascript:|#/.test(url)) return null;

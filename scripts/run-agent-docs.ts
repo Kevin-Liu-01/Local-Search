@@ -21,8 +21,8 @@ if (!existsSync(kit)) {
 }
 
 const r = spawnSync(
-  process.execPath,
-  ["--import", "tsx", kit, ...process.argv.slice(2)],
+  "npx",
+  ["tsx", kit, ...process.argv.slice(2)],
   { stdio: "inherit" },
 );
 process.exit(r.status ?? 1);

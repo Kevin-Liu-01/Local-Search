@@ -1,4 +1,4 @@
-# local-browser Agent Notes
+# local-search Agent Notes
 
 This is a standalone Rust CLI repo.
 
@@ -6,8 +6,8 @@ This is a standalone Rust CLI repo.
   -- -D warnings` before committing behavior changes.
 - Keep browser credentials out of fixtures and commits. Generated `artifacts/`,
   HAR, MHTML, screenshots, PDFs, and local target output are ignored.
-- Prefer CDP browser-level WebSocket support over launching a separate browser:
-  the project goal is normal-profile, signed-in local browser access.
+- Prefer the managed `lsearch launch` profile for stable day-to-day use. Direct
+  CDP attachment remains supported for users who explicitly choose it.
 - Do not add paid search/API dependencies for search. Search is performed in the
   user's local browser.
 
@@ -16,7 +16,7 @@ This is a standalone Rust CLI repo.
 > Machine-derived facts maintained by `agent-docs`; do not hand-edit inside the markers.
 
 <!-- agent-docs:auto:stack start -->
-- **Name:** local-browser
+- **Name:** local-search
 - **Package manager:** unknown
 - **Languages:** n/a
 - **Framework:** n/a
@@ -30,6 +30,7 @@ This is a standalone Rust CLI repo.
 | Directory | Skill | Purpose |
 |---|---|---|
 | `src/` | [`src/SKILL.md`](src/SKILL.md) | How to work in `src/`. Read before editing here. |
+| `src/bin/` | [`src/bin/SKILL.md`](src/bin/SKILL.md) | CLI binary shims for `lsearch`, `local-search`, and legacy `local-browser`. |
 | `src/browser/` | [`src/browser/SKILL.md`](src/browser/SKILL.md) | How to work in `src/browser/`. Read before editing here. |
 <!-- agent-docs:auto:dirmap end -->
 
@@ -42,8 +43,8 @@ This is a standalone Rust CLI repo.
 - Use `rg` for exact strings; use Kevin-Wiki `qmd` for people, tools, decisions, and compiled wiki knowledge.
 - Use `agent-browser` for browser/UI work; use Playwright only for committed regression tests.
 - Runtime memories (Hermes/Hindsight/Honcho) are not project truth until written back to AGENTS.md, SKILL.md, or the wiki.
-- Status: `cd ~/Documents/GitHub/kevin-wiki && npm run graphify:sidecar -- status --run outputs/graphify/local-browser`
-- Build from this repo: `PROJECT_ROOT="$(pwd)" && cd ~/Documents/GitHub/kevin-wiki && npm run graphify:sidecar -- build "$PROJECT_ROOT" --run outputs/graphify/local-browser --no-viz`
-- Query after build: `cd ~/Documents/GitHub/kevin-wiki && npm run graphify:sidecar -- query "what should I inspect first?" --run outputs/graphify/local-browser`
+- Status: `cd ~/Documents/GitHub/kevin-wiki && npm run graphify:sidecar -- status --run outputs/graphify/local-search`
+- Build from this repo: `PROJECT_ROOT="$(pwd)" && cd ~/Documents/GitHub/kevin-wiki && npm run graphify:sidecar -- build "$PROJECT_ROOT" --run outputs/graphify/local-search --no-viz`
+- Query after build: `cd ~/Documents/GitHub/kevin-wiki && npm run graphify:sidecar -- query "what should I inspect first?" --run outputs/graphify/local-search`
 - Never run Graphify installers/hooks or commit generated `graphify-out/` artifacts.
 <!-- agent-docs:auto:repo-graph end -->

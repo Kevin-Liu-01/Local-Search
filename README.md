@@ -14,6 +14,12 @@ wedge is local, free, structured search for agents.
 ## Install
 
 ```sh
+cargo install local-search
+```
+
+Until the crates.io release has propagated, install directly from GitHub:
+
+```sh
 cargo install --git https://github.com/Kevin-Liu-01/local-search
 ```
 
@@ -107,9 +113,13 @@ Search:
 
 ```sh
 lsearch "hi"
-lsearch search "open source browser automation rust" --engine google --limit 10
+lsearch search "open source browser automation rust" --limit 10
 lsearch search "firecrawl alternatives" --engine duckduckgo --with-content --limit 5
 ```
+
+DuckDuckGo is the default engine because it is usually less hostile to local CLI
+search sessions. Google and Bing remain available with `--engine google` and
+`--engine bing`.
 
 Read and extract:
 

@@ -141,7 +141,7 @@ pub struct LaunchArgs {
 #[derive(Debug, Args)]
 pub struct SearchArgs {
     pub query: String,
-    #[arg(long, value_enum, default_value_t = SearchEngine::Google)]
+    #[arg(long, value_enum, default_value_t = SearchEngine::Duckduckgo)]
     pub engine: SearchEngine,
     #[arg(long, default_value_t = 10)]
     pub limit: usize,
