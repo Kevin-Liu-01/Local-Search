@@ -292,6 +292,12 @@ async fn html(cli: &Cli, client: &mut CdpClient, args: &OptionalPathArgs) -> Res
 
 async fn request(cli: &Cli, client: &mut CdpClient, args: &RequestArgs) -> Result<()> {
     let headers = parse_headers(&args.headers)?;
+    let url = url::Url::parse(&args.url)?;
+    let temp_target = client
+        .create_target(&url.origin().unicode_serialization())
+        .await?;
+    client.attach(&temp_target.target_id).await?;
+    client.wait_ready().await?;
     let value = client
         .evaluate(
             &scripts::browser_fetch(
@@ -303,6 +309,7 @@ async fn request(cli: &Cli, client: &mut CdpClient, args: &RequestArgs) -> Resul
             true,
         )
         .await?;
+    client.close_target(&temp_target.target_id).await?;
     print_json(&json!({ "ok": true, "response": value }), cli.pretty)
 }
 
