@@ -1,6 +1,14 @@
 # local-search
 
+<p align="center">
+  <img src="./assets/local-search-og.svg" alt="local-search — free structured web search for agents, powered by your local browser" width="100%">
+</p>
+
 Free structured web search for agents, powered by your local browser.
+
+```sh
+lsearch "open source browser automation rust"
+```
 
 `local-search` gives agents Exa/Firecrawl/Brave/Tavily-style search, read, and
 extract outputs without an API key or metered search bill. The primary CLI is
@@ -10,6 +18,17 @@ the browser.
 
 Browser automation is implementation support, not the product category. The
 wedge is local, free, structured search for agents.
+
+## What You Get
+
+- Search results as stable JSON, without Exa/Brave/Tavily-style metering.
+- Optional result-page content extraction with `--with-content`.
+- Local `read`, `extract`, `map`, `request`, screenshot, MHTML, HTML, and HAR-like
+  capture commands.
+- A managed Chrome profile that avoids repeated debugging prompts.
+- `lsearch cleanup` so agents do not leave browser instances or stale profile
+  markers behind.
+- Compatibility binaries: `local-search` and `local-browser`.
 
 ## Install
 
@@ -62,6 +81,15 @@ lsearch read https://example.com
 lsearch extract "a[href]" --field title=text --field url=href --pretty
 lsearch map https://example.com --depth 1 --limit 25 --pretty
 lsearch cleanup --pretty
+```
+
+Agent-style flow:
+
+```sh
+lsearch search "agent broom github" --limit 1 --pretty
+lsearch search "example domain" --limit 1 --with-content --content-chars 240 --pretty
+lsearch map https://example.com --depth 1 --limit 10 --pretty
+lsearch cleanup --kill --pretty
 ```
 
 ## Why This Exists
@@ -175,6 +203,24 @@ Failures are JSON on stderr:
 
 Human-readable `read --format markdown`, `read --format text`, and `html`
 without a path write raw content to stdout.
+
+## Agent Hygiene
+
+`lsearch` is designed to be called by agents repeatedly. Use:
+
+```sh
+lsearch cleanup --pretty
+```
+
+to inspect the managed browser state, and:
+
+```sh
+lsearch cleanup --kill --pretty
+```
+
+when the task is done and the managed browser should be stopped. Cleanup only
+targets the managed local-search browser listener and stale profile marker files;
+it does not delete cookies, history, or profile data.
 
 ## Browser Setup
 
