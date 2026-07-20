@@ -50,20 +50,37 @@
 
   <!-- Structured results -->
   <g font-family="'Geist Mono', GeistMono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace">
-    <rect x="728" y="124" width="332" height="382" fill="#FFFFFF" fill-opacity="0.72" stroke="#2A2A2A" stroke-opacity="0.32" stroke-width="1.5"/>
+    <rect x="708" y="124" width="372" height="382" fill="#FFFFFF" fill-opacity="0.72" stroke="#2A2A2A" stroke-opacity="0.32" stroke-width="1.5"/>
 
-    <g font-size="18" font-weight="520">
-      <text x="764" y="178" fill="#2A2A2A">{</text>
-      <text x="792" y="216" fill="#2A2A2A" fill-opacity="0.58">"ok"</text>
-      <text x="850" y="216" fill="#2A2A2A">: true,</text>
-      <text x="792" y="252" fill="#2A2A2A" fill-opacity="0.58">"engine"</text>
-      <text x="886" y="252" fill="#2A2A2A">: "local",</text>
-      <text x="792" y="324" fill="#2A2A2A" fill-opacity="0.58">"results"</text>
-      <text x="886" y="324" fill="#2A2A2A">: [</text>
-      <text x="820" y="360" fill="#2A2A2A">{ "title": "..." },</text>
-      <text x="820" y="396" fill="#2A2A2A">{ "url": "..." }</text>
-      <text x="792" y="456" fill="#2A2A2A">]</text>
-      <text x="764" y="456" fill="#2A2A2A">}</text>
+    <g font-size="12.8" font-weight="520">
+      <text x="736" y="152" fill="#2A2A2A">{</text>
+      <text x="760" y="172" fill="#2A2A2A" fill-opacity="0.58">"ok"</text>
+      <text x="812" y="172" fill="#2A2A2A">: true,</text>
+      <text x="760" y="192" fill="#2A2A2A" fill-opacity="0.58">"query"</text>
+      <text x="832" y="192" fill="#2A2A2A">: "browser automation",</text>
+      <text x="760" y="212" fill="#2A2A2A" fill-opacity="0.58">"engine"</text>
+      <text x="840" y="212" fill="#2A2A2A">: "duckduckgo",</text>
+      <text x="760" y="232" fill="#2A2A2A" fill-opacity="0.58">"search"</text>
+      <text x="840" y="232" fill="#2A2A2A">: {</text>
+      <text x="784" y="252" fill="#2A2A2A" fill-opacity="0.58">"blocked"</text>
+      <text x="872" y="252" fill="#2A2A2A">: false,</text>
+      <text x="784" y="272" fill="#2A2A2A" fill-opacity="0.58">"results"</text>
+      <text x="872" y="272" fill="#2A2A2A">: [</text>
+      <text x="808" y="292" fill="#2A2A2A">{</text>
+      <text x="832" y="312" fill="#2A2A2A" fill-opacity="0.58">"rank"</text>
+      <text x="896" y="312" fill="#2A2A2A">: 1,</text>
+      <text x="832" y="332" fill="#2A2A2A" fill-opacity="0.58">"title"</text>
+      <text x="904" y="332" fill="#2A2A2A">: "Playwright",</text>
+      <text x="832" y="352" fill="#2A2A2A" fill-opacity="0.58">"domain"</text>
+      <text x="912" y="352" fill="#2A2A2A">: "playwright.dev",</text>
+      <text x="832" y="372" fill="#2A2A2A" fill-opacity="0.58">"url"</text>
+      <text x="880" y="372" fill="#2A2A2A">: "https://playwright.dev",</text>
+      <text x="832" y="392" fill="#2A2A2A" fill-opacity="0.58">"snippet"</text>
+      <text x="920" y="392" fill="#2A2A2A">: "Fast browser..."</text>
+      <text x="808" y="412" fill="#2A2A2A">}</text>
+      <text x="784" y="432" fill="#2A2A2A">]</text>
+      <text x="760" y="452" fill="#2A2A2A">}</text>
+      <text x="736" y="472" fill="#2A2A2A">}</text>
     </g>
   </g>
 </svg>
