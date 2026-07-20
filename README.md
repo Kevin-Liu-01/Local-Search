@@ -1,8 +1,8 @@
-# local-search
-
 <p align="center">
   <img src="./assets/local-search-og.svg" alt="local-search — free structured web search for agents, powered by your local browser" width="100%">
 </p>
+
+# local-search
 
 Free structured web search for agents, powered by your local browser.
 
@@ -15,9 +15,6 @@ extract outputs without an API key or metered search bill. The primary CLI is
 `lsearch`. It searches through a local Chrome/Chromium profile, so it can use the
 same public web, logged-in sessions, cookies, and regional results you can see in
 the browser.
-
-Browser automation is implementation support, not the product category. The
-wedge is local, free, structured search for agents.
 
 ## What You Get
 
