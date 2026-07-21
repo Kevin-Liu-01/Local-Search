@@ -162,10 +162,19 @@ pub struct CleanupArgs {
 #[derive(Debug, Args)]
 pub struct SearchArgs {
     pub query: String,
-    #[arg(long, value_enum, default_value_t = SearchEngine::Duckduckgo)]
+    #[arg(long, value_enum, default_value_t = SearchEngine::Google)]
     pub engine: SearchEngine,
     #[arg(long, default_value_t = 10)]
     pub limit: usize,
+    /// Maximum characters of each search-result snippet.
+    #[arg(long, default_value_t = 120)]
+    pub snippet_chars: usize,
+    /// Reuse matching local results for this many seconds.
+    #[arg(long, default_value_t = 300)]
+    pub cache_ttl: u64,
+    /// Always perform a fresh browser search.
+    #[arg(long)]
+    pub no_cache: bool,
     /// Also read each result page and include local extracted content.
     #[arg(long)]
     pub with_content: bool,

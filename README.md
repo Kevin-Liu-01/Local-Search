@@ -96,10 +96,8 @@ lsearch cleanup --kill --pretty
 - Search engine: the search site queried inside the browser.
 - Browser backend: the local browser automation transport used to load pages.
 
-Search engines are switched with `--engine`. DuckDuckGo is the built-in default
-because it is usually less hostile to local CLI search sessions. Persistent
-per-user default search-engine config is not implemented yet, so pass `--engine`
-on commands where you want Google or Bing:
+Search engines are switched with `--engine`. Google is the built-in default for
+the fastest cold searches. Pass `--engine` when you want DuckDuckGo or Bing:
 
 ```sh
 lsearch search "open source browser automation" --engine duckduckgo
@@ -112,6 +110,12 @@ The shorthand form uses the default search engine:
 ```sh
 lsearch "open source browser automation"
 ```
+
+Matching searches reuse locally cached browser results for five minutes. This
+makes repeated agent queries and depth changes return in a few milliseconds.
+Use `--no-cache` for a fresh search, or change the window with `--cache-ttl`.
+Search snippets are capped at 120 characters by default; `--snippet-chars`
+changes that cap.
 
 Browser backend is different. Today, `local-search` is built around
 Chrome/Chromium's Chrome DevTools Protocol because it can control a normal local
@@ -141,6 +145,53 @@ official WebDriver automation uses isolated automation sessions, not the normal
 profile state this project depends on. In practice: use Google, DuckDuckGo, or
 Bing as the search engine inside a managed Chrome/Chromium profile; do not expect
 `--browser safari` to reuse your normal Safari session.
+
+## Token Benchmarks
+
+`lsearch` keeps browser plumbing and full search-page snapshots out of the
+agent's context. A source-build benchmark on 2026-07-21 measured visible command
+text plus stdout with the `o200k_base` tokenizer. It ran 12 queries through the
+same managed Chrome profile against DuckDuckGo, Google, and Bing, then compared
+normalized search JSON with a compact interactive snapshot of the same rendered
+results page.
+
+| Results requested | Usable runs | Median `lsearch` tokens | Median snapshot tokens | Median paired reduction |
+|---:|---:|---:|---:|---:|
+| 3 | 36/36 | 309 | 8,760.5 | 96.5% |
+| 10 | 36/36 | 891 | 8,708 | 89.8% |
+
+All 72 cross-engine searches returned the requested number of results. A
+separate DuckDuckGo stability check ran 12 queries five times each: 60/60
+responses matched the output schema, and 58/60 returned the exact same top-three
+URLs.
+
+Content extraction was stress-tested across 24 three-result searches. All 72
+result pages returned the full 1,200-character text cap, with zero command
+failures and zero `about:blank` pages.
+
+### Hosted Structured APIs
+
+A second live benchmark ran the same queries and depths through `lsearch`, Exa,
+Brave Search, Tavily, and Firecrawl. Each response was measured as returned, then
+normalized to the common `rank`, `title`, `url`, and `snippet` fields. Exa used
+highlights, Brave and Firecrawl used descriptions, Tavily used basic-search
+content, and `lsearch` used its search snippets.
+
+| Provider | Usable runs | Requested depth fulfilled | Median raw tokens | Median normalized tokens/result | Median latency | Full-run usage |
+|---|---:|---:|---:|---:|---:|---:|
+| **`lsearch`** | **24/24** | **24/24** | **413.5** | **53.4** | **148.7 ms** | **$0** |
+| Exa | 24/24 | 24/24 | 4,472.5 | 881.2 | 501.9 ms | $0.324 |
+| Brave Search | 24/24 | 24/24 | 13,104 | 108.6 | 322.0 ms | $0.120 |
+| Tavily | 24/24 | 17/24 | 1,163 | 259.5 | 1,184.4 ms | 24 credits ($0.192 PAYG) |
+| Firecrawl | 24/24 | 24/24 | 509 | 74.8 | 1,520.8 ms | 48 credits |
+
+`lsearch` was the fastest provider and returned the fewest raw and normalized
+tokens in this comparison while spending zero API credits. The matched workload
+contains 12 cold three-result searches followed by the same 12 queries at ten
+results. `lsearch` retained the full browser result set locally, so the second
+depth completed from its five-minute cache: cold median 384.5 ms, warm median
+6.5 ms. The full methodology and runner live in
+[`benchmarks/`](benchmarks/README.md).
 
 ## Why This Exists
 
@@ -196,9 +247,8 @@ lsearch search "open source browser automation rust" --limit 10
 lsearch search "firecrawl alternatives" --engine duckduckgo --with-content --limit 5
 ```
 
-DuckDuckGo is the default engine because it is usually less hostile to local CLI
-search sessions. Google and Bing remain available with `--engine google` and
-`--engine bing`.
+Google is the default engine for speed. DuckDuckGo and Bing remain available
+with `--engine duckduckgo` and `--engine bing`.
 
 Read and extract:
 

@@ -29,26 +29,28 @@ pub async fn run(cli: Cli) -> Result<()> {
                     "provide a query or subcommand".to_owned(),
                 ));
             }
-            let mut client = cdp_client(&cli).await?;
             let args = SearchArgs {
                 query,
-                engine: SearchEngine::Duckduckgo,
+                engine: SearchEngine::Google,
                 limit: 10,
+                snippet_chars: 120,
+                cache_ttl: 300,
+                no_cache: false,
                 with_content: false,
                 content_chars: 2_000,
                 new_tab: false,
             };
-            search(&cli, &mut client, &args).await
+            search_command(&cli, &args).await
         }
         Some(Command::Doctor) => print_json(&discovery::doctor().await, cli.pretty),
         Some(Command::Connect(args)) => connect(&cli, args).await,
         Some(Command::Launch(args)) => launch(&cli, args).await,
         Some(Command::Cleanup(args)) => cleanup(&cli, args).await,
         Some(Command::Tabs(command)) => tabs(&cli, command).await,
+        Some(Command::Search(args)) => search_command(&cli, args).await,
         Some(command) => {
             let mut client = cdp_client(&cli).await?;
             match command {
-                Command::Search(args) => search(&cli, &mut client, args).await,
                 Command::Map(args) => map(&cli, &mut client, args).await,
                 Command::Open(args) => open(&cli, &mut client, args).await,
                 Command::Read(args) => read(&cli, &mut client, args).await,
@@ -142,6 +144,7 @@ pub async fn run(cli: Cli) -> Result<()> {
                 | Command::Connect(_)
                 | Command::Launch(_)
                 | Command::Cleanup(_)
+                | Command::Search(_)
                 | Command::Tabs(_) => unreachable!("handled before cdp attach"),
             }
         }
@@ -487,6 +490,20 @@ async fn open(cli: &Cli, client: &mut CdpClient, args: &OpenArgs) -> Result<()> 
     )
 }
 
+async fn search_command(cli: &Cli, args: &SearchArgs) -> Result<()> {
+    if let Some(mut value) = load_search_cache(args).await {
+        prepare_search_results(&mut value, args);
+        if args.with_content {
+            let mut client = cdp_client(cli).await?;
+            enrich_search_results(&mut client, &mut value, args.content_chars).await?;
+        }
+        return print_search(cli, args, &value);
+    }
+
+    let mut client = cdp_client(cli).await?;
+    search(cli, &mut client, args).await
+}
+
 async fn search(cli: &Cli, client: &mut CdpClient, args: &SearchArgs) -> Result<()> {
     let url = match args.engine {
         SearchEngine::Google => format!(
@@ -502,28 +519,119 @@ async fn search(cli: &Cli, client: &mut CdpClient, args: &SearchArgs) -> Result<
         }
     };
     if args.new_tab {
-        let target = client.create_target(&url).await?;
+        let target = client.create_target("about:blank").await?;
         client.attach(&target.target_id).await?;
-        client.wait_ready().await?;
-    } else {
-        client.navigate(&url).await?;
     }
+    client.start_navigation(&url).await?;
+    let result_selector = match args.engine {
+        SearchEngine::Google => "a h3",
+        SearchEngine::Bing => "li.b_algo h2 a",
+        SearchEngine::Duckduckgo => ".result__a",
+    };
+    let requested_results = args.limit.clamp(1, 3);
+    let query = serde_json::to_string(&args.query)?;
     client
-        .wait_for_js(
-            "document.querySelectorAll('a[href]').length > 5 || (document.body && document.body.innerText.length > 100)",
-        )
+        .wait_for_js(&format!(
+            "(() => {{ const body = document.body?.innerText || ''; const onQuery = new URL(location.href).searchParams.get('q') === {query}; const resultsReady = document.querySelectorAll('{result_selector}').length >= {requested_results}; const genericReady = document.querySelectorAll('a[href]').length > 5 && body.length > 100; return (onQuery && (resultsReady || genericReady)) || /captcha|unusual traffic|verify you are human|solve the challenge|one last step/i.test(body); }})()"
+        ))
         .await?;
     let mut value = client.evaluate(scripts::search_results(), true).await?;
-    if let Some(results) = value.get_mut("results").and_then(Value::as_array_mut) {
-        results.truncate(args.limit);
-    }
+    save_search_cache(args, &value).await;
+    prepare_search_results(&mut value, args);
     if args.with_content {
         enrich_search_results(client, &mut value, args.content_chars).await?;
     }
+    print_search(cli, args, &value)
+}
+
+fn prepare_search_results(value: &mut Value, args: &SearchArgs) {
+    if let Some(results) = value.get_mut("results").and_then(Value::as_array_mut) {
+        results.truncate(args.limit);
+        truncate_search_snippets(results, args.snippet_chars);
+    }
+}
+
+fn print_search(cli: &Cli, args: &SearchArgs, value: &Value) -> Result<()> {
     print_json(
         &json!({ "ok": true, "query": args.query, "engine": format!("{:?}", args.engine).to_lowercase(), "search": value }),
         cli.pretty,
     )
+}
+
+async fn load_search_cache(args: &SearchArgs) -> Option<Value> {
+    if args.no_cache || args.cache_ttl == 0 {
+        return None;
+    }
+    let path = search_cache_path(args).ok()?;
+    let age = tokio::fs::metadata(&path)
+        .await
+        .ok()?
+        .modified()
+        .ok()?
+        .elapsed()
+        .ok()?;
+    if age > Duration::from_secs(args.cache_ttl) {
+        return None;
+    }
+    let record: Value = serde_json::from_slice(&tokio::fs::read(path).await.ok()?).ok()?;
+    let engine = format!("{:?}", args.engine).to_lowercase();
+    if record.get("query").and_then(Value::as_str) != Some(args.query.as_str())
+        || record.get("engine").and_then(Value::as_str) != Some(engine.as_str())
+    {
+        return None;
+    }
+    let search = record.get("search")?.clone();
+    if search.get("results")?.as_array()?.len() < args.limit {
+        return None;
+    }
+    Some(search)
+}
+
+async fn save_search_cache(args: &SearchArgs, search: &Value) {
+    if args.no_cache || args.cache_ttl == 0 {
+        return;
+    }
+    let Ok(path) = search_cache_path(args) else {
+        return;
+    };
+    let Some(parent) = path.parent() else {
+        return;
+    };
+    if tokio::fs::create_dir_all(parent).await.is_err() {
+        return;
+    }
+    let record = json!({
+        "engine": format!("{:?}", args.engine).to_lowercase(),
+        "query": args.query,
+        "search": search,
+    });
+    if let Ok(bytes) = serde_json::to_vec(&record) {
+        let _ = tokio::fs::write(path, bytes).await;
+    }
+}
+
+fn search_cache_path(args: &SearchArgs) -> Result<PathBuf> {
+    let engine = format!("{:?}", args.engine).to_lowercase();
+    let mut hash = 0xcbf2_9ce4_8422_2325_u64;
+    for byte in engine.bytes().chain([0]).chain(args.query.bytes()) {
+        hash ^= u64::from(byte);
+        hash = hash.wrapping_mul(0x0000_0100_0000_01b3);
+    }
+    Ok(config::search_cache_dir()?.join(format!("{hash:016x}.json")))
+}
+
+fn truncate_search_snippets(results: &mut [Value], max_chars: usize) {
+    for result in results {
+        let Some(snippet) = result.get_mut("snippet") else {
+            continue;
+        };
+        let Some(text) = snippet.as_str() else {
+            continue;
+        };
+        if text.chars().count() > max_chars {
+            *snippet = json!(text.chars().take(max_chars).collect::<String>());
+        }
+    }
 }
 
 async fn enrich_search_results(
@@ -541,20 +649,64 @@ async fn enrich_search_results(
                 .collect::<Vec<_>>()
         })
         .unwrap_or_default();
-    let mut contents = Vec::new();
-    for url in urls {
-        let target = client.create_target(&url).await?;
-        client.attach(&target.target_id).await?;
-        client.wait_ready().await?;
-        let mut page = client.evaluate(scripts::readable(), true).await?;
-        client.close_target(&target.target_id).await?;
+    let mut contents = read_search_results(client, &urls).await?;
+    for page in &mut contents {
         if let Some(text) = page.get("text").and_then(Value::as_str) {
             page["text"] = json!(text.chars().take(content_chars).collect::<String>());
         }
-        contents.push(page);
     }
     search["contents"] = json!(contents);
     Ok(())
+}
+
+async fn read_search_results(client: &mut CdpClient, urls: &[String]) -> Result<Vec<Value>> {
+    for attempt in 0..3 {
+        let target = client.create_target("about:blank").await?;
+        let pages_result = async {
+            client.attach(&target.target_id).await?;
+            let mut pages = Vec::with_capacity(urls.len());
+            for url in urls {
+                client.navigate(url).await?;
+                client
+                    .wait_for_js(
+                        "location.href !== 'about:blank' && (document.readyState === 'interactive' || document.readyState === 'complete')",
+                    )
+                    .await?;
+                let page = client.evaluate(scripts::readable(), true).await?;
+                validate_content_page(&page, url)?;
+                pages.push(page);
+            }
+            Ok(pages)
+        }
+        .await;
+        let close_result = client.close_target(&target.target_id).await;
+        let result = match pages_result {
+            Ok(pages) => close_result.map(|_| pages),
+            Err(error) => {
+                let _ = close_result;
+                Err(error)
+            }
+        };
+        match result {
+            Ok(pages) => return Ok(pages),
+            Err(error) if attempt == 2 => return Err(error),
+            Err(_) => {
+                tokio::time::sleep(Duration::from_millis(100 * (attempt + 1))).await;
+            }
+        }
+    }
+    unreachable!("temporary page read attempts are non-empty");
+}
+
+fn validate_content_page(page: &Value, requested_url: &str) -> Result<()> {
+    let loaded_url = page.get("url").and_then(Value::as_str).unwrap_or_default();
+    if matches!(url::Url::parse(loaded_url), Ok(url) if matches!(url.scheme(), "http" | "https")) {
+        return Ok(());
+    }
+    Err(Error::Protocol {
+        method: "search --with-content".to_owned(),
+        message: format!("expected {requested_url}, loaded {loaded_url}"),
+    })
 }
 
 async fn map(cli: &Cli, client: &mut CdpClient, args: &MapArgs) -> Result<()> {
@@ -870,4 +1022,49 @@ fn events_to_har(url: &str, events: &[Value]) -> Value {
 
 fn urlencoding(input: &str) -> String {
     url::form_urlencoded::byte_serialize(input.as_bytes()).collect()
+}
+
+#[cfg(test)]
+mod tests {
+    use serde_json::json;
+
+    use super::{truncate_search_snippets, validate_content_page};
+
+    #[test]
+    fn search_snippets_are_truncated_on_character_boundaries() {
+        let mut results = vec![json!({ "snippet": "ab🦀cd" })];
+
+        truncate_search_snippets(&mut results, 3);
+
+        assert_eq!(results[0]["snippet"], "ab🦀");
+    }
+
+    #[test]
+    fn short_search_snippets_are_unchanged() {
+        let mut results = vec![json!({ "snippet": "short" })];
+
+        truncate_search_snippets(&mut results, 10);
+
+        assert_eq!(results[0]["snippet"], "short");
+    }
+
+    #[test]
+    fn content_page_rejects_about_blank() {
+        let error = validate_content_page(
+            &json!({ "url": "about:blank" }),
+            "https://example.com/article",
+        )
+        .unwrap_err();
+
+        assert!(error.to_string().contains("loaded about:blank"));
+    }
+
+    #[test]
+    fn content_page_accepts_http_redirects() {
+        validate_content_page(
+            &json!({ "url": "https://www.example.com/article" }),
+            "https://example.com/article",
+        )
+        .unwrap();
+    }
 }

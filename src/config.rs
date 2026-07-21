@@ -38,6 +38,15 @@ pub fn managed_pid_file() -> Result<PathBuf> {
     Ok(config_dir()?.join("managed-chrome.pid"))
 }
 
+pub fn search_cache_dir() -> Result<PathBuf> {
+    if let Some(path) = std::env::var_os("LOCAL_SEARCH_CACHE_DIR") {
+        return Ok(PathBuf::from(path));
+    }
+    Ok(dirs::cache_dir()
+        .ok_or_else(|| crate::error::Error::InvalidArgument("cannot resolve cache dir".to_owned()))?
+        .join("local-search/searches"))
+}
+
 pub fn display_path(path: &Path) -> String {
     path.display().to_string()
 }

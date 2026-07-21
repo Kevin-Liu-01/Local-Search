@@ -140,9 +140,14 @@ impl CdpClient {
     }
 
     pub async fn navigate(&mut self, url: &str) -> Result<()> {
+        self.start_navigation(url).await?;
+        self.wait_ready().await
+    }
+
+    pub async fn start_navigation(&mut self, url: &str) -> Result<()> {
         self.send_page("Page.navigate", json!({ "url": url }))
             .await?;
-        self.wait_ready().await
+        Ok(())
     }
 
     pub async fn reload(&mut self) -> Result<Value> {
@@ -180,13 +185,18 @@ impl CdpClient {
     }
 
     pub async fn wait_for_js(&mut self, expression: &str) -> Result<Value> {
-        let attempts = (self.timeout.as_millis() / 250).max(1);
+        let attempts = (self.timeout.as_millis() / 50).max(1);
         for _ in 0..attempts {
-            let value = self.evaluate(expression, true).await?;
-            if value.as_bool().unwrap_or(false) {
+            let ready = self
+                .evaluate(expression, true)
+                .await
+                .ok()
+                .and_then(|value| value.as_bool())
+                .unwrap_or(false);
+            if ready {
                 return Ok(json!({ "ok": true }));
             }
-            tokio::time::sleep(Duration::from_millis(250)).await;
+            tokio::time::sleep(Duration::from_millis(50)).await;
         }
         Err(Error::Timeout {
             operation: expression.to_owned(),

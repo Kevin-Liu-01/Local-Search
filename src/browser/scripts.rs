@@ -144,7 +144,8 @@ pub fn readable() -> &'static str {
     r#"(() => {
 const text = (node) => (node && (node.innerText || node.textContent) || '').trim().replace(/\n{3,}/g, '\n\n');
 const meta = (name) => document.querySelector(`meta[name="${name}"], meta[property="${name}"]`)?.content || null;
-const main = document.querySelector('article, main, [role=main]') || document.body;
+const preferred = document.querySelector('article, main, [role=main]');
+const main = preferred && text(preferred) ? preferred : document.body;
 const headings = Array.from(main.querySelectorAll('h1,h2,h3')).slice(0, 50).map(h => ({ level: h.tagName.toLowerCase(), text: text(h) }));
 const links = Array.from(main.querySelectorAll('a[href]')).slice(0, 100).map(a => ({ text: text(a).slice(0, 120), url: a.href }));
 return { url: location.href, title: document.title, description: meta('description') || meta('og:description'), text: text(main), headings, links };
@@ -185,7 +186,7 @@ for (const item of candidates) {
   seen.add(item.url);
   results.push({ rank: results.length + 1, ...item });
 }
-return { url: location.href, title: document.title, results, blocked: /captcha|unusual traffic|verify you are human/i.test(document.body.innerText || '') };
+return { url: location.href, title: document.title, results, blocked: /captcha|unusual traffic|verify you are human|solve the challenge|one last step/i.test(document.body.innerText || '') };
 })()"#
 }
 
@@ -284,4 +285,24 @@ return {{
         headers,
         body.map_or_else(|| "undefined".to_owned(), string)
     )
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{readable, search_results};
+
+    #[test]
+    fn readable_falls_back_when_preferred_container_is_empty() {
+        let script = readable();
+
+        assert!(script.contains("preferred && text(preferred) ? preferred : document.body"));
+    }
+
+    #[test]
+    fn search_results_detects_verification_challenges() {
+        let script = search_results();
+
+        assert!(script.contains("solve the challenge"));
+        assert!(script.contains("one last step"));
+    }
 }

@@ -1,6 +1,8 @@
 /target/
 /.local-browser/
 /artifacts/
+/.env.bench.local
+__pycache__/
 *.har
 *.mhtml
 *.png
