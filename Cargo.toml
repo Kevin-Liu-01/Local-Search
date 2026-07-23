@@ -8,6 +8,7 @@ license = "MIT"
 repository = "https://github.com/Kevin-Liu-01/local-search"
 homepage = "https://github.com/Kevin-Liu-01/local-search"
 readme = "README.md"
+exclude = ["site/"]
 keywords = ["search", "browser", "agents", "cdp", "scraping"]
 categories = ["command-line-utilities", "web-programming"]
 

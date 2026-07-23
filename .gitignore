@@ -6,4 +6,5 @@ __pycache__/
 *.har
 *.mhtml
 *.png
+!site/public/brand/*.png
 *.pdf
