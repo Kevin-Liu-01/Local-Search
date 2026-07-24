@@ -1,35 +1,52 @@
 import { AgentPlayground } from "@/components/agent-playground";
 import { LocalSearchLogo } from "@/components/brand-logo";
 import { CopyCommand } from "@/components/copy-command";
+import { FAQS } from "@/lib/seo";
+import type { ReactNode } from "react";
 import {
   ArrowUpRightIcon,
   CheckIcon,
   ChevronRightIcon,
+  BraveBrandIcon,
+  ClockIcon,
+  CompareIcon,
+  CompactIcon,
+  DocumentIcon,
+  ExaBrandIcon,
+  FirecrawlBrandIcon,
   GithubBrandIcon,
   GlobeIcon,
+  KeyIcon,
   CratesIoBrandIcon,
   RustOfficialIcon,
+  ResultsIcon,
+  SchemaIcon,
   SearchIcon,
+  ShieldIcon,
+  TavilyBrandIcon,
   TerminalIcon,
+  ZeroCostIcon,
 } from "@/components/icons";
 
-const sampleJson = `{
-  "engine": "duckduckgo",
-  "ok": true,
-  "query": "rust browser automation libraries",
-  "search": {
-    "blocked": false,
-    "results": [
+const faqIcons = [SearchIcon, KeyIcon, TerminalIcon, GlobeIcon, CompareIcon, ShieldIcon] as const;
+
+const sampleJson = JSON.stringify({
+  engine: "duckduckgo",
+  ok: true,
+  query: "rust browser automation libraries",
+  search: {
+    blocked: false,
+    results: [
       {
-        "rank": 1,
-        "title": "browser_automation — Rust web dev library",
-        "domain": "lib.rs",
-        "url": "https://lib.rs/crates/browser_automation",
-        "snippet": "A modular Rust browser automation library…"
-      }
-    ]
-  }
-}`;
+        rank: 1,
+        title: "browser_automation — Rust web dev library",
+        domain: "lib.rs",
+        url: "https://lib.rs/crates/browser_automation",
+        snippet: "A modular Rust browser automation library…",
+      },
+    ],
+  },
+}, null, 4);
 
 export default function Home() {
   return (
@@ -42,6 +59,7 @@ export default function Home() {
           <a href="#output">Output</a>
           <a href="#benchmarks">Benchmarks</a>
           <a href="#compare">Compare</a>
+          <a href="#faq">FAQ</a>
         </nav>
         <a className="nav-cta" href="https://github.com/Kevin-Liu-01/local-search" target="_blank" rel="noreferrer">
           <GithubBrandIcon size={16} />
@@ -61,8 +79,8 @@ export default function Home() {
             <div className="hero">
               <p className="hero-kicker"><RustOfficialIcon size={20} /> Built with Rust</p>
               <h1 id="hero-title">
-                Your browser is already
-                <br className="hero-line-break" /> a search API.
+                <span className="hero-title__line hero-title__line--primary">Browser Search API</span>
+                <span className="hero-title__line hero-title__line--secondary">No API Key, No Billing</span>
               </h1>
               <p className="hero-copy">
                 Give Claude Code, Codex, Cursor, or any shell-capable agent structured web search
@@ -98,106 +116,210 @@ export default function Home() {
         </section>
         <ReticleSpacer />
 
-        <section className="content-section" id="output">
-          <div className="section-copy section-copy--centered">
-            <p className="eyebrow">Structured output</p>
-            <h2>One command. Clean JSON.</h2>
-            <p>Search-page plumbing stays in the browser. Your agent gets only the normalized result set.</p>
-          </div>
-          <div className="output-stack">
-            <CopyCommand value={'lsearch search "rust browser automation" --limit 3 --pretty'} />
+        <section className="content-section output-workflow-section" id="output">
+          <div className="output-bento" id="workflow">
+            <div className="output-bento__intro">
+              <h2><span>Ask. Search.</span><span>Return JSON.</span></h2>
+              <p><code>lsearch</code> bridges a coding agent and the browser already on your machine. One shell call goes in; compact search context comes back.</p>
+            </div>
+            <div className="output-bento__command">
+              <span className="bento-label">One native command</span>
+              <h3>Search from any shell-capable agent.</h3>
+              <CopyCommand value={'lsearch search "rust browser automation" --limit 3 --pretty'} />
+              <p>No SDK, API key, hosted search account, or agent-specific integration.</p>
+            </div>
+            <div className="workflow-timeline">
+              <svg className="workflow-circuit workflow-circuit--desktop" viewBox="0 0 1120 96" preserveAspectRatio="none" aria-hidden="true">
+                <g className="workflow-circuit__base">
+                  <path d="M0 55h148l28-16h216l28 16h102l28-16h216l28 16h102l28-16h196" />
+                  <path d="M0 67h160l28-16h216l28 16h102l28-16h216l28 16h102l28-16h184" />
+                  <path d="M0 79h172l28-16h216l28 16h102l28-16h216l28 16h102l28-16h172" />
+                </g>
+                <g className="workflow-circuit__signal">
+                  <path d="M0 55h148l28-16h216l28 16h102l28-16h216l28 16h102l28-16h196" />
+                  <path d="M0 67h160l28-16h216l28 16h102l28-16h216l28 16h102l28-16h184" />
+                  <path d="M0 79h172l28-16h216l28 16h102l28-16h216l28 16h102l28-16h172" />
+                </g>
+                <g className="workflow-circuit__ports">
+                  <polygon points="230,33 235,36 235,42 230,45 225,42 225,36" />
+                  <polygon points="230,45 235,48 235,54 230,57 225,54 225,48" />
+                  <polygon points="230,57 235,60 235,66 230,69 225,66 225,60" />
+                  <polygon points="603,33 608,36 608,42 603,45 598,42 598,36" />
+                  <polygon points="603,45 608,48 608,54 603,57 598,54 598,48" />
+                  <polygon points="603,57 608,60 608,66 603,69 598,66 598,60" />
+                  <polygon points="976,33 981,36 981,42 976,45 971,42 971,36" />
+                  <polygon points="976,45 981,48 981,54 976,57 971,54 971,48" />
+                  <polygon points="976,57 981,60 981,66 976,69 971,66 971,60" />
+                </g>
+              </svg>
+              <svg className="workflow-circuit workflow-circuit--mobile" viewBox="0 0 96 660" preserveAspectRatio="none" aria-hidden="true">
+                <g className="workflow-circuit__base">
+                  <path d="M30 0v60l16 20v140l-16 20v160l16 20v140l-16 20v80" />
+                  <path d="M42 0v60l16 20v140l-16 20v160l16 20v140l-16 20v80" />
+                  <path d="M54 0v60l16 20v140l-16 20v160l16 20v140l-16 20v80" />
+                </g>
+                <g className="workflow-circuit__signal">
+                  <path d="M30 0v60l16 20v140l-16 20v160l16 20v140l-16 20v80" />
+                  <path d="M42 0v60l16 20v140l-16 20v160l16 20v140l-16 20v80" />
+                  <path d="M54 0v60l16 20v140l-16 20v160l16 20v140l-16 20v80" />
+                </g>
+              </svg>
+              <div className="workflow-list" aria-label="How local-search works">
+                <article>
+                  <div className="workflow-top"><span className="workflow-index">01 · Agent</span><div className="workflow-icon"><TerminalIcon size={22} /></div></div>
+                  <div><h3>Run one command</h3><p>Any shell-capable agent runs <code>lsearch</code>.</p></div>
+                  <code className="workflow-code">query + limit</code>
+                </article>
+                <article>
+                  <div className="workflow-top"><span className="workflow-index">02 · Browser</span><div className="workflow-icon"><GlobeIcon size={22} /></div></div>
+                  <div><h3>Search locally</h3><p>Managed Chrome searches with your local state.</p></div>
+                  <span className="workflow-state"><i /> Runs locally</span>
+                </article>
+                <article>
+                  <div className="workflow-top"><span className="workflow-index">03 · Agent context</span><div className="workflow-icon"><SearchIcon size={22} /></div></div>
+                  <div><h3>Return clean JSON</h3><p>Only stable result fields reach the agent.</p></div>
+                  <span className="workflow-state"><CheckIcon size={13} /> Compact + valid</span>
+                </article>
+              </div>
+            </div>
+            <div className="output-bento__json-copy">
+              <span className="bento-label">Returned agent context</span>
+              <h3>Stable fields, not search-page chrome.</h3>
+              <p>The browser stays local. Your agent receives only the result data it can act on.</p>
+              <div className="json-field-list" aria-label="Returned JSON fields"><code>rank</code><code>title</code><code>url</code><code>domain</code><code>snippet</code><code>content?</code></div>
+            </div>
             <div className="json-panel">
-              <div className="panel-bar"><span><i /> search.json</span><span>stdout · application/json</span></div>
-              <pre><code>{sampleJson}</code></pre>
+              <div className="panel-bar"><span><i /> returned to the agent</span><span>stdout · application/json</span></div>
+              <pre><JsonCode value={sampleJson} /></pre>
             </div>
           </div>
         </section>
         <ReticleSpacer />
 
-        <section className="content-section workflow-section" id="workflow">
-          <div className="section-copy section-copy--centered">
-            <p className="eyebrow">How it works</p>
-            <h2>Search runs where you work.</h2>
-            <p>No hosted search account sits between your agent and the browser session you already control.</p>
-          </div>
-          <div className="workflow-list">
-            <article>
-              <span className="workflow-index">01</span>
-              <div className="workflow-icon"><TerminalIcon size={22} /></div>
-              <div><h3>The agent calls <code>lsearch</code></h3><p>Any shell-capable coding agent can invoke the native CLI and request a stable result shape.</p></div>
-              <code className="workflow-code">lsearch &quot;your query&quot;</code>
-            </article>
-            <article>
-              <span className="workflow-index">02</span>
-              <div className="workflow-icon"><GlobeIcon size={22} /></div>
-              <div><h3>Your local browser searches</h3><p>A managed Chrome profile opens DuckDuckGo, Google, or Bing with your regional and signed-in context.</p></div>
-              <span className="workflow-state"><i /> Local Chrome</span>
-            </article>
-            <article>
-              <span className="workflow-index">03</span>
-              <div className="workflow-icon"><SearchIcon size={22} /></div>
-              <div><h3>Only useful fields come back</h3><p>Rank, title, URL, domain, snippet, and optional page content are normalized into JSON.</p></div>
-              <span className="workflow-state"><CheckIcon size={13} /> Schema valid</span>
-            </article>
-          </div>
-        </section>
-        <ReticleSpacer />
-
-        <section className="benchmark-section" id="benchmarks">
-          <div className="section-copy section-copy--centered section-copy--light">
-            <p className="eyebrow">Measured context savings</p>
-            <h2>96.5% less context.</h2>
-            <p>Normalized search JSON keeps full rendered-page snapshots out of the agent’s visible context.</p>
+        <section className="content-section performance-section" id="benchmarks">
+          <div className="performance-intro">
+            <div>
+              <h2><span>Searches, tokens.</span><span>Latency and cost.</span></h2>
+            </div>
+            <p>Benchmark 01 ran 12 queries through Google, Bing, and DuckDuckGo at two result depths: 72 local searches. Benchmark 02 repeated 24 matched requests across local-search and four hosted APIs.</p>
           </div>
           <div className="benchmark-card">
-            <div className="chart-legend"><span><i className="legend-local" />local-search</span><span><i className="legend-snapshot" />interactive snapshot</span></div>
-            <div className="chart-row">
-              <div><b>3 results</b><small>median visible tokens</small></div>
-              <div className="bar-stack"><span className="bar-snapshot"><i>8,760.5</i></span><span className="bar-local bar-local--3"><i>309</i></span></div>
-              <strong>96.5%<small>less</small></strong>
+            <div className="benchmark-chapter benchmark-chapter--tokens">
+              <div className="benchmark-chapter__copy">
+                <div className="benchmark-block-heading">
+                  <div><span>Benchmark 01</span><h3>Local JSON vs. rendered search-page snapshots</h3></div>
+                  <p>36 searches per depth · 12 queries × 3 engines</p>
+                </div>
+                <div className="benchmark-facts" aria-label="Local search reliability checks">
+                  <article>
+                    <div className="benchmark-fact-icon"><ResultsIcon size={18} /></div>
+                    <div className="benchmark-fact-copy"><span>Requested depth fulfilled</span><p>Every cross-engine search returned the requested number of results.</p></div>
+                    <b>72/72</b>
+                  </article>
+                  <article>
+                    <div className="benchmark-fact-icon"><SchemaIcon size={18} /></div>
+                    <div className="benchmark-fact-copy"><span>Schema-valid stability runs</span><p>58/60 repeated runs also kept the exact same top-three URLs.</p></div>
+                    <b>60/60</b>
+                  </article>
+                  <article>
+                    <div className="benchmark-fact-icon"><DocumentIcon size={18} /></div>
+                    <div className="benchmark-fact-copy"><span>Content pages extracted</span><p>Every page returned the full configured 1,200-character text cap.</p></div>
+                    <b>72/72</b>
+                  </article>
+                </div>
+              </div>
+              <div className="benchmark-chapter__visual">
+                <div className="token-chart" aria-label="Visible token comparison">
+                  <div className="token-chart__legend">
+                    <span><i className="token-key token-key--local" />local-search JSON</span>
+                    <span><i className="token-key token-key--snapshot" />interactive page snapshot</span>
+                    <em>Visible command + stdout · o200k_base tokens</em>
+                  </div>
+                  <div className="token-row">
+                    <div className="token-row__label"><b>3 results</b><span>36/36 usable searches</span></div>
+                    <div className="token-series">
+                      <div><span>Page snapshot</span><i className="token-bar token-bar--snapshot" /><b>8,760.5</b></div>
+                      <div><span>local-search</span><i className="token-bar token-bar--local-3" /><b>309</b></div>
+                    </div>
+                    <div className="token-reduction"><b>96.5%</b><span>less context</span></div>
+                  </div>
+                  <div className="token-row">
+                    <div className="token-row__label"><b>10 results</b><span>36/36 usable searches</span></div>
+                    <div className="token-series">
+                      <div><span>Page snapshot</span><i className="token-bar token-bar--snapshot-10" /><b>8,708</b></div>
+                      <div><span>local-search</span><i className="token-bar token-bar--local-10" /><b>891</b></div>
+                    </div>
+                    <div className="token-reduction"><b>89.8%</b><span>less context</span></div>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className="chart-row">
-              <div><b>10 results</b><small>median visible tokens</small></div>
-              <div className="bar-stack"><span className="bar-snapshot bar-snapshot--10"><i>8,708</i></span><span className="bar-local bar-local--10"><i>891</i></span></div>
-              <strong>89.8%<small>less</small></strong>
+            <div className="benchmark-chapter benchmark-chapter--providers" id="compare">
+              <div className="benchmark-chapter__copy">
+                <div className="comparison-context">
+                  <div><span>Benchmark 02</span><h3>local-search vs. hosted search APIs</h3></div>
+                  <p>12 identical queries × two depths · 24 requests per provider</p>
+                </div>
+                <div className="provider-highlights" aria-label="local-search hosted benchmark summary">
+                  <article><div className="provider-highlight-icon"><ResultsIcon size={18} /></div><span>Depth fulfilled</span><b>24/24</b></article>
+                  <article><div className="provider-highlight-icon"><CompactIcon size={18} /></div><span>Normalized size</span><b>53.4 <small>tokens / result</small></b></article>
+                  <article><div className="provider-highlight-icon"><ClockIcon size={18} /></div><span>Median latency</span><b>148.7 <small>ms</small></b></article>
+                  <article><div className="provider-highlight-icon"><ZeroCostIcon size={18} /></div><span>API usage</span><b>$0</b></article>
+                </div>
+              </div>
+              <div className="benchmark-chapter__visual benchmark-chapter__visual--providers">
+                <div className="comparison-table-wrap">
+                  <table>
+                    <thead><tr><th>Provider</th><th>Depth fulfilled</th><th>Request + response tokens</th><th>Tokens / result</th><th>Latency</th><th>24-request usage</th></tr></thead>
+                    <tbody>
+                      <tr className="featured-row">
+                        <th scope="row"><span className="provider-name provider-name--winner"><LocalSearchLogo className="brand-logo brand-logo--table" /><span>local-search</span><em>Best overall</em></span></th>
+                        <td data-label="Depth fulfilled">24/24</td>
+                        <td data-label="Request + response tokens"><strong>413.5</strong><small>fewest</small></td>
+                        <td data-label="Tokens / result"><strong>53.4</strong><small>fewest</small></td>
+                        <td data-label="Latency"><strong>148.7 ms</strong><small>fastest</small></td>
+                        <td data-label="24-request usage"><strong>$0</strong><small>no credits</small></td>
+                      </tr>
+                      <tr><th scope="row"><span className="provider-name"><ExaBrandIcon size={22} />Exa</span></th><td data-label="Depth fulfilled">24/24</td><td data-label="Request + response tokens">4,472.5</td><td data-label="Tokens / result">881.2</td><td data-label="Latency">501.9 ms</td><td data-label="24-request usage">$0.324</td></tr>
+                      <tr><th scope="row"><span className="provider-name"><BraveBrandIcon size={22} />Brave Search</span></th><td data-label="Depth fulfilled">24/24</td><td data-label="Request + response tokens">13,104</td><td data-label="Tokens / result">108.6</td><td data-label="Latency">322.0 ms</td><td data-label="24-request usage">$0.120</td></tr>
+                      <tr><th scope="row"><span className="provider-name"><TavilyBrandIcon size={22} />Tavily</span></th><td data-label="Depth fulfilled">17/24</td><td data-label="Request + response tokens">1,163</td><td data-label="Tokens / result">259.5</td><td data-label="Latency">1,184.4 ms</td><td data-label="24-request usage">24 credits · $0.192 PAYG</td></tr>
+                      <tr><th scope="row"><span className="provider-name"><FirecrawlBrandIcon size={22} />Firecrawl</span></th><td data-label="Depth fulfilled">24/24</td><td data-label="Request + response tokens">509</td><td data-label="Tokens / result">74.8</td><td data-label="Latency">1,520.8 ms</td><td data-label="24-request usage">48 credits</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
-            <div className="benchmark-facts">
-              <article><b>72/72</b><span>cross-engine searches fulfilled the requested result count</span></article>
-              <article><b>60/60</b><span>schema-valid stability runs; 58 kept identical top-three URLs</span></article>
-              <article><b>72/72</b><span>content pages returned the full 1,200-character text cap</span></article>
-            </div>
+            <p className="methodology">Source build, July 21, 2026. Benchmark 01 compares visible command text plus stdout with compact interactive snapshots. Benchmark 02 counts serialized requests plus raw responses; all token counts use o200k_base. local-search measured 384.5 ms cold and 6.5 ms from its five-minute local cache. Provider pricing was published July 21, 2026. <a href="https://github.com/Kevin-Liu-01/local-search/tree/main/benchmarks" target="_blank" rel="noreferrer">Full methodology and runner ↗</a></p>
           </div>
-          <p className="methodology">
-            Source build, July 21, 2026 · 12 queries × 3 engines × 2 result depths · visible command text and stdout compared with compact interactive snapshots using o200k_base. <a href="https://github.com/Kevin-Liu-01/local-search#token-benchmarks" target="_blank" rel="noreferrer">Read the methodology ↗</a>
-          </p>
         </section>
         <ReticleSpacer />
 
-        <section className="content-section comparison-section" id="compare">
-          <div className="section-copy section-copy--centered">
-            <p className="eyebrow">Matched hosted benchmark</p>
-            <h2>Faster, smaller, and zero API credits.</h2>
-            <p>The same 12 queries and result depths ran sequentially through local-search, Exa, Brave Search, Tavily, and Firecrawl.</p>
+        <section className="content-section faq-section" id="faq" aria-labelledby="faq-title">
+          <header className="faq-header">
+            <h2 id="faq-title">Frequently asked questions.</h2>
+            <p>Quick answers about installation, compatible agents, search engines, privacy, and how local-search compares.</p>
+          </header>
+          <div className="faq-grid">
+            {FAQS.map(({ question, answer }, index) => {
+              const FaqIcon = faqIcons[index] ?? SearchIcon;
+              const questionId = `faq-question-${index + 1}`;
+              return (
+                <article key={question} aria-labelledby={questionId}>
+                  <span className="faq-index">{String(index + 1).padStart(2, "0")}</span>
+                  <h3 id={questionId}>{question}</h3>
+                  <p>{answer}</p>
+                  <span className="faq-card__visual" aria-hidden="true">
+                    <FaqIcon className="faq-card__icon" size={148} />
+                  </span>
+                </article>
+              );
+            })}
           </div>
-          <div className="comparison-table-wrap">
-            <table>
-              <thead><tr><th>Provider</th><th>Depth fulfilled</th><th>Median raw tokens</th><th>Normalized / result</th><th>Median latency</th><th>24-run usage</th></tr></thead>
-              <tbody>
-                <tr className="featured-row"><th><LocalSearchLogo className="brand-logo brand-logo--table" />local-search</th><td>24/24</td><td>413.5</td><td>53.4</td><td>148.7 ms</td><td>$0</td></tr>
-                <tr><th>Exa</th><td>24/24</td><td>4,472.5</td><td>881.2</td><td>501.9 ms</td><td>$0.324</td></tr>
-                <tr><th>Brave Search</th><td>24/24</td><td>13,104</td><td>108.6</td><td>322.0 ms</td><td>$0.120</td></tr>
-                <tr><th>Tavily</th><td>17/24</td><td>1,163</td><td>259.5</td><td>1,184.4 ms</td><td>24 credits · $0.192 PAYG</td></tr>
-                <tr><th>Firecrawl</th><td>24/24</td><td>509</td><td>74.8</td><td>1,520.8 ms</td><td>48 credits</td></tr>
-              </tbody>
-            </table>
-          </div>
-          <p className="comparison-note">Request plus response tokens use o200k_base. local-search: 384.5 ms cold median and 6.5 ms warm-cache median. Provider pricing published July 21, 2026. <a href="https://github.com/Kevin-Liu-01/local-search/tree/main/benchmarks" target="_blank" rel="noreferrer">Full benchmark and runner ↗</a></p>
         </section>
         <ReticleSpacer />
 
         <section className="closing-cta">
-          <p className="eyebrow">Your browser. Your search.</p>
-          <h2>Give your agent the web without another bill.</h2>
+          <h2><span>Give agents the web.</span><span>Skip search bills.</span></h2>
           <CopyCommand value="cargo install local-search" />
           <div className="closing-links">
             <a href="https://github.com/Kevin-Liu-01/local-search" target="_blank" rel="noreferrer">Get started on GitHub <ChevronRightIcon size={16} /></a>
@@ -211,14 +333,31 @@ export default function Home() {
         <a className="brand" href="#top"><LocalSearchLogo className="brand-logo" />local-search</a>
         <p>Free structured web search for agents, powered by your local browser.</p>
         <div>
-          <a href="https://github.com/Kevin-Liu-01/local-search" target="_blank" rel="noreferrer">GitHub ↗</a>
-          <a href="https://crates.io/crates/local-search" target="_blank" rel="noreferrer">crates.io ↗</a>
-          <a href="https://rustfoundation.org/policy/rust-trademark-policy/" target="_blank" rel="noreferrer">Rust/Cargo marks · CC BY ↗</a>
-          <a href="https://github.com/Kevin-Liu-01" target="_blank" rel="noreferrer">Built by Kevin Liu ↗</a>
+          <a href="https://github.com/Kevin-Liu-01/local-search" target="_blank" rel="noreferrer"><span>GitHub</span><ArrowUpRightIcon size={11} /></a>
+          <a href="https://crates.io/crates/local-search" target="_blank" rel="noreferrer"><span>crates.io</span><ArrowUpRightIcon size={11} /></a>
+          <a href="https://rustfoundation.org/policy/rust-trademark-policy/" target="_blank" rel="noreferrer"><span>Rust/Cargo attribution</span><ArrowUpRightIcon size={11} /></a>
+          <a href="https://github.com/Kevin-Liu-01" target="_blank" rel="noreferrer"><span>Built by Kevin Liu</span><ArrowUpRightIcon size={11} /></a>
         </div>
       </footer>
     </>
   );
+}
+
+function JsonCode({ value }: { value: string }) {
+  const pattern = /("(?:\\.|[^"\\])*")(?=\s*:)|("(?:\\.|[^"\\])*")|(-?\d+(?:\.\d+)?)|\b(true|false|null)\b|([{}\[\],:])/g;
+  const tokens: ReactNode[] = [];
+  let cursor = 0;
+  let match: RegExpExecArray | null;
+
+  while ((match = pattern.exec(value)) !== null) {
+    if (match.index > cursor) tokens.push(value.slice(cursor, match.index));
+    const kind = match[1] ? "key" : match[2] ? "string" : match[3] ? "number" : match[4] ? "literal" : "punctuation";
+    tokens.push(<span className={`json-token json-token--${kind}`} key={`${match.index}-${kind}`}>{match[0]}</span>);
+    cursor = pattern.lastIndex;
+  }
+
+  if (cursor < value.length) tokens.push(value.slice(cursor));
+  return <code>{tokens}</code>;
 }
 
 function ReticleSpacer() {
@@ -293,7 +432,23 @@ function HeroIsometricArtwork() {
           <polygon className="hero-iso-agent__front" points="179,412 306,339 306,411 179,484" />
           <polygon className="hero-iso-agent__top" points="84,357 211,284 306,339 179,412" />
           <path className="hero-iso-agent__groove" d="m113 357 98-56 66 38-98 56zM128 366l83-48 50 29-83 48z" />
-          <circle cx="247" cy="331" r="4" /><circle cx="260" cy="338" r="4" /><circle cx="273" cy="346" r="4" />
+          <g className="hero-iso-agent__lights" transform="translate(-10 -6)" aria-hidden="true">
+            <g className="hero-iso-agent__light hero-iso-agent__light--active">
+              <ellipse className="hero-iso-agent__light-side" cx="247" cy="332.4" rx="5.2" ry="3" />
+              <ellipse className="hero-iso-agent__light-top" cx="247" cy="330.8" rx="5.2" ry="3" />
+              <ellipse className="hero-iso-agent__light-glint" cx="245.2" cy="329.8" rx="1.25" ry=".65" />
+            </g>
+            <g className="hero-iso-agent__light">
+              <ellipse className="hero-iso-agent__light-side" cx="260" cy="339.9" rx="5.2" ry="3" />
+              <ellipse className="hero-iso-agent__light-top" cx="260" cy="338.3" rx="5.2" ry="3" />
+              <ellipse className="hero-iso-agent__light-glint" cx="258.2" cy="337.3" rx="1.25" ry=".65" />
+            </g>
+            <g className="hero-iso-agent__light hero-iso-agent__light--dim">
+              <ellipse className="hero-iso-agent__light-side" cx="273" cy="347.4" rx="5.2" ry="3" />
+              <ellipse className="hero-iso-agent__light-top" cx="273" cy="345.8" rx="5.2" ry="3" />
+              <ellipse className="hero-iso-agent__light-glint" cx="271.2" cy="344.8" rx="1.25" ry=".65" />
+            </g>
+          </g>
           <g className="hero-iso-tape">
             <polygon points="190,420 288,363 288,398 190,455" />
             <LocalSearchLogo preserveAspectRatio="none" x="0" y="0" width="72" height="20" transform="matrix(.866 -.5 0 1 207 424)" />

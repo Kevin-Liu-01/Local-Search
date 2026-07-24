@@ -1,0 +1,35 @@
+# local-search
+
+> local-search is an open-source Rust CLI that gives AI coding agents structured web search through a local Chrome or Chromium browser. It returns stable JSON and requires no hosted search API key or metered search plan.
+
+## Canonical resources
+
+- [GitHub repository](https://github.com/Kevin-Liu-01/Local-Search): source code, documentation, issues, benchmark methodology, and latest unreleased installation.
+- [crates.io package](https://crates.io/crates/local-search): stable Rust package and `cargo install local-search` installation.
+- [Live demo](./#demo): interactive Claude Code, Codex, and Cursor search traces.
+- [Output format](./#output): the command-to-browser-to-JSON workflow and sample response.
+- [Benchmarks](./#benchmarks): token, latency, reliability, and hosted-provider comparisons.
+- [FAQ](./#faq): direct answers about keys, agents, engines, benchmarking, and browser state.
+
+## Core facts
+
+- Primary command: `lsearch`
+- Package: `local-search`
+- Language: Rust
+- License: MIT
+- Search engines: Google, Bing, DuckDuckGo
+- Agents: Claude Code, OpenAI Codex, Cursor, and any shell-capable agent
+- Output: stable JSON on standard output
+- Browser: managed local Chrome or Chromium profile
+- Hosted local-search API key: not required
+- Metered local-search API bill: none
+
+## Install and search
+
+```sh
+cargo install local-search
+lsearch launch
+lsearch search "rust browser automation" --limit 3 --pretty
+```
+
+For a fuller machine-readable reference, read [llms-full.txt](./llms-full.txt).

@@ -17,14 +17,7 @@ export function AgentPlayground() {
   return (
     <section className="playground" id="demo" aria-label="Interactive local-search traces">
       <div className="playground__workspace">
-        <div className="playground__workspace-bar">
-          <span className="window-dots" aria-hidden><i /><i /><i /></span>
-          <span>local-search / agent trace</span>
-          <span>Claude Code · Codex · Cursor</span>
-        </div>
-        <div className="playground__workspace-canvas">
-          <AgentPlaygroundLoader fallback={<AgentPlaygroundPreview />} />
-        </div>
+        <AgentPlaygroundLoader fallback={<AgentPlaygroundPreview />} />
       </div>
 
       <p className="trace-provenance">

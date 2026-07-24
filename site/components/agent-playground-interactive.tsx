@@ -24,7 +24,7 @@ import {
   StopIcon,
 } from "@/components/icons";
 import { traces, traceJson, type SearchTrace } from "@/lib/traces";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 type Agent = "claude" | "codex" | "cursor";
 
@@ -41,6 +41,7 @@ const agentIcons = {
 };
 
 export function AgentPlaygroundInteractive() {
+  const surfaceRef = useRef<HTMLDivElement>(null);
   const [agent, setAgent] = useState<Agent>("claude");
   const [traceId, setTraceId] = useState(traces[0].id);
   const [step, setStep] = useState(0);
@@ -53,6 +54,21 @@ export function AgentPlaygroundInteractive() {
     const timer = window.setTimeout(() => setStep((current) => Math.min(current + 1, 4)), 650);
     return () => window.clearTimeout(timer);
   }, [running, step]);
+
+  useEffect(() => {
+    const surface = surfaceRef.current;
+    if (!surface) return;
+
+    const viewport = agent === "cursor"
+      ? surface.querySelector<HTMLElement>(".cursor-thread__body")
+      : surface;
+    if (!viewport) return;
+
+    const frame = window.requestAnimationFrame(() => {
+      viewport.scrollTop = viewport.scrollHeight;
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [agent, step, traceId]);
 
   function runTrace() {
     setStep(1);
@@ -109,7 +125,7 @@ export function AgentPlaygroundInteractive() {
             <span>{agent === "cursor" ? "local-search — Cursor" : `Terminal — ${agent}`}</span>
             <span>~/repos/Local-Search</span>
           </div>
-          <div className="agent-surface" role="tabpanel" aria-live="polite">
+          <div ref={surfaceRef} className="agent-surface" role="tabpanel" aria-live="polite">
             {agent === "claude" && (
               <ClaudeTrace trace={trace} step={step} running={running} onRun={runTrace} />
             )}

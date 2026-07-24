@@ -122,6 +122,22 @@ export function CursorBrandIcon(props: BrandIconProps) {
   return <BrandAssetIcon {...props} name="cursor" src="/brand/cursor-mono.svg" />;
 }
 
+export function ExaBrandIcon(props: BrandIconProps) {
+  return <BrandAssetIcon {...props} name="exa" src="/brand/exa.svg" />;
+}
+
+export function BraveBrandIcon(props: BrandIconProps) {
+  return <BrandAssetIcon {...props} name="brave" src="/brand/brave.svg" />;
+}
+
+export function TavilyBrandIcon(props: BrandIconProps) {
+  return <BrandAssetIcon {...props} name="tavily" src="/brand/tavily.svg" />;
+}
+
+export function FirecrawlBrandIcon(props: BrandIconProps) {
+  return <BrandAssetIcon {...props} name="firecrawl" src="/brand/firecrawl.png" />;
+}
+
 export function PlayIcon(props: IconProps) {
   return <Icon {...props}><path d="m8 5 11 7-11 7V5Z" {...stroke} /></Icon>;
 }
@@ -140,6 +156,86 @@ export function SearchIcon(props: IconProps) {
     <Icon {...props}>
       <circle cx="11" cy="11" r="7" {...stroke} />
       <path d="m20 20-4-4" {...stroke} />
+    </Icon>
+  );
+}
+
+export function ResultsIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <circle cx="8.5" cy="8.5" r="4.5" {...stroke} />
+      <path d="m12 12 3 3M15.5 6H21M17 10h4M5 18h16M5 22h12" {...stroke} />
+    </Icon>
+  );
+}
+
+export function SchemaIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M8 4H6a2 2 0 0 0-2 2v3a2 2 0 0 1-2 2 2 2 0 0 1 2 2v3a2 2 0 0 0 2 2h2M16 4h2a2 2 0 0 1 2 2v3a2 2 0 0 0 2 2 2 2 0 0 0-2 2v3a2 2 0 0 1-2 2h-2M8.5 11.5l2.2 2.2 4.8-5" {...stroke} />
+    </Icon>
+  );
+}
+
+export function DocumentIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M6 2h8l4 4v16H6V2Z" {...stroke} />
+      <path d="M14 2v5h4M9 12h6M9 16h6" {...stroke} />
+    </Icon>
+  );
+}
+
+export function CompactIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" {...stroke} />
+      <path d="m9 9-5-5M15 9l5-5M9 15l-5 5M15 15l5 5" {...stroke} />
+    </Icon>
+  );
+}
+
+export function ClockIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <circle cx="12" cy="12" r="9" {...stroke} />
+      <path d="M12 7v5l3 2" {...stroke} />
+    </Icon>
+  );
+}
+
+export function ZeroCostIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <circle cx="12" cy="12" r="9" {...stroke} />
+      <path d="M15.5 8.5c-.7-.7-1.8-1.1-3.1-1.1-1.8 0-3.1.8-3.1 2s1 1.7 3 2.1c2 .4 3 1 3 2.2 0 1.3-1.3 2.2-3.2 2.2-1.5 0-2.7-.5-3.5-1.3M12 5.5v13M5.5 18.5l13-13" {...stroke} />
+    </Icon>
+  );
+}
+
+export function KeyIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <circle cx="8" cy="15" r="4" {...stroke} />
+      <path d="m11 12 8-8M16 7l3 3M14 9l2 2" {...stroke} />
+    </Icon>
+  );
+}
+
+export function CompareIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M4 20V11M10 20V5M16 20v-7M22 20H2" {...stroke} />
+      <path d="m3 7 5-4 5 5 7-6M17 2h3v3" {...stroke} />
+    </Icon>
+  );
+}
+
+export function ShieldIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M12 3 20 6v5c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-3Z" {...stroke} />
+      <path d="m8.5 12 2.2 2.2 4.8-5" {...stroke} />
     </Icon>
   );
 }

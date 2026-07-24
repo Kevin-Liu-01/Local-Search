@@ -1,0 +1,142 @@
+# local-search full reference
+
+## What local-search is
+
+local-search is a free, open-source Rust command-line tool for structured browser search. It lets Claude Code, OpenAI Codex, Cursor, and other shell-capable agents search the web through a Chrome or Chromium browser on the user's machine.
+
+The primary binary is `lsearch`. Compatibility binaries named `local-search` and `local-browser` are also installed.
+
+## Why it exists
+
+Coding agents often need current web context, but hosted search APIs require a separate account, API key, usage credits, or metered billing. local-search uses the browser already available on the user's machine and returns compact fields instead of rendered search-page chrome.
+
+## Install
+
+Stable package:
+
+```sh
+cargo install local-search
+```
+
+Latest source:
+
+```sh
+cargo install --git https://github.com/Kevin-Liu-01/Local-Search
+```
+
+## Recommended setup
+
+Launch the managed browser profile once:
+
+```sh
+lsearch launch
+```
+
+The managed profile is persistent. Users can sign in once when authenticated or regional browser state is useful. Direct Chrome DevTools Protocol attachment remains available for users who explicitly choose it.
+
+## Search examples
+
+```sh
+lsearch "open source browser automation rust"
+lsearch search "site:docs.rs tokio Runtime" --limit 5 --pretty
+lsearch search "best browser search APIs for agents" --with-content --limit 3 --pretty
+```
+
+## Search engines
+
+- Google is the built-in default.
+- Bing is selected with `--engine bing`.
+- DuckDuckGo is selected with `--engine duckduckgo`.
+
+Search engine choice is separate from browser choice. The selected engine runs inside the managed local browser.
+
+## Returned search data
+
+Search responses are stable JSON. Result records include:
+
+- `rank`
+- `title`
+- `url`
+- `domain`
+- `snippet`
+- optional extracted `content`
+
+The response also identifies the search engine, original query, success state, and whether the search was blocked.
+
+## Other browser commands
+
+local-search also supports local browser operations including:
+
+- `read`
+- `extract`
+- `map`
+- `request`
+- screenshots
+- HTML and MHTML capture
+- PDF capture
+- HAR-like network capture
+
+## Cache
+
+Matching search requests reuse local browser results for five minutes by default. Repeated agent queries and result-depth changes can therefore return in a few milliseconds. Use `--no-cache` for a fresh request or configure `--cache-ttl`.
+
+## Cleanup
+
+Run this after managed-browser work:
+
+```sh
+lsearch cleanup --pretty
+```
+
+Use `--kill` only when browser termination is intended.
+
+## Benchmark summary
+
+The public benchmark build is dated July 21, 2026.
+
+- Cross-engine requested depth: 72/72 searches fulfilled.
+- Schema-valid stability: 60/60 runs.
+- Content extraction: 72/72 pages returned the configured text cap.
+- Three-result output: 309 visible tokens versus 8,760.5 for an interactive page snapshot, or 96.5% less visible context.
+- Ten-result output: 891 visible tokens versus 8,708 for an interactive page snapshot, or 89.8% less visible context.
+- Matched hosted-provider run: 24/24 result depths fulfilled, 53.4 normalized tokens per result, 148.7 milliseconds median latency, and $0 in hosted API credits.
+
+Benchmark results describe the recorded build and environment, not a universal performance guarantee. The full runner and methodology are available in the repository.
+
+## Privacy and network boundary
+
+local-search does not require a local-search cloud account or hosted local-search service. It controls a browser profile on the user's machine, sends each query to the selected public search engine, and writes the structured response to standard output for the calling agent.
+
+## Project identity
+
+- Name: local-search
+- Command: lsearch
+- Package version: 0.1.1
+- Programming language: Rust
+- License: MIT
+- Author: Kevin Liu
+- Source: https://github.com/Kevin-Liu-01/Local-Search
+- Package: https://crates.io/crates/local-search
+- Author site: https://www.kevin-liu.tech/
+
+## Frequently asked questions
+
+### What is local-search?
+
+local-search is an open-source Rust CLI that turns a local Chrome or Chromium browser into a structured search interface for AI coding agents. The lsearch command searches the web and returns stable JSON containing ranked titles, URLs, domains, snippets, and optional page content.
+
+### Does local-search need a search API key?
+
+No. local-search uses the browser already running on your machine, so there is no hosted search account, metered search plan, or paid API key.
+
+### Which coding agents work with local-search?
+
+Claude Code, OpenAI Codex, Cursor, and any other shell-capable coding agent can use local-search through one CLI command.
+
+### Which search engines are supported?
+
+Google, Bing, and DuckDuckGo are supported.
+
+### Where is the methodology?
+
+The benchmark methodology and runner are published at https://github.com/Kevin-Liu-01/Local-Search/tree/main/benchmarks.

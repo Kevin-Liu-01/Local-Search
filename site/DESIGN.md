@@ -11,8 +11,8 @@ interactive agent trace and structured output—not decorative marketing imagery
 - Cursor-inspired marketing stack: claim, actions, full-width product demo, proof, features, and data
   are placed vertically rather than split into side-by-side hero columns.
 - Manrope is the only font family, including commands and agent interfaces.
-- Off-black and cool off-white are the foundation. Lavender is the sole marketing field; acid is
-  reserved for benchmark proof and green for successful runtime states.
+- Off-black, cool off-white, and neutral gray are the foundation. Pale cyan is the sole marketing
+  field; medium and deep teal are reserved for signals, benchmark proof, and successful runtime states.
 - The hero uses measured side rails, corner reticles, and hatched spacer bands as its construction
   system. Decorative connector diagrams or generic agent nodes do not belong behind the copy.
 - Dither fields are deterministic dot grids built from 5, 8, and 13 pixel spacing and elliptical
@@ -33,6 +33,18 @@ interactive agent trace and structured output—not decorative marketing imagery
 
 - Hero content is centered and stacked above the full-width interactive playground.
 - Each following section keeps the same order: heading, short explanation, then product proof.
+- Related proof belongs in one composition: command, browser flow, and JSON share one frame; context
+  savings and hosted-provider results share one benchmark panel and one methodology.
+- A merged section must make one argument in its headline, copy, labels, and data—not preserve the
+  headings or narrative boundaries of the sections it replaced.
+- Dense product proof uses edge-to-edge bento cells instead of a padded card floating inside the rails.
+- Benchmark chapters use the dark foundation for narrative and cyan dither fields for high-contrast
+  charts and tables; the contrast encodes copy versus measured output.
+- Do not use eyebrow copy. Primary section titles must fit within two lines at supported breakpoints.
+- Diagram nodes carry one short sentence at most; qualifications and methodology belong in adjacent
+  explanation cells rather than inside the diagram.
+- Dense product information uses strict bordered bento cells. Benchmark evidence moves onto a dark,
+  high-contrast surface with explanatory copy beside the chart or summary it describes.
 - Metrics use tabular numerals. Long technical material belongs in the output and benchmark panels.
 - Mobile keeps the primary CTA above the fold and collapses agent chrome without horizontal overflow.
 
