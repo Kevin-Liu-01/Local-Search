@@ -91,7 +91,7 @@ impl CdpClient {
 
     pub async fn create_target(&mut self, url: &str) -> Result<TargetInfo> {
         let result = self
-            .send_browser("Target.createTarget", json!({ "url": url }))
+            .send_browser("Target.createTarget", create_target_params(url))
             .await?;
         let target_id = result
             .get("targetId")
@@ -379,6 +379,13 @@ impl CdpClient {
     }
 }
 
+fn create_target_params(url: &str) -> Value {
+    // Creating a target in the foreground can switch the active Chrome window
+    // away from the agent that started the search. Background targets remain
+    // fully controllable over CDP without taking keyboard focus.
+    json!({ "url": url, "background": true })
+}
+
 fn websocket_origin(websocket_url: &str) -> Option<String> {
     let parsed = url::Url::parse(websocket_url).ok()?;
     let host = parsed.host_str()?;
@@ -414,4 +421,20 @@ fn decode_data(value: Option<&Value>, method: &str) -> Result<Vec<u8>> {
             method: method.to_owned(),
             message: err.to_string(),
         })
+}
+
+#[cfg(test)]
+mod tests {
+    use super::create_target_params;
+
+    #[test]
+    fn creates_targets_without_stealing_focus() {
+        assert_eq!(
+            create_target_params("about:blank"),
+            serde_json::json!({
+                "url": "about:blank",
+                "background": true,
+            })
+        );
+    }
 }

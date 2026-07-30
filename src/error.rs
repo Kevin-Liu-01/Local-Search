@@ -39,8 +39,8 @@ pub enum Error {
     #[error(transparent)]
     Url(#[from] url::ParseError),
 
-    #[error(transparent)]
-    Http(#[from] reqwest::Error),
+    #[error("HTTP request failed for {url}: {message}")]
+    Http { url: String, message: String },
 
     #[error(transparent)]
     WebSocket(#[from] tokio_tungstenite::tungstenite::Error),
@@ -61,7 +61,7 @@ impl Error {
             Self::Io { .. } => "io_error",
             Self::Json(_) => "json_error",
             Self::Url(_) => "url_error",
-            Self::Http(_) => "http_error",
+            Self::Http { .. } => "http_error",
             Self::WebSocket(_) => "websocket_error",
         }
     }

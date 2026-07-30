@@ -9,6 +9,7 @@
 - [Live demo](./#demo): interactive Claude Code, Codex, and Cursor search traces.
 - [Output format](./#output): the command-to-browser-to-JSON workflow and sample response.
 - [Benchmarks](./#benchmarks): token, latency, reliability, and hosted-provider comparisons.
+- [Machine-readable benchmark data](./benchmarks.json): dated search and native-release measurements with environment qualifications.
 - [FAQ](./#faq): direct answers about keys, agents, engines, benchmarking, and browser state.
 
 ## Core facts
@@ -17,12 +18,14 @@
 - Package: `local-search`
 - Language: Rust
 - License: MIT
-- Search engines: Google, Bing, DuckDuckGo
+- Search engines: Google, Bing, DuckDuckGo, Brave Search
 - Agents: Claude Code, OpenAI Codex, Cursor, and any shell-capable agent
 - Output: stable JSON on standard output
 - Browser: managed local Chrome or Chromium profile
 - Hosted local-search API key: not required
 - Metered local-search API bill: none
+- Recorded arm64 macOS release binary: 1,055,072 bytes (1.06 MB) on July 27, 2026
+- Recorded median warm CLI startup: 4.61 ms across 200 alternating process launches
 
 ## Install and search
 

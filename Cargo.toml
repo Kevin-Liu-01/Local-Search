@@ -1,6 +1,6 @@
 [package]
 name = "local-search"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2024"
 autobins = false
 description = "Free structured web search for agents through a local browser"
@@ -25,17 +25,16 @@ name = "local-browser"
 path = "src/bin/local-browser.rs"
 
 [dependencies]
-base64 = "0.22.1"
-chrono = { version = "0.4.45", features = ["serde"] }
-clap = { version = "4.6.2", features = ["derive", "env"] }
+base64 = { version = "0.22.1", default-features = false, features = ["alloc"] }
+chrono = { version = "0.4.45", default-features = false, features = ["now", "std"] }
+clap = { version = "4.6.2", default-features = false, features = ["derive", "env", "error-context", "help", "std", "suggestions", "usage"] }
 dirs = "6.0.0"
-futures-util = "0.3.32"
+futures-util = { version = "0.3.32", default-features = false, features = ["sink", "std"] }
 http = "1.4.2"
-reqwest = { version = "0.13.4", default-features = false, features = ["json"] }
 serde = { version = "1.0.229", features = ["derive"] }
 serde_json = "1.0.149"
 thiserror = "2.0.19"
-tokio = { version = "1.53.0", features = ["fs", "macros", "net", "process", "rt-multi-thread", "time"] }
+tokio = { version = "1.53.0", features = ["fs", "io-util", "macros", "net", "process", "rt", "time"] }
 tokio-tungstenite = { version = "0.30.0", default-features = false, features = ["connect"] }
 url = "2.5.8"
 
@@ -53,3 +52,10 @@ unsafe-code = "forbid"
 all = { level = "deny", priority = 10 }
 perf = { level = "deny", priority = 9 }
 pedantic = { level = "warn", priority = 3 }
+
+[profile.release]
+codegen-units = 1
+lto = "fat"
+opt-level = "z"
+panic = "abort"
+strip = "symbols"

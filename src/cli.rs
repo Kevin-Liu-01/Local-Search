@@ -201,6 +201,7 @@ pub struct MapArgs {
 pub enum SearchEngine {
     Google,
     Bing,
+    Brave,
     Duckduckgo,
 }
 

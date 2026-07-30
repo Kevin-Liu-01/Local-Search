@@ -2,6 +2,15 @@ use assert_cmd::Command;
 use predicates::prelude::*;
 
 #[test]
+fn no_arguments_show_the_branded_quick_start() {
+    let mut cmd = Command::cargo_bin("lsearch").unwrap();
+    cmd.assert()
+        .success()
+        .stdout(predicate::str::contains("Browser Search API"))
+        .stdout(predicate::str::contains("lsearch search"));
+}
+
+#[test]
 fn help_includes_search_and_artifact_commands() {
     let mut cmd = Command::cargo_bin("lsearch").unwrap();
     cmd.arg("--help").assert().success().stdout(

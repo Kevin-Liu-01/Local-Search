@@ -18,6 +18,7 @@ use crate::{
     config::{self, Config},
     error::{Error, IoContext, Result},
     output::print_json,
+    ui::{self, Spinner},
 };
 
 pub async fn run(cli: Cli) -> Result<()> {
@@ -25,9 +26,7 @@ pub async fn run(cli: Cli) -> Result<()> {
         None => {
             let query = cli.query.join(" ");
             if query.trim().is_empty() {
-                return Err(Error::InvalidArgument(
-                    "provide a query or subcommand".to_owned(),
-                ));
+                return ui::print_welcome();
             }
             let args = SearchArgs {
                 query,
@@ -152,6 +151,7 @@ pub async fn run(cli: Cli) -> Result<()> {
 }
 
 async fn connect(cli: &Cli, args: &ConnectArgs) -> Result<()> {
+    let spinner = Spinner::start("Finding a local browser");
     let endpoint =
         discovery::discover(cli.browser, args.endpoint.as_deref().or(cli.cdp.as_deref())).await?;
     let path = config::save(&Config {
@@ -159,6 +159,7 @@ async fn connect(cli: &Cli, args: &ConnectArgs) -> Result<()> {
         target_id: cli.target.clone(),
     })
     .await?;
+    spinner.success("Browser connected");
     print_json(
         &json!({ "ok": true, "endpoint": endpoint, "config": path.display().to_string() }),
         cli.pretty,
@@ -166,7 +167,13 @@ async fn connect(cli: &Cli, args: &ConnectArgs) -> Result<()> {
 }
 
 async fn launch(cli: &Cli, args: &LaunchArgs) -> Result<()> {
+    let spinner = Spinner::start("Starting managed Chrome");
     let launched = start_managed_browser(args).await?;
+    spinner.success(if launched.already_running {
+        "Managed Chrome is ready"
+    } else {
+        "Managed Chrome started"
+    });
     print_json(
         &json!({
             "ok": true,
@@ -497,27 +504,30 @@ async fn search_command(cli: &Cli, args: &SearchArgs) -> Result<()> {
             let mut client = cdp_client(cli).await?;
             enrich_search_results(&mut client, &mut value, args.content_chars).await?;
         }
+        let result_count = value
+            .get("results")
+            .and_then(Value::as_array)
+            .map_or(0, Vec::len);
+        ui::success(format!(
+            "Returned {result_count} ranked results from the local cache"
+        ));
         return print_search(cli, args, &value);
     }
 
+    let engine = search_engine_label(args.engine);
+    let spinner = Spinner::start(format!("Searching {engine} through your local browser"));
     let mut client = cdp_client(cli).await?;
-    search(cli, &mut client, args).await
+    search(cli, &mut client, args, spinner).await
 }
 
-async fn search(cli: &Cli, client: &mut CdpClient, args: &SearchArgs) -> Result<()> {
-    let url = match args.engine {
-        SearchEngine::Google => format!(
-            "https://www.google.com/search?q={}",
-            urlencoding(&args.query)
-        ),
-        SearchEngine::Bing => format!("https://www.bing.com/search?q={}", urlencoding(&args.query)),
-        SearchEngine::Duckduckgo => {
-            format!(
-                "https://html.duckduckgo.com/html/?q={}",
-                urlencoding(&args.query)
-            )
-        }
-    };
+async fn search(
+    cli: &Cli,
+    client: &mut CdpClient,
+    args: &SearchArgs,
+    spinner: Spinner,
+) -> Result<()> {
+    let engine = search_engine_label(args.engine);
+    let url = search_engine_url(args.engine, &args.query);
     if args.new_tab {
         let target = client.create_target("about:blank").await?;
         client.attach(&target.target_id).await?;
@@ -526,6 +536,7 @@ async fn search(cli: &Cli, client: &mut CdpClient, args: &SearchArgs) -> Result<
     let result_selector = match args.engine {
         SearchEngine::Google => "a h3",
         SearchEngine::Bing => "li.b_algo h2 a",
+        SearchEngine::Brave => ".snippet[data-type=\"web\"] a.l1",
         SearchEngine::Duckduckgo => ".result__a",
     };
     let requested_results = args.limit.clamp(1, 3);
@@ -541,7 +552,33 @@ async fn search(cli: &Cli, client: &mut CdpClient, args: &SearchArgs) -> Result<
     if args.with_content {
         enrich_search_results(client, &mut value, args.content_chars).await?;
     }
+    let result_count = value
+        .get("results")
+        .and_then(Value::as_array)
+        .map_or(0, Vec::len);
+    spinner.success(format!(
+        "Returned {result_count} ranked results from {engine}"
+    ));
     print_search(cli, args, &value)
+}
+
+fn search_engine_label(engine: SearchEngine) -> &'static str {
+    match engine {
+        SearchEngine::Google => "Google",
+        SearchEngine::Bing => "Bing",
+        SearchEngine::Brave => "Brave Search",
+        SearchEngine::Duckduckgo => "DuckDuckGo",
+    }
+}
+
+fn search_engine_url(engine: SearchEngine, query: &str) -> String {
+    let query = urlencoding(query);
+    match engine {
+        SearchEngine::Google => format!("https://www.google.com/search?q={query}"),
+        SearchEngine::Bing => format!("https://www.bing.com/search?q={query}"),
+        SearchEngine::Brave => format!("https://search.brave.com/search?q={query}"),
+        SearchEngine::Duckduckgo => format!("https://html.duckduckgo.com/html/?q={query}"),
+    }
 }
 
 fn prepare_search_results(value: &mut Value, args: &SearchArgs) {
@@ -1028,7 +1065,20 @@ fn urlencoding(input: &str) -> String {
 mod tests {
     use serde_json::json;
 
-    use super::{truncate_search_snippets, validate_content_page};
+    use crate::cli::SearchEngine;
+
+    use super::{
+        search_engine_label, search_engine_url, truncate_search_snippets, validate_content_page,
+    };
+
+    #[test]
+    fn brave_search_uses_the_public_browser_surface() {
+        assert_eq!(search_engine_label(SearchEngine::Brave), "Brave Search");
+        assert_eq!(
+            search_engine_url(SearchEngine::Brave, "rust browser"),
+            "https://search.brave.com/search?q=rust+browser"
+        );
+    }
 
     #[test]
     fn search_snippets_are_truncated_on_character_boundaries() {

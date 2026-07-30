@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./assets/local-search-og.svg" alt="local-search — free structured web search for agents, powered by your local browser" width="100%">
+  <img src="https://raw.githubusercontent.com/Kevin-Liu-01/Local-Search/main/site/public/social/local-search-benchmark.png" alt="local-search benchmark — less context, lower latency, and no search bill compared with hosted search providers" width="100%">
 </p>
 
 # local-search
@@ -26,6 +26,24 @@ the browser.
 - `lsearch cleanup` so agents do not leave browser instances or stale profile
   markers behind.
 - Compatibility binaries: `local-search` and `local-browser`.
+
+## Small Native Footprint
+
+`local-search` is a small Rust binary, not another agent runtime. In a July 27,
+2026 release audit on arm64 macOS, the primary `lsearch` executable measured
+1,055,072 bytes (1.06 MB). Size-oriented linking and a current-thread async
+runtime also reduced warm CLI process startup in the same audit.
+
+| Release measurement | Before | Optimized | Change |
+|---|---:|---:|---:|
+| `lsearch` executable | 4,623,984 bytes | **1,055,072 bytes** | **77.2% smaller** |
+| Median warm `lsearch --version` process startup | 7.20 ms | **4.61 ms** | **36% faster** |
+| Compressed crates.io package | — | **54.3 KiB** | — |
+
+Startup figures are the median of 200 alternating warm process launches using
+Rust 1.97.1 on `aarch64-apple-darwin`. They measure CLI startup, not browser or
+search-engine latency, and should be treated as a recorded build result rather
+than a universal guarantee.
 
 ## Install
 
@@ -97,12 +115,13 @@ lsearch cleanup --kill --pretty
 - Browser backend: the local browser automation transport used to load pages.
 
 Search engines are switched with `--engine`. Google is the built-in default for
-the fastest cold searches. Pass `--engine` when you want DuckDuckGo or Bing:
+the fastest cold searches. Pass `--engine` when you want DuckDuckGo, Bing, or Brave Search:
 
 ```sh
 lsearch search "open source browser automation" --engine duckduckgo
 lsearch search "open source browser automation" --engine google
 lsearch search "open source browser automation" --engine bing
+lsearch search "open source browser automation" --engine brave
 ```
 
 The shorthand form uses the default search engine:
@@ -183,7 +202,7 @@ content, and `lsearch` used its search snippets.
 | Exa | 24/24 | 24/24 | 4,472.5 | 881.2 | 501.9 ms | $0.324 |
 | Brave Search | 24/24 | 24/24 | 13,104 | 108.6 | 322.0 ms | $0.120 |
 | Tavily | 24/24 | 17/24 | 1,163 | 259.5 | 1,184.4 ms | 24 credits ($0.192 PAYG) |
-| Firecrawl | 24/24 | 24/24 | 509 | 74.8 | 1,520.8 ms | 48 credits |
+| Firecrawl | 24/24 | 24/24 | 509 | 74.8 | 1,520.8 ms | 48 credits (≈$0.154 Hobby-plan equivalent) |
 
 `lsearch` was the fastest provider and returned the fewest raw and normalized
 tokens in this comparison while spending zero API credits. The matched workload
@@ -247,8 +266,8 @@ lsearch search "open source browser automation rust" --limit 10
 lsearch search "firecrawl alternatives" --engine duckduckgo --with-content --limit 5
 ```
 
-Google is the default engine for speed. DuckDuckGo and Bing remain available
-with `--engine duckduckgo` and `--engine bing`.
+Google is the default engine for speed. DuckDuckGo, Bing, and Brave Search remain
+available with `--engine duckduckgo`, `--engine bing`, and `--engine brave`.
 
 Read and extract:
 

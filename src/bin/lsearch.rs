@@ -3,7 +3,7 @@ use std::process::ExitCode;
 use clap::Parser;
 use local_search::{cli::Cli, output::render_error};
 
-#[tokio::main]
+#[tokio::main(flavor = "current_thread")]
 async fn main() -> ExitCode {
     let cli = Cli::parse();
     let pretty = cli.pretty;

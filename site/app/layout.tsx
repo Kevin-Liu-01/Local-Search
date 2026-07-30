@@ -22,7 +22,10 @@ const manrope = Manrope({
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: SITE_TITLE,
+  title: {
+    default: SITE_TITLE,
+    template: `%s | ${SITE_NAME}`,
+  },
   description: SITE_DESCRIPTION,
   applicationName: SITE_NAME,
   authors: [{ name: "Kevin Liu", url: AUTHOR_URL }],
@@ -30,8 +33,23 @@ export const metadata: Metadata = {
   publisher: "Kevin Liu",
   category: "technology",
   keywords: KEYWORDS,
+  referrer: "origin-when-cross-origin",
+  formatDetection: {
+    address: false,
+    email: false,
+    telephone: false,
+  },
   alternates: {
     canonical: "/",
+    types: {
+      "text/plain": [
+        { url: "/llms.txt", title: "local-search summary for AI agents" },
+        { url: "/llms-full.txt", title: "local-search full reference for AI agents" },
+      ],
+      "application/json": [
+        { url: "/benchmarks.json", title: "local-search benchmark data" },
+      ],
+    },
   },
   robots: {
     index: true,
@@ -58,6 +76,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: SOCIAL_TITLE,
     description: SOCIAL_DESCRIPTION,
+    site: "@kevskgs",
     creator: "@kevskgs",
   },
 };

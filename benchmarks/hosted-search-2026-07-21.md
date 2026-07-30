@@ -20,7 +20,7 @@ Responses were also normalized to `rank`, `title`, `url`, and `snippet`:
 | Exa | 24 | 24 | 24 | 4,472.5 | 881.2 | 501.9 ms | $0.324 |
 | Brave Search | 24 | 24 | 24 | 13,104 | 108.6 | 322.0 ms | $0.120 |
 | Tavily | 24 | 24 | 17 | 1,163 | 259.5 | 1,184.4 ms | 24 credits ($0.192 PAYG) |
-| Firecrawl | 24 | 24 | 24 | 509 | 74.8 | 1,520.8 ms | 48 credits |
+| Firecrawl | 24 | 24 | 24 | 509 | 74.8 | 1,520.8 ms | 48 credits (≈$0.154 Hobby-plan equivalent) |
 
 `lsearch` cold searches had a 384.5 ms median. Repeated depth requests had a
 6.5 ms median. All 24 requests fulfilled their requested result count.
@@ -34,6 +34,7 @@ Responses were also normalized to `rank`, `title`, `url`, and `snippet`:
 - [Tavily](https://docs.tavily.com/documentation/api-credits): one credit/basic
   search and $0.008/credit at pay-as-you-go pricing.
 - [Firecrawl](https://www.firecrawl.dev/pricing): two search credits per 10
-  results, rounded up.
+  results, rounded up. Firecrawl has no pay-as-you-go plan; the dollar figure is
+  the prorated Hobby-plan equivalent: 48 × ($16 / 5,000 credits) = $0.1536.
 
 Re-run with [`hosted_search.py`](hosted_search.py).

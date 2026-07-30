@@ -1,7 +1,7 @@
 import { AgentPlayground } from "@/components/agent-playground";
 import { LocalSearchLogo } from "@/components/brand-logo";
 import { CopyCommand } from "@/components/copy-command";
-import { FAQS } from "@/lib/seo";
+import { FAQS, RELEASE_AUDIT } from "@/lib/seo";
 import type { ReactNode } from "react";
 import {
   ArrowUpRightIcon,
@@ -9,26 +9,98 @@ import {
   ChevronRightIcon,
   BraveBrandIcon,
   ClockIcon,
-  CompareIcon,
   CompactIcon,
   DocumentIcon,
   ExaBrandIcon,
   FirecrawlBrandIcon,
   GithubBrandIcon,
   GlobeIcon,
-  KeyIcon,
   CratesIoBrandIcon,
   RustOfficialIcon,
   ResultsIcon,
   SchemaIcon,
   SearchIcon,
-  ShieldIcon,
   TavilyBrandIcon,
   TerminalIcon,
   ZeroCostIcon,
 } from "@/components/icons";
 
-const faqIcons = [SearchIcon, KeyIcon, TerminalIcon, GlobeIcon, CompareIcon, ShieldIcon] as const;
+function FaqAsset({ src, className = "" }: { src: string; className?: string }) {
+  return <span className={`faq-asset ${className}`.trim()} style={{ backgroundImage: `url(${src})` }} />;
+}
+
+function FaqVisual({ index }: { index: number }) {
+  if (index === 0) {
+    return (
+      <span className="faq-card__visual faq-card__visual--product" aria-hidden="true">
+        <span className="faq-visual__plate faq-visual__plate--local"><LocalSearchLogo /></span>
+      </span>
+    );
+  }
+
+  if (index === 1) {
+    return (
+      <span className="faq-card__visual faq-card__visual--api" aria-hidden="true">
+        <span className="faq-visual__plate faq-visual__plate--api"><FaqAsset src="/brand/api.svg" /></span>
+      </span>
+    );
+  }
+
+  if (index === 2) {
+    return (
+      <span className="faq-card__visual faq-card__visual--agents" aria-hidden="true">
+        <span className="faq-visual__tile faq-visual__tile--claude"><FaqAsset src="/brand/claude.svg" /></span>
+        <span className="faq-visual__tile faq-visual__tile--codex"><FaqAsset src="/brand/codex.svg" /></span>
+        <span className="faq-visual__tile faq-visual__tile--cursor"><FaqAsset src="/brand/cursor-mono.svg" /></span>
+        <span className="faq-visual__tile faq-visual__tile--openclaw"><FaqAsset src="/brand/openclaw.svg" /></span>
+      </span>
+    );
+  }
+
+  if (index === 3) {
+    return (
+      <span className="faq-card__visual faq-card__visual--engines" aria-hidden="true">
+        <span className="faq-visual__tile faq-visual__tile--google"><FaqAsset src="/brand/google.svg" /></span>
+        <span className="faq-visual__tile faq-visual__tile--bing"><FaqAsset src="/brand/bing.svg" /></span>
+        <span className="faq-visual__tile faq-visual__tile--duck"><FaqAsset src="/brand/duckduckgo.svg" /></span>
+        <span className="faq-visual__tile faq-visual__tile--brave"><FaqAsset src="/brand/brave.svg" /></span>
+      </span>
+    );
+  }
+
+  if (index === 4) {
+    return (
+      <span className="faq-card__visual faq-card__visual--benchmark" aria-hidden="true">
+        <span className="faq-visual__provider faq-visual__provider--exa"><FaqAsset src="/brand/exa.svg" /></span>
+        <span className="faq-visual__provider faq-visual__provider--brave"><FaqAsset src="/brand/brave.svg" /></span>
+        <span className="faq-visual__provider faq-visual__provider--tavily"><FaqAsset src="/brand/tavily.svg" /></span>
+        <span className="faq-visual__provider faq-visual__provider--firecrawl"><FaqAsset src="/brand/firecrawl.png" /></span>
+      </span>
+    );
+  }
+
+  if (index === 5) {
+    return (
+      <span className="faq-card__visual faq-card__visual--credentials" aria-hidden="true">
+        <span className="faq-visual__plate faq-visual__plate--credentials"><FaqAsset src="/brand/credentials.svg" /></span>
+      </span>
+    );
+  }
+
+  if (index === 6) {
+    return (
+      <span className="faq-card__visual faq-card__visual--rust" aria-hidden="true">
+        <span className="faq-visual__plate faq-visual__plate--rust"><FaqAsset src="/brand/rust-mono.svg" /></span>
+      </span>
+    );
+  }
+
+  return (
+    <span className="faq-card__visual faq-card__visual--open-source" aria-hidden="true">
+      <span className="faq-visual__plate faq-visual__plate--osi"><FaqAsset src="/brand/open-source.svg" /></span>
+    </span>
+  );
+}
 
 const sampleJson = JSON.stringify({
   engine: "duckduckgo",
@@ -98,7 +170,7 @@ export default function Home() {
               <div className="hero-proof" aria-label="Product benefits">
                 <span><CheckIcon size={14} /> Stable JSON</span>
                 <span><CheckIcon size={14} /> Authenticated browser state</span>
-                <span><CheckIcon size={14} /> Google, Bing & DuckDuckGo</span>
+                <span><CheckIcon size={14} /> Google, Bing, DuckDuckGo & Brave</span>
               </div>
             </div>
           </div>
@@ -110,8 +182,8 @@ export default function Home() {
 
         <section className="metric-strip" aria-label="local-search product summary">
           <article><b>$0</b><span>per local search</span></article>
-          <article><b>3</b><span>search engines</span></article>
-          <article><b>1</b><span>native binary</span></article>
+          <article><b>4</b><span>search engines</span></article>
+          <article><b>54.3 KiB</b><span>crates.io package</span></article>
           <article><b>0</b><span>API keys</span></article>
         </section>
         <ReticleSpacer />
@@ -166,17 +238,17 @@ export default function Home() {
               </svg>
               <div className="workflow-list" aria-label="How local-search works">
                 <article>
-                  <div className="workflow-top"><span className="workflow-index">01 · Agent</span><div className="workflow-icon"><TerminalIcon size={22} /></div></div>
+                  <div className="workflow-top"><span className="workflow-index">Agent</span><div className="workflow-icon"><TerminalIcon size={22} /></div></div>
                   <div><h3>Run one command</h3><p>Any shell-capable agent runs <code>lsearch</code>.</p></div>
                   <code className="workflow-code">query + limit</code>
                 </article>
                 <article>
-                  <div className="workflow-top"><span className="workflow-index">02 · Browser</span><div className="workflow-icon"><GlobeIcon size={22} /></div></div>
+                  <div className="workflow-top"><span className="workflow-index">Browser</span><div className="workflow-icon"><GlobeIcon size={22} /></div></div>
                   <div><h3>Search locally</h3><p>Managed Chrome searches with your local state.</p></div>
                   <span className="workflow-state"><i /> Runs locally</span>
                 </article>
                 <article>
-                  <div className="workflow-top"><span className="workflow-index">03 · Agent context</span><div className="workflow-icon"><SearchIcon size={22} /></div></div>
+                  <div className="workflow-top"><span className="workflow-index">Agent context</span><div className="workflow-icon"><SearchIcon size={22} /></div></div>
                   <div><h3>Return clean JSON</h3><p>Only stable result fields reach the agent.</p></div>
                   <span className="workflow-state"><CheckIcon size={13} /> Compact + valid</span>
                 </article>
@@ -201,7 +273,7 @@ export default function Home() {
             <div>
               <h2><span>Searches, tokens.</span><span>Latency and cost.</span></h2>
             </div>
-            <p>Benchmark 01 ran 12 queries through Google, Bing, and DuckDuckGo at two result depths: 72 local searches. Benchmark 02 repeated 24 matched requests across local-search and four hosted APIs.</p>
+            <p>Two search benchmarks cover 72 local searches and 24 matched requests per provider. A separate July 27 release audit measured a {RELEASE_AUDIT.binarySize} arm64 macOS binary and {RELEASE_AUDIT.startupReduction} faster warm CLI startup.</p>
           </div>
           <div className="benchmark-card">
             <div className="benchmark-chapter benchmark-chapter--tokens">
@@ -283,13 +355,13 @@ export default function Home() {
                       <tr><th scope="row"><span className="provider-name"><ExaBrandIcon size={22} />Exa</span></th><td data-label="Depth fulfilled">24/24</td><td data-label="Request + response tokens">4,472.5</td><td data-label="Tokens / result">881.2</td><td data-label="Latency">501.9 ms</td><td data-label="24-request usage">$0.324</td></tr>
                       <tr><th scope="row"><span className="provider-name"><BraveBrandIcon size={22} />Brave Search</span></th><td data-label="Depth fulfilled">24/24</td><td data-label="Request + response tokens">13,104</td><td data-label="Tokens / result">108.6</td><td data-label="Latency">322.0 ms</td><td data-label="24-request usage">$0.120</td></tr>
                       <tr><th scope="row"><span className="provider-name"><TavilyBrandIcon size={22} />Tavily</span></th><td data-label="Depth fulfilled">17/24</td><td data-label="Request + response tokens">1,163</td><td data-label="Tokens / result">259.5</td><td data-label="Latency">1,184.4 ms</td><td data-label="24-request usage">24 credits · $0.192 PAYG</td></tr>
-                      <tr><th scope="row"><span className="provider-name"><FirecrawlBrandIcon size={22} />Firecrawl</span></th><td data-label="Depth fulfilled">24/24</td><td data-label="Request + response tokens">509</td><td data-label="Tokens / result">74.8</td><td data-label="Latency">1,520.8 ms</td><td data-label="24-request usage">48 credits</td></tr>
+                      <tr><th scope="row"><span className="provider-name"><FirecrawlBrandIcon size={22} />Firecrawl</span></th><td data-label="Depth fulfilled">24/24</td><td data-label="Request + response tokens">509</td><td data-label="Tokens / result">74.8</td><td data-label="Latency">1,520.8 ms</td><td data-label="24-request usage">48 credits · ≈$0.154 Hobby equivalent</td></tr>
                     </tbody>
                   </table>
                 </div>
               </div>
             </div>
-            <p className="methodology">Source build, July 21, 2026. Benchmark 01 compares visible command text plus stdout with compact interactive snapshots. Benchmark 02 counts serialized requests plus raw responses; all token counts use o200k_base. local-search measured 384.5 ms cold and 6.5 ms from its five-minute local cache. Provider pricing was published July 21, 2026. <a href="https://github.com/Kevin-Liu-01/local-search/tree/main/benchmarks" target="_blank" rel="noreferrer">Full methodology and runner ↗</a></p>
+            <p className="methodology">Search source build, July 21, 2026. Benchmark 01 compares visible command text plus stdout with compact interactive snapshots. Benchmark 02 counts serialized requests plus raw responses; all token counts use o200k_base. local-search measured 384.5 ms cold and 6.5 ms from its five-minute local cache. The July 27 native audit used Rust {RELEASE_AUDIT.rustVersion} on {RELEASE_AUDIT.platform}; startup is process launch time, not search latency. <a href="https://github.com/Kevin-Liu-01/local-search/tree/main/benchmarks" target="_blank" rel="noreferrer">Full methodology and runner ↗</a> · <a href="/benchmarks.json">Machine-readable data ↗</a></p>
           </div>
         </section>
         <ReticleSpacer />
@@ -301,16 +373,13 @@ export default function Home() {
           </header>
           <div className="faq-grid">
             {FAQS.map(({ question, answer }, index) => {
-              const FaqIcon = faqIcons[index] ?? SearchIcon;
               const questionId = `faq-question-${index + 1}`;
               return (
                 <article key={question} aria-labelledby={questionId}>
                   <span className="faq-index">{String(index + 1).padStart(2, "0")}</span>
                   <h3 id={questionId}>{question}</h3>
                   <p>{answer}</p>
-                  <span className="faq-card__visual" aria-hidden="true">
-                    <FaqIcon className="faq-card__icon" size={148} />
-                  </span>
+                  <FaqVisual index={index} />
                 </article>
               );
             })}
@@ -382,42 +451,53 @@ function HeroIsometricArtwork() {
           <polygon points="564,24 574,30 574,41 564,47 554,41 554,30" />
           <polygon points="584,42 594,48 594,59 584,65 574,59 574,48" />
           <polygon className="is-filled" points="564,60 574,66 574,77 564,83 554,77 554,66" />
-          <polygon points="530,408 540,414 540,425 530,431 520,425 520,414" />
-          <polygon className="is-filled" points="550,426 560,432 560,443 550,449 540,443 540,432" />
-          <polygon points="530,444 540,450 540,461 530,467 520,461 520,450" />
+          <g transform="translate(0 24)">
+            <polygon points="530,408 540,414 540,425 530,431 520,425 520,414" />
+            <polygon className="is-filled" points="550,426 560,432 560,443 550,449 540,443 540,432" />
+            <polygon points="530,444 540,450 540,461 530,467 520,461 520,450" />
+            <circle cx="550" cy="461" r="2" />
+          </g>
           <circle cx="310" cy="139" r="2" />
           <circle cx="584" cy="76" r="2" />
-          <circle cx="550" cy="461" r="2" />
         </g>
 
         <g className="hero-iso-shadows">
-          <polygon points="365,304 450,255 535,304 450,353" />
+          <polygon points="365,392 450,343 535,392 450,441" />
           <polygon points="96,440 210,374 316,435 202,500" />
         </g>
 
         <g className="hero-iso-wires hero-iso-wires--base">
-          <path d="M306 369 330 383v61l242-140V97l-23-13" />
-          <path d="M306 387 342 408v48l242-140V204l-35-20" />
-          <path d="M306 405 354 433v35l242-140v-17l-47-27" />
+          <path d="M306 351l60 35v20l54 31 150-87V96l-21-12" />
+          <path d="M306 369l54 31v26l54 31 164-95V189l-29-17" />
+          <path d="M306 387l48 28v31l54 31 178-103V281l-37-21" />
+          <path d="M306 405l42 24v37l54 31 192-111V374l-45-26" />
         </g>
         <g className="hero-iso-wires hero-iso-wires--signal">
-          <path d="M306 369 330 383v61l242-140V97l-23-13" />
-          <path d="M306 387 342 408v48l242-140V204l-35-20" />
-          <path d="M306 405 354 433v35l242-140v-17l-47-27" />
+          <path d="M306 351l60 35v20l54 31 150-87V96l-21-12" />
+          <path d="M306 369l54 31v26l54 31 164-95V189l-29-17" />
+          <path d="M306 387l48 28v31l54 31 178-103V281l-37-21" />
+          <path d="M306 405l42 24v37l54 31 192-111V374l-45-26" />
         </g>
         <g className="hero-iso-engine hero-iso-engine--duck">
-          <polygon className="hero-iso-engine__side-left" points="434,332 351,284 351,296 434,344" />
-          <polygon className="hero-iso-engine__side-center" points="466,332 434,332 434,344 466,344" />
-          <polygon className="hero-iso-engine__side-right" points="549,284 466,332 466,344 549,296" />
-          <polygon className="hero-iso-engine__top" points="434,218 466,218 549,266 549,284 466,332 434,332 351,284 351,266" />
-          <image className="hero-iso-engine__mark" href="/brand/duckduckgo.svg" width="58" height="58" transform="matrix(.866 .5 -.866 .5 450 246)" />
+          <polygon className="hero-iso-engine__side-left" points="434,396 351,348 351,360 434,408" />
+          <polygon className="hero-iso-engine__side-center" points="466,396 434,396 434,408 466,408" />
+          <polygon className="hero-iso-engine__side-right" points="549,348 466,396 466,408 549,360" />
+          <polygon className="hero-iso-engine__top" points="434,282 466,282 549,330 549,348 466,396 434,396 351,348 351,330" />
+          <image className="hero-iso-engine__mark" href="/brand/duckduckgo.svg" width="58" height="58" transform="matrix(.866 .5 -.866 .5 450 310)" />
+        </g>
+        <g className="hero-iso-engine hero-iso-engine--brave">
+          <polygon className="hero-iso-engine__side-left" points="434,308 351,260 351,272 434,320" />
+          <polygon className="hero-iso-engine__side-center" points="466,308 434,308 434,320 466,320" />
+          <polygon className="hero-iso-engine__side-right" points="549,260 466,308 466,320 549,272" />
+          <polygon className="hero-iso-engine__top" points="434,194 466,194 549,242 549,260 466,308 434,308 351,260 351,242" />
+          <image className="hero-iso-engine__mark" href="/brand/brave.svg" width="58" height="58" transform="matrix(.866 .5 -.866 .5 450 222)" />
         </g>
         <g className="hero-iso-engine hero-iso-engine--bing">
-          <polygon className="hero-iso-engine__side-left" points="434,232 351,184 351,196 434,244" />
-          <polygon className="hero-iso-engine__side-center" points="466,232 434,232 434,244 466,244" />
-          <polygon className="hero-iso-engine__side-right" points="549,184 466,232 466,244 549,196" />
-          <polygon className="hero-iso-engine__top" points="434,118 466,118 549,166 549,184 466,232 434,232 351,184 351,166" />
-          <image className="hero-iso-engine__mark" href="/brand/bing.svg" width="64" height="64" transform="matrix(.866 .5 -.866 .5 450 143)" />
+          <polygon className="hero-iso-engine__side-left" points="434,220 351,172 351,184 434,232" />
+          <polygon className="hero-iso-engine__side-center" points="466,220 434,220 434,232 466,232" />
+          <polygon className="hero-iso-engine__side-right" points="549,172 466,220 466,232 549,184" />
+          <polygon className="hero-iso-engine__top" points="434,106 466,106 549,154 549,172 466,220 434,220 351,172 351,154" />
+          <image className="hero-iso-engine__mark" href="/brand/bing.svg" width="64" height="64" transform="matrix(.866 .5 -.866 .5 450 131)" />
         </g>
         <g className="hero-iso-engine hero-iso-engine--google">
           <polygon className="hero-iso-engine__side-left" points="434,132 351,84 351,96 434,144" />
@@ -458,8 +538,10 @@ function HeroIsometricArtwork() {
 
         <g className="hero-iso-ports">
           <polygon points="549,78 554,81 554,87 549,90 544,87 544,81" />
-          <polygon points="549,178 554,181 554,187 549,190 544,187 544,181" />
-          <polygon points="549,278 554,281 554,287 549,290 544,287 544,281" />
+          <polygon points="549,166 554,169 554,175 549,178 544,175 544,169" />
+          <polygon points="549,254 554,257 554,263 549,266 544,263 544,257" />
+          <polygon points="549,342 554,345 554,351 549,354 544,351 544,345" />
+          <polygon points="306,345 311,348 311,354 306,357 301,354 301,348" />
           <polygon points="306,363 311,366 311,372 306,375 301,372 301,366" />
           <polygon points="306,381 311,384 311,390 306,393 301,390 301,384" />
           <polygon points="306,399 311,402 311,408 306,411 301,408 301,402" />

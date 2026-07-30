@@ -1,0 +1,296 @@
+<svg width="1800" height="1000" viewBox="0 0 1800 1000" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">local-search benchmark: less context, lower latency, no search bill</title>
+  <desc id="desc">A benchmark graphic showing 96.5 percent less visible agent context for three search results and comparing normalized tokens per result, median latency, result-depth fulfillment, and usage across local-search, Exa, Brave Search, Tavily, and Firecrawl.</desc>
+  <defs>
+    <pattern id="dots" width="12" height="12" patternUnits="userSpaceOnUse">
+      <circle cx="1" cy="1" r="1" fill="#168B90" fill-opacity=".07"/>
+    </pattern>
+    <style>
+      @font-face {
+        font-family: "Manrope";
+        src: url("/_next/static/media/a343f882a40d2cc9-s.p.1sj6eobyi31rd.woff2") format("woff2");
+        font-style: normal;
+        font-weight: 200 800;
+      }
+      text { font-family: "Manrope", Arial, sans-serif; }
+    </style>
+  </defs>
+
+  <rect width="1800" height="1000" fill="#FFFFFF"/>
+
+  <g transform="translate(1471 97)">
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M4 1h54l-2 7 7 5-4 9 4 7-7 14H5l2-7-6-5 4-9-4-7L4 1Zm7 33h6l11-24h-6L11 34Zm19-24h6v19h4v5H30V10Zm13 0h14v6h-8v3h8v15H43v-6h8v-3h-8V10Z" fill="#151515"/>
+    <text x="78" y="31" fill="#151515" font-size="25" font-weight="760" letter-spacing="-.5">local-search</text>
+  </g>
+
+  <text x="68" y="139" fill="#151515" font-size="55" font-weight="760" letter-spacing="-2.6">Less context. Lower latency. No search bill.</text>
+
+  <g transform="translate(68 695)">
+    <text x="30" y="43" fill="#151515" font-size="27" font-weight="740">3-result agent-visible context</text>
+    <text x="1615" y="43" fill="#6F6F69" font-size="15" font-weight="500" text-anchor="end">Same search task · command + JSON vs. browser screenshots used to perform the search</text>
+
+    <text x="30" y="117" fill="#151515" font-size="17" font-weight="720">local-search JSON</text>
+    <rect x="218" y="80" width="38" height="60" fill="#168B90"/>
+    <text x="273" y="117" fill="#0D6F74" font-size="18" font-weight="760">309 tokens</text>
+
+    <text x="30" y="177" fill="#6F6F69" font-size="17" font-weight="620">Browser screenshots</text>
+    <rect x="218" y="140" width="960" height="60" fill="#A8AAA5"/>
+    <text x="1195" y="177" fill="#5C5E59" font-size="18" font-weight="720">8,760.5 tokens</text>
+
+    <text x="1595" y="137" fill="#0D6F74" font-size="58" font-weight="780" letter-spacing="-2" text-anchor="end">96.5%</text>
+    <text x="1595" y="169" fill="#168B90" font-size="14" font-weight="760" letter-spacing="1.6" text-anchor="end">LESS CONTEXT</text>
+  </g>
+
+  <g transform="translate(68 204)" display="none">
+    <text x="0" y="30" fill="#151515" font-size="29" font-weight="740">Matched hosted-provider run</text>
+
+    <text x="18" y="78" fill="#6F6F69" font-size="13" font-weight="760" letter-spacing="1.2">PROVIDER</text>
+    <text x="380" y="78" fill="#6F6F69" font-size="13" font-weight="760" letter-spacing="1.2">NORMALIZED TOKENS / RESULT</text>
+    <text x="970" y="78" fill="#6F6F69" font-size="13" font-weight="760" letter-spacing="1.2">MEDIAN LATENCY</text>
+    <text x="1452" y="78" fill="#6F6F69" font-size="13" font-weight="760" letter-spacing="1.2">DEPTH</text>
+    <text x="1640" y="78" fill="#6F6F69" font-size="13" font-weight="760" letter-spacing="1.2" text-anchor="end">USAGE</text>
+
+    <rect x="0" y="98" width="1664" height="68" rx="8" fill="#C9F1EF"/>
+    <g transform="translate(18 119) scale(.64)">
+      <path fill-rule="evenodd" clip-rule="evenodd" d="M4 1h54l-2 7 7 5-4 9 4 7-7 14H5l2-7-6-5 4-9-4-7L4 1Zm7 33h6l11-24h-6L11 34Zm19-24h6v19h4v5H30V10Zm13 0h14v6h-8v3h8v15H43v-6h8v-3h-8V10Z" fill="#151515"/>
+    </g>
+    <text x="70" y="141" fill="#151515" font-size="20" font-weight="780">local-search</text>
+    <rect x="380" y="119" width="28" height="24" rx="5" fill="#168B90"/>
+    <text x="421" y="139" fill="#0D6F74" font-size="17" font-weight="780">53.4</text>
+    <rect x="970" y="119" width="36" height="24" rx="5" fill="#168B90"/>
+    <text x="1019" y="139" fill="#0D6F74" font-size="17" font-weight="780">148.7 ms</text>
+    <text x="1452" y="141" fill="#0D6F74" font-size="18" font-weight="780">24/24</text>
+    <text x="1640" y="141" fill="#0D6F74" font-size="18" font-weight="780" text-anchor="end">$0</text>
+
+    <path d="M0 182.5H1664" stroke="#D7D7D1"/>
+    <image x="18" y="202" width="36" height="36" href="/brand/exa.svg" preserveAspectRatio="xMidYMid meet"/>
+    <text x="70" y="229" fill="#151515" font-size="19" font-weight="650">Exa</text>
+    <rect x="380" y="207" width="430" height="24" rx="5" fill="#A8AAA5"/>
+    <text x="823" y="227" fill="#5C5E59" font-size="17" font-weight="700">881.2</text>
+    <rect x="970" y="207" width="119" height="24" rx="5" fill="#A8AAA5"/>
+    <text x="1102" y="227" fill="#5C5E59" font-size="17" font-weight="700">501.9 ms</text>
+    <text x="1452" y="229" fill="#5C5E59" font-size="18" font-weight="700">24/24</text>
+    <text x="1640" y="229" fill="#5C5E59" font-size="18" font-weight="700" text-anchor="end">$0.324</text>
+
+    <path d="M0 250.5H1664" stroke="#D7D7D1"/>
+    <image x="18" y="270" width="36" height="36" href="/brand/brave.svg" preserveAspectRatio="xMidYMid meet"/>
+    <text x="70" y="297" fill="#151515" font-size="19" font-weight="650">Brave Search</text>
+    <rect x="380" y="275" width="53" height="24" rx="5" fill="#A8AAA5"/>
+    <text x="446" y="295" fill="#5C5E59" font-size="17" font-weight="700">108.6</text>
+    <rect x="970" y="275" width="76" height="24" rx="5" fill="#A8AAA5"/>
+    <text x="1059" y="295" fill="#5C5E59" font-size="17" font-weight="700">322.0 ms</text>
+    <text x="1452" y="297" fill="#5C5E59" font-size="18" font-weight="700">24/24</text>
+    <text x="1640" y="297" fill="#5C5E59" font-size="18" font-weight="700" text-anchor="end">$0.120</text>
+
+    <path d="M0 318.5H1664" stroke="#D7D7D1"/>
+    <image x="18" y="338" width="36" height="36" href="/brand/tavily.svg" preserveAspectRatio="xMidYMid meet"/>
+    <text x="70" y="365" fill="#151515" font-size="19" font-weight="650">Tavily</text>
+    <rect x="380" y="343" width="127" height="24" rx="5" fill="#A8AAA5"/>
+    <text x="520" y="363" fill="#5C5E59" font-size="17" font-weight="700">259.5</text>
+    <rect x="970" y="343" width="280" height="24" rx="5" fill="#A8AAA5"/>
+    <text x="1263" y="363" fill="#5C5E59" font-size="17" font-weight="700">1,184.4 ms</text>
+    <text x="1452" y="365" fill="#5C5E59" font-size="18" font-weight="700">17/24</text>
+    <text x="1640" y="355" fill="#5C5E59" font-size="15" font-weight="700" text-anchor="end">$0.192†</text>
+    <text x="1640" y="376" fill="#7A7C76" font-size="12" font-weight="600" text-anchor="end">24 credits</text>
+
+    <path d="M0 386.5H1664" stroke="#D7D7D1"/>
+    <image x="18" y="406" width="36" height="36" href="/brand/firecrawl.png" preserveAspectRatio="xMidYMid meet"/>
+    <text x="70" y="433" fill="#151515" font-size="19" font-weight="650">Firecrawl</text>
+    <rect x="380" y="411" width="37" height="24" rx="5" fill="#A8AAA5"/>
+    <text x="430" y="431" fill="#5C5E59" font-size="17" font-weight="700">74.8</text>
+    <rect x="970" y="411" width="360" height="24" rx="5" fill="#A8AAA5"/>
+    <text x="1343" y="431" fill="#5C5E59" font-size="17" font-weight="700">1,520.8 ms</text>
+    <text x="1452" y="433" fill="#5C5E59" font-size="18" font-weight="700">24/24</text>
+    <text x="1640" y="433" fill="#5C5E59" font-size="16" font-weight="700" text-anchor="end">48 credits</text>
+  </g>
+
+  <g transform="translate(68 204)" display="none">
+    <text x="0" y="30" fill="#151515" font-size="29" font-weight="740">Matched hosted-provider run</text>
+
+    <g transform="translate(0 60)">
+      <rect x="0.5" y="0.5" width="649" height="410" rx="12" fill="#FFFFFF" fill-opacity=".72" stroke="#D7D7D1"/>
+      <text x="24" y="35" fill="#151515" font-size="15" font-weight="760" letter-spacing=".8">NORMALIZED TOKENS / RESULT</text>
+      <text x="626" y="35" fill="#6F6F69" font-size="12" font-weight="650" text-anchor="end">lower is better</text>
+
+      <g stroke="#D7D7D1" stroke-opacity=".72">
+        <path d="M190.5 64V346M288 64V346M385.5 64V346M483 64V346M580.5 64V346"/>
+      </g>
+      <text x="190" y="59" fill="#8A8B85" font-size="10" font-weight="650">0</text>
+      <text x="580" y="59" fill="#8A8B85" font-size="10" font-weight="650" text-anchor="end">900</text>
+
+      <rect x="12" y="72" width="626" height="44" rx="7" fill="#C9F1EF"/>
+      <g transform="translate(24 83) scale(.5)">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M4 1h54l-2 7 7 5-4 9 4 7-7 14H5l2-7-6-5 4-9-4-7L4 1Zm7 33h6l11-24h-6L11 34Zm19-24h6v19h4v5H30V10Zm13 0h14v6h-8v3h8v15H43v-6h8v-3h-8V10Z" fill="#151515"/>
+      </g>
+      <text x="70" y="102" fill="#151515" font-size="16" font-weight="780">local-search</text>
+      <rect x="190" y="82" width="24" height="24" rx="4" fill="#168B90"/>
+      <text x="226" y="102" fill="#0D6F74" font-size="15" font-weight="780">53.4</text>
+
+      <image x="24" y="132" width="34" height="34" href="/brand/exa.svg" preserveAspectRatio="xMidYMid meet"/>
+      <text x="70" y="158" fill="#151515" font-size="16" font-weight="650">Exa</text>
+      <rect x="190" y="138" width="390" height="24" rx="4" fill="#A8AAA5"/>
+      <text x="592" y="158" fill="#5C5E59" font-size="15" font-weight="720">881.2</text>
+
+      <image x="24" y="188" width="34" height="34" href="/brand/brave.svg" preserveAspectRatio="xMidYMid meet"/>
+      <text x="70" y="214" fill="#151515" font-size="16" font-weight="650">Brave</text>
+      <rect x="190" y="194" width="48" height="24" rx="4" fill="#A8AAA5"/>
+      <text x="250" y="214" fill="#5C5E59" font-size="15" font-weight="720">108.6</text>
+
+      <image x="24" y="244" width="34" height="34" href="/brand/tavily.svg" preserveAspectRatio="xMidYMid meet"/>
+      <text x="70" y="270" fill="#151515" font-size="16" font-weight="650">Tavily</text>
+      <rect x="190" y="250" width="115" height="24" rx="4" fill="#A8AAA5"/>
+      <text x="317" y="270" fill="#5C5E59" font-size="15" font-weight="720">259.5</text>
+
+      <image x="24" y="300" width="34" height="34" href="/brand/firecrawl.png" preserveAspectRatio="xMidYMid meet"/>
+      <text x="70" y="326" fill="#151515" font-size="16" font-weight="650">Firecrawl</text>
+      <rect x="190" y="306" width="33" height="24" rx="4" fill="#A8AAA5"/>
+      <text x="235" y="326" fill="#5C5E59" font-size="15" font-weight="720">74.8</text>
+
+      <text x="24" y="382" fill="#0D6F74" font-size="12" font-weight="760" letter-spacing=".8">FEWEST TOKENS PER RESULT</text>
+      <text x="626" y="382" fill="#6F6F69" font-size="12" font-weight="650" text-anchor="end">local-search wins</text>
+    </g>
+
+    <g transform="translate(675 60)">
+      <rect x="0.5" y="0.5" width="649" height="410" rx="12" fill="#FFFFFF" fill-opacity=".72" stroke="#D7D7D1"/>
+      <text x="24" y="35" fill="#151515" font-size="15" font-weight="760" letter-spacing=".8">MEDIAN LATENCY</text>
+      <text x="626" y="35" fill="#6F6F69" font-size="12" font-weight="650" text-anchor="end">lower is better</text>
+
+      <g stroke="#D7D7D1" stroke-opacity=".72">
+        <path d="M190.5 64V346M288 64V346M385.5 64V346M483 64V346M580.5 64V346"/>
+      </g>
+      <text x="190" y="59" fill="#8A8B85" font-size="10" font-weight="650">0 ms</text>
+      <text x="580" y="59" fill="#8A8B85" font-size="10" font-weight="650" text-anchor="end">1,600 ms</text>
+
+      <rect x="12" y="72" width="626" height="44" rx="7" fill="#C9F1EF"/>
+      <g transform="translate(24 83) scale(.5)">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M4 1h54l-2 7 7 5-4 9 4 7-7 14H5l2-7-6-5 4-9-4-7L4 1Zm7 33h6l11-24h-6L11 34Zm19-24h6v19h4v5H30V10Zm13 0h14v6h-8v3h8v15H43v-6h8v-3h-8V10Z" fill="#151515"/>
+      </g>
+      <text x="70" y="102" fill="#151515" font-size="16" font-weight="780">local-search</text>
+      <rect x="190" y="82" width="36" height="24" rx="4" fill="#168B90"/>
+      <text x="238" y="102" fill="#0D6F74" font-size="15" font-weight="780">148.7 ms</text>
+
+      <image x="24" y="132" width="34" height="34" href="/brand/exa.svg" preserveAspectRatio="xMidYMid meet"/>
+      <text x="70" y="158" fill="#151515" font-size="16" font-weight="650">Exa</text>
+      <rect x="190" y="138" width="129" height="24" rx="4" fill="#A8AAA5"/>
+      <text x="331" y="158" fill="#5C5E59" font-size="15" font-weight="720">501.9 ms</text>
+
+      <image x="24" y="188" width="34" height="34" href="/brand/brave.svg" preserveAspectRatio="xMidYMid meet"/>
+      <text x="70" y="214" fill="#151515" font-size="16" font-weight="650">Brave</text>
+      <rect x="190" y="194" width="83" height="24" rx="4" fill="#A8AAA5"/>
+      <text x="285" y="214" fill="#5C5E59" font-size="15" font-weight="720">322.0 ms</text>
+
+      <image x="24" y="244" width="34" height="34" href="/brand/tavily.svg" preserveAspectRatio="xMidYMid meet"/>
+      <text x="70" y="270" fill="#151515" font-size="16" font-weight="650">Tavily</text>
+      <rect x="190" y="250" width="304" height="24" rx="4" fill="#A8AAA5"/>
+      <text x="506" y="270" fill="#5C5E59" font-size="15" font-weight="720">1,184.4 ms</text>
+
+      <image x="24" y="300" width="34" height="34" href="/brand/firecrawl.png" preserveAspectRatio="xMidYMid meet"/>
+      <text x="70" y="326" fill="#151515" font-size="16" font-weight="650">Firecrawl</text>
+      <rect x="190" y="306" width="390" height="24" rx="4" fill="#A8AAA5"/>
+      <text x="592" y="326" fill="#5C5E59" font-size="15" font-weight="720">1,520.8 ms</text>
+
+      <text x="24" y="382" fill="#0D6F74" font-size="12" font-weight="760" letter-spacing=".8">FASTEST MEDIAN</text>
+      <text x="626" y="382" fill="#6F6F69" font-size="12" font-weight="650" text-anchor="end">local-search wins</text>
+    </g>
+
+    <g transform="translate(1350 60)">
+      <rect x="0.5" y="0.5" width="313" height="410" rx="12" fill="#C9F1EF" stroke="#A8D8D5"/>
+      <text x="24" y="35" fill="#0D6F74" font-size="13" font-weight="780" letter-spacing="1.1">24-REQUEST USAGE</text>
+      <text x="24" y="112" fill="#0D6F74" font-size="70" font-weight="790" letter-spacing="-3">$0</text>
+      <text x="24" y="140" fill="#0D6F74" font-size="14" font-weight="750">local-search hosted API usage</text>
+      <rect x="213" y="87" width="76" height="30" rx="6" fill="#F5F5F2"/>
+      <text x="251" y="107" fill="#0D6F74" font-size="11" font-weight="780" letter-spacing=".8" text-anchor="middle">NO CREDITS</text>
+
+      <path d="M24 166.5H289" stroke="#93C7C4"/>
+      <text x="24" y="191" fill="#0D6F74" fill-opacity=".72" font-size="10" font-weight="780" letter-spacing="1.1">HOSTED PROVIDERS</text>
+      <text x="24" y="222" fill="#151515" font-size="15" font-weight="650">Exa</text>
+      <text x="289" y="222" fill="#151515" font-size="15" font-weight="760" text-anchor="end">$0.324</text>
+      <text x="24" y="252" fill="#151515" font-size="15" font-weight="650">Brave</text>
+      <text x="289" y="252" fill="#151515" font-size="15" font-weight="760" text-anchor="end">$0.120</text>
+      <text x="24" y="282" fill="#151515" font-size="15" font-weight="650">Tavily</text>
+      <text x="289" y="282" fill="#151515" font-size="15" font-weight="760" text-anchor="end">$0.192†</text>
+      <text x="24" y="312" fill="#151515" font-size="15" font-weight="650">Firecrawl</text>
+      <text x="289" y="312" fill="#151515" font-size="15" font-weight="760" text-anchor="end">48 credits</text>
+
+      <path d="M24 336.5H289" stroke="#93C7C4"/>
+      <text x="24" y="374" fill="#0D6F74" font-size="26" font-weight="790">24/24</text>
+      <text x="121" y="371" fill="#0D6F74" font-size="12" font-weight="720">requested depths</text>
+      <text x="121" y="388" fill="#0D6F74" font-size="12" font-weight="720">fulfilled</text>
+    </g>
+  </g>
+
+  <g transform="translate(68 180)">
+    <text x="0" y="58" fill="#151515" font-size="29" font-weight="740">Matched hosted-provider run</text>
+    <text x="1663" y="57" fill="#6F6F69" font-size="14" font-weight="500" text-anchor="end">12 identical queries · 3- and 10-result depths · 24 sequential requests per provider · shared result schema</text>
+
+    <g transform="translate(0 60)">
+      <rect x="1" y="76" width="1662" height="64" fill="#C9F1EF"/>
+
+      <g stroke="#D7D7D1">
+        <path d="M1 76.5H1663M1 140.5H1663M1 204.5H1663M1 268.5H1663M1 332.5H1663M1 396.5H1663"/>
+        <path d="M746.5 76V396M1362.5 76V396" stroke-dasharray="5 6"/>
+      </g>
+
+      <text x="24" y="52" fill="#151515" font-size="13" font-weight="780" letter-spacing="1">PROVIDER</text>
+
+      <text x="214" y="52" fill="#151515" font-size="13" font-weight="780" letter-spacing=".8">NORMALIZED TOKENS / RESULT · LOWER IS BETTER</text>
+
+      <text x="794" y="52" fill="#151515" font-size="13" font-weight="780" letter-spacing=".8">MEDIAN LATENCY · LOWER IS BETTER</text>
+
+      <text x="1414" y="52" fill="#0D6F74" font-size="13" font-weight="790" letter-spacing=".8">24-REQUEST USAGE</text>
+
+      <g transform="translate(24 91) scale(.5)">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M4 1h54l-2 7 7 5-4 9 4 7-7 14H5l2-7-6-5 4-9-4-7L4 1Zm7 33h6l11-24h-6L11 34Zm19-24h6v19h4v5H30V10Zm13 0h14v6h-8v3h8v15H43v-6h8v-3h-8V10Z" fill="#151515"/>
+      </g>
+      <text x="70" y="115" fill="#151515" font-size="17" font-weight="790">local-search</text>
+      <rect x="214" y="76" width="26" height="64" fill="#168B90"/>
+      <text x="252" y="115" fill="#0D6F74" font-size="15" font-weight="790">53.4</text>
+      <rect x="794" y="76" width="42" height="64" fill="#168B90"/>
+      <text x="848" y="115" fill="#0D6F74" font-size="15" font-weight="790">148.7 ms</text>
+      <text x="1414" y="115" fill="#0D6F74" font-size="28" font-weight="800" letter-spacing="-1">$0</text>
+      <rect x="1465" y="93" width="91" height="30" rx="6" fill="#F5F5F2"/>
+      <text x="1510.5" y="113" fill="#0D6F74" font-size="10.5" font-weight="790" letter-spacing=".7" text-anchor="middle">NO CREDITS</text>
+
+      <image x="24" y="155" width="34" height="34" href="/brand/exa.svg" preserveAspectRatio="xMidYMid meet"/>
+      <text x="70" y="179" fill="#151515" font-size="17" font-weight="650">Exa</text>
+      <rect x="214" y="140" width="430" height="64" fill="#E1E2DE"/>
+      <text x="656" y="179" fill="#5C5E59" font-size="15" font-weight="720">881.2</text>
+      <rect x="794" y="140" width="141" height="64" fill="#E1E2DE"/>
+      <text x="947" y="179" fill="#5C5E59" font-size="15" font-weight="720">501.9 ms</text>
+      <text x="1414" y="179" fill="#151515" font-size="18" font-weight="780">$0.324</text>
+
+      <image x="24" y="219" width="34" height="34" href="/brand/brave.svg" preserveAspectRatio="xMidYMid meet"/>
+      <text x="70" y="243" fill="#151515" font-size="17" font-weight="650">Brave Search</text>
+      <rect x="214" y="204" width="53" height="64" fill="#D3D5D0"/>
+      <text x="279" y="243" fill="#5C5E59" font-size="15" font-weight="720">108.6</text>
+      <rect x="794" y="204" width="91" height="64" fill="#D3D5D0"/>
+      <text x="897" y="243" fill="#5C5E59" font-size="15" font-weight="720">322.0 ms</text>
+      <text x="1414" y="243" fill="#151515" font-size="18" font-weight="780">$0.120</text>
+
+      <image x="24" y="283" width="34" height="34" href="/brand/tavily.svg" preserveAspectRatio="xMidYMid meet"/>
+      <text x="70" y="307" fill="#151515" font-size="17" font-weight="650">Tavily</text>
+      <rect x="214" y="268" width="126" height="64" fill="#C4C7C1"/>
+      <text x="352" y="307" fill="#5C5E59" font-size="15" font-weight="720">259.5</text>
+      <rect x="794" y="268" width="333" height="64" fill="#C4C7C1"/>
+      <text x="1139" y="307" fill="#5C5E59" font-size="15" font-weight="720">1,184.4 ms</text>
+      <text x="1414" y="299" fill="#151515" font-size="16" font-weight="780">$0.192†</text>
+      <text x="1414" y="317" fill="#6F6F69" font-size="11" font-weight="650">24 credits</text>
+
+      <image x="24" y="347" width="34" height="34" href="/brand/firecrawl.png" preserveAspectRatio="xMidYMid meet"/>
+      <text x="70" y="371" fill="#151515" font-size="17" font-weight="650">Firecrawl</text>
+      <rect x="214" y="332" width="37" height="64" fill="#B5B9B2"/>
+      <text x="263" y="371" fill="#5C5E59" font-size="15" font-weight="720">74.8</text>
+      <rect x="794" y="332" width="428" height="64" fill="#B5B9B2"/>
+      <text x="1234" y="371" fill="#5C5E59" font-size="15" font-weight="720">1,520.8 ms</text>
+      <text x="1414" y="363" fill="#151515" font-size="16" font-weight="780">$0.154‡</text>
+      <text x="1414" y="381" fill="#6F6F69" font-size="11" font-weight="650">48 credits</text>
+
+      <text x="24" y="425" fill="#6F6F69" font-size="12" font-weight="560">† Tavily PAYG: 24 credits × $0.008 = $0.192.</text>
+      <text x="1663" y="425" fill="#6F6F69" font-size="12" font-weight="560" text-anchor="end">‡ Firecrawl Hobby-plan equivalent: 48 credits × ($16 / 5,000) = $0.154; no PAYG.</text>
+    </g>
+  </g>
+
+  <path d="M68 957.5H1732" stroke="#D7D7D1"/>
+  <text x="68" y="982" fill="#7A7C76" font-size="12.5" font-weight="560">Source: public benchmark runner, July 21, 2026 · sequential requests · o200k_base · five-minute local cache.</text>
+  <text x="1732" y="982" fill="#0D6F74" font-size="13" font-weight="740" text-anchor="end">github.com/Kevin-Liu-01/Local-Search</text>
+</svg>

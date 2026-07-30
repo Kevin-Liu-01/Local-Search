@@ -8,9 +8,12 @@ export default function manifest(): MetadataRoute.Manifest {
     short_name: "local-search",
     description: "Structured web search through your local browser, with no hosted search API key or metered bill.",
     start_url: "/",
+    id: "/",
+    scope: "/",
     display: "standalone",
     background_color: "#f4f4f0",
     theme_color: "#111210",
+    categories: ["developer tools", "productivity", "utilities"],
     icons: [
       {
         src: "/icon.svg",

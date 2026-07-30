@@ -10,6 +10,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@paper-design/shaders-react": "0.0.78",
     "next": "16.2.11",
     "react": "19.2.8",
     "react-dom": "19.2.8"

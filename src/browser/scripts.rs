@@ -170,13 +170,17 @@ const normalizeSearchUrl = (href) => {
   } catch {}
   return url;
 };
-const candidates = Array.from(document.querySelectorAll('a[href]')).map((a) => {
+const isBraveSearch = /search\.brave\.com\/search/i.test(location.href);
+const resultLinks = isBraveSearch
+  ? document.querySelectorAll('.snippet[data-type="web"] a.l1')
+  : document.querySelectorAll('a[href]');
+const candidates = Array.from(resultLinks).map((a) => {
   const url = normalizeSearchUrl(a.href);
-  const title = clean(a.innerText || a.textContent);
+  const title = clean(a.querySelector('.title')?.innerText || a.innerText || a.textContent);
   if (!url || !title || title.length < 3) return null;
-  if (/google\..*\/search|bing\.com\/search|duckduckgo\.com\/?|javascript:|#/.test(url)) return null;
-  const container = a.closest('article, li, div, section') || a.parentElement;
-  const snippet = clean(container?.innerText || '').replace(title, '').slice(0, 500);
+  if (/google\..*\/search|bing\.com\/search|search\.brave\.com\/search|duckduckgo\.com\/?|javascript:|#/.test(url)) return null;
+  const container = a.closest('.snippet[data-type="web"], article, li, div, section') || a.parentElement;
+  const snippet = clean(container?.querySelector('.content')?.innerText || container?.innerText || '').replace(title, '').slice(0, 500);
   return { title, url, snippet, domain: new URL(url).hostname.replace(/^www\./, '') };
 }).filter(Boolean);
 const seen = new Set();
@@ -304,5 +308,7 @@ mod tests {
 
         assert!(script.contains("solve the challenge"));
         assert!(script.contains("one last step"));
+        assert!(script.contains("search\\.brave\\.com\\/search"));
+        assert!(script.contains(".snippet[data-type=\"web\"] a.l1"));
     }
 }

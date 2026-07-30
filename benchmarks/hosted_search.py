@@ -65,6 +65,10 @@ PRICING = {
     },
     "firecrawl": {
         "credits_per_10_results_rounded_up": 2,
+        "hobby_monthly_usd_billed_yearly": 16,
+        "hobby_monthly_credits": 5_000,
+        "hobby_usd_per_credit_equivalent": 0.0032,
+        "pay_as_you_go": False,
         "source": "https://www.firecrawl.dev/pricing",
     },
 }

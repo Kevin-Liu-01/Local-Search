@@ -47,6 +47,7 @@ lsearch search "best browser search APIs for agents" --with-content --limit 3 --
 - Google is the built-in default.
 - Bing is selected with `--engine bing`.
 - DuckDuckGo is selected with `--engine duckduckgo`.
+- Brave Search is selected with `--engine brave`.
 
 Search engine choice is separate from browser choice. The selected engine runs inside the managed local browser.
 
@@ -103,6 +104,17 @@ The public benchmark build is dated July 21, 2026.
 
 Benchmark results describe the recorded build and environment, not a universal performance guarantee. The full runner and methodology are available in the repository.
 
+## Native size and startup audit
+
+A separate release audit was recorded on July 27, 2026 using Rust 1.97.1 on arm64 macOS (`aarch64-apple-darwin`).
+
+- Primary `lsearch` executable: 1,055,072 bytes (1.06 MB), down from 4,623,984 bytes before optimization, or 77.2% smaller.
+- Median warm `lsearch --version` process startup: 4.61 milliseconds, down from 7.20 milliseconds, or 36% faster.
+- Startup sample: 200 alternating warm launches for each binary.
+- Compressed `local-search` 0.1.2 crate package: 54.3 KiB.
+
+These measurements describe CLI process startup and native distribution size, not browser or search-engine latency. Machine-readable results are published at https://local-search-xi.vercel.app/benchmarks.json.
+
 ## Privacy and network boundary
 
 local-search does not require a local-search cloud account or hosted local-search service. It controls a browser profile on the user's machine, sends each query to the selected public search engine, and writes the structured response to standard output for the calling agent.
@@ -135,7 +147,7 @@ Claude Code, OpenAI Codex, Cursor, and any other shell-capable coding agent can 
 
 ### Which search engines are supported?
 
-Google, Bing, and DuckDuckGo are supported.
+Google, Bing, DuckDuckGo, and Brave Search are supported.
 
 ### Where is the methodology?
 

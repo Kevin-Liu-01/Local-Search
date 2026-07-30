@@ -1,4 +1,5 @@
 import { AgentPlaygroundLoader } from "@/components/agent-playground-loader";
+import { PlaygroundShader } from "@/components/playground-shader";
 import {
   ClaudeBrandIcon,
   CodexBrandIcon,
@@ -16,6 +17,8 @@ const agents = [
 export function AgentPlayground() {
   return (
     <section className="playground" id="demo" aria-label="Interactive local-search traces">
+      <PlaygroundShader />
+
       <div className="playground__workspace">
         <AgentPlaygroundLoader fallback={<AgentPlaygroundPreview />} />
       </div>

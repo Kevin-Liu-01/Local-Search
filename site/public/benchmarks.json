@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "product": "local-search",
+  "command": "lsearch",
+  "repository": "https://github.com/Kevin-Liu-01/Local-Search",
+  "updated": "2026-07-27",
+  "native_release_audit": {
+    "date": "2026-07-27",
+    "platform": "aarch64-apple-darwin",
+    "rust_version": "1.97.1",
+    "release_profile": {
+      "lto": "fat",
+      "codegen_units": 1,
+      "opt_level": "z",
+      "panic": "abort",
+      "strip": "symbols"
+    },
+    "binary": {
+      "before_bytes": 4623984,
+      "optimized_bytes": 1055072,
+      "reduction_percent": 77.2
+    },
+    "warm_cli_process_startup": {
+      "command": "lsearch --version",
+      "samples_per_binary": 200,
+      "sampling": "alternating warm process launches",
+      "before_median_ms": 7.2,
+      "optimized_median_ms": 4.61,
+      "improvement_percent": 36
+    },
+    "compressed_crate_bytes": 198612,
+    "scope": "CLI process startup and native distribution size; not browser or search-engine latency"
+  },
+  "search_benchmarks": {
+    "date": "2026-07-21",
+    "cross_engine": {
+      "engines": ["Google", "Bing", "DuckDuckGo"],
+      "requested_depth_fulfilled": "72/72",
+      "schema_valid_stability_runs": "60/60",
+      "content_pages_at_1200_character_cap": "72/72",
+      "three_results": {
+        "local_search_visible_tokens": 309,
+        "interactive_snapshot_visible_tokens": 8760.5,
+        "context_reduction_percent": 96.5
+      },
+      "ten_results": {
+        "local_search_visible_tokens": 891,
+        "interactive_snapshot_visible_tokens": 8708,
+        "context_reduction_percent": 89.8
+      }
+    },
+    "matched_hosted_provider_run": {
+      "requests": "24/24",
+      "normalized_tokens_per_result": 53.4,
+      "median_latency_ms": 148.7,
+      "hosted_api_usage_usd": 0
+    },
+    "methodology": "https://github.com/Kevin-Liu-01/Local-Search/tree/main/benchmarks"
+  }
+}

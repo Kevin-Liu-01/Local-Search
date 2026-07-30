@@ -45,4 +45,7 @@ python3 benchmarks/hosted_search.py --max-queries 1
 At pricing published on 2026-07-21, the full 24-request run per provider uses an
 estimated $0.324 of Exa Search plus highlights, $0.120 of Brave Web Search, 24
 Tavily basic-search credits ($0.192 at pay-as-you-go pricing), and 48 Firecrawl
-search credits. Free or prepaid plan credits can reduce the marginal charge.
+search credits (about $0.154 at the $16-per-5,000-credit Hobby-plan rate).
+Firecrawl does not offer pay-as-you-go pricing, so this is a plan-equivalent
+allocation rather than a marginal charge. Free or prepaid plan credits can
+reduce the marginal charge.
