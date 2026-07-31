@@ -7,8 +7,9 @@ export const SITE_URL = configuredSiteUrl.replace(/\/$/, "");
 export const SITE_NAME = "local-search";
 export const SITE_TITLE = "local-search: Free Browser Search API for AI Agents";
 export const SITE_DESCRIPTION = "Open-source Rust CLI for structured Google, Bing, DuckDuckGo, and Brave Search through your local browser. Built for coding agents, with no API key or search bill.";
-export const SOCIAL_TITLE = "Browser Search API. 1.06 MB. No API Key.";
+export const SOCIAL_TITLE = "Browser Search API. No API Key. No Billing.";
 export const SOCIAL_DESCRIPTION = "A tiny Rust CLI that returns structured Google, Bing, DuckDuckGo, and Brave Search results to coding agents through your local browser.";
+export const SOCIAL_IMAGE_ALT = "local-search — an open-source Rust browser search API for coding agents, with no API key or metered billing.";
 
 export const REPOSITORY_URL = "https://github.com/Kevin-Liu-01/Local-Search";
 export const CRATE_URL = "https://crates.io/crates/local-search";
@@ -137,7 +138,7 @@ export const STRUCTURED_DATA = {
       description: SITE_DESCRIPTION,
       applicationCategory: "DeveloperApplication",
       applicationSubCategory: "Browser search CLI for AI agents",
-      softwareVersion: "0.1.1",
+      softwareVersion: "0.1.2",
       operatingSystem: "macOS, Linux, and Windows with Chrome or Chromium",
       runtimePlatform: "Chrome or Chromium",
       downloadUrl: CRATE_URL,
@@ -187,7 +188,7 @@ export const STRUCTURED_DATA = {
       codeRepository: REPOSITORY_URL,
       programmingLanguage: "Rust",
       runtimePlatform: "Chrome or Chromium",
-      version: "0.1.1",
+      version: "0.1.2",
       license: "https://opensource.org/license/mit",
       author: { "@id": `${SITE_URL}/#author` },
       targetProduct: { "@id": `${SITE_URL}/#software` },

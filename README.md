@@ -1,5 +1,7 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Kevin-Liu-01/Local-Search/main/site/public/social/local-search-benchmark.png" alt="local-search benchmark — less context, lower latency, and no search bill compared with hosted search providers" width="100%">
+  <a href="https://local-search-xi.vercel.app">
+    <img src="https://raw.githubusercontent.com/Kevin-Liu-01/Local-Search/main/site/public/social/local-search-demo.gif" alt="local-search running structured Google, Bing, DuckDuckGo, and Brave searches through a local browser" width="100%">
+  </a>
 </p>
 
 # local-search
@@ -166,6 +168,10 @@ Bing as the search engine inside a managed Chrome/Chromium profile; do not expec
 `--browser safari` to reuse your normal Safari session.
 
 ## Token Benchmarks
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Kevin-Liu-01/Local-Search/main/site/public/social/local-search-benchmark.png" alt="local-search benchmark — less context, lower latency, and no search bill compared with hosted search providers" width="100%">
+</p>
 
 `lsearch` keeps browser plumbing and full search-page snapshots out of the
 agent's context. A source-build benchmark on 2026-07-21 measured visible command

@@ -9,6 +9,7 @@ import {
   SITE_TITLE,
   SITE_URL,
   SOCIAL_DESCRIPTION,
+  SOCIAL_IMAGE_ALT,
   SOCIAL_TITLE,
   STRUCTURED_DATA,
 } from "@/lib/seo";
@@ -71,6 +72,15 @@ export const metadata: Metadata = {
     url: "/",
     siteName: SITE_NAME,
     locale: "en_US",
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: SOCIAL_IMAGE_ALT,
+        type: "image/png",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
@@ -78,6 +88,14 @@ export const metadata: Metadata = {
     description: SOCIAL_DESCRIPTION,
     site: "@kevskgs",
     creator: "@kevskgs",
+    images: [
+      {
+        url: "/twitter-image",
+        width: 1200,
+        height: 630,
+        alt: SOCIAL_IMAGE_ALT,
+      },
+    ],
   },
 };
 

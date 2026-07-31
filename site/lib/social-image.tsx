@@ -1,10 +1,10 @@
 import { ImageResponse } from "next/og";
 import { LocalSearchLogo } from "@/components/brand-logo";
+import { SOCIAL_IMAGE_ALT } from "@/lib/seo";
 
 export const socialImageSize = { width: 1200, height: 630 };
 export const socialImageContentType = "image/png";
-export const socialImageAlt =
-  "local-search — a 1.06 MB open-source Rust browser search API for coding agents, with no API key or metered billing.";
+export const socialImageAlt = SOCIAL_IMAGE_ALT;
 
 const color = {
   background: "#101414",

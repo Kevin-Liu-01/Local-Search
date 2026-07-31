@@ -123,7 +123,7 @@ local-search does not require a local-search cloud account or hosted local-searc
 
 - Name: local-search
 - Command: lsearch
-- Package version: 0.1.1
+- Package version: 0.1.2
 - Programming language: Rust
 - License: MIT
 - Author: Kevin Liu
