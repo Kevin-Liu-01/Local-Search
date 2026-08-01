@@ -4,7 +4,6 @@ import {
   ClaudeBrandIcon,
   CodexBrandIcon,
   CursorBrandIcon,
-  SearchIcon,
 } from "@/components/icons";
 import { traces } from "@/lib/traces";
 
@@ -32,37 +31,23 @@ export function AgentPlayground() {
 
 function AgentPlaygroundPreview() {
   const trace = traces[0];
+  const prompt = `Search for “${trace.query}” and return three results.`;
 
   return (
     <div className="playground__frame" aria-label="Claude Code local-search preview">
-      <div className="playground__toolbar">
-        <div className="agent-tabs" aria-label="Coding agent interface">
-          {agents.map((agent, index) => {
-            const AgentIcon = agent.icon;
-            return (
-              <span className={index === 0 ? "agent-tab is-active" : "agent-tab"} key={agent.label}>
-                <AgentIcon size={15} />{agent.label}
-              </span>
-            );
-          })}
-        </div>
-        <span className="playground__credit">Agent shells by brainless ↗</span>
-      </div>
-
-      <div className="trace-presets" aria-label="Captured search traces">
-        {traces.map((item, index) => (
-          <div className={index === 0 ? "trace-preset is-active" : "trace-preset"} key={item.id}>
-            <SearchIcon size={14} />
-            <span><b>{item.label}</b><small>{item.query}</small></span>
-            <span className="trace-latency">{item.latency}</span>
-          </div>
-        ))}
-      </div>
-
       <div className="agent-window">
         <div className="agent-window__bar">
           <span className="window-dots" aria-hidden><i /><i /><i /></span>
-          <span>Terminal — claude</span>
+          <div className="agent-tabs agent-tabs--terminal" aria-label="Coding agent interface">
+            {agents.map((agent, index) => {
+              const AgentIcon = agent.icon;
+              return (
+                <span className={index === 0 ? "agent-tab is-active" : "agent-tab"} key={agent.label}>
+                  <AgentIcon size={15} />{agent.label}
+                </span>
+              );
+            })}
+          </div>
           <span>~/repos/Local-Search</span>
         </div>
         <div className="agent-surface demo-preview">
@@ -72,19 +57,10 @@ function AgentPlaygroundPreview() {
           </div>
           <div className="demo-preview__rule" />
           <p className="demo-preview__meta">Kevin · local-search playground · ~/repos/Local-Search</p>
-          <div className="demo-preview__message">
-            <span>❯</span>
-            <p>Search for “{trace.query}” and return three results.</p>
-          </div>
           <div className="demo-preview__spacer" />
-          <div className="demo-preview__prompt"><span>❯</span>Select a capture above or run this trace</div>
+          <div className="demo-preview__prompt"><span>❯</span>{prompt}</div>
           <p className="demo-preview__mode">⏵⏵ auto mode on · ← for agents</p>
         </div>
-      </div>
-
-      <div className="playground__footer">
-        <div><span className="status-dot" />Ready to run</div>
-        <span className="run-button">▶ Run search</span>
       </div>
     </div>
   );

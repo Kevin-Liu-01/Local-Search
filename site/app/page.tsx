@@ -1,4 +1,5 @@
 import { AgentPlayground } from "@/components/agent-playground";
+import { AgentCopyButton } from "@/components/agent-copy-button";
 import { LocalSearchLogo } from "@/components/brand-logo";
 import { CopyCommand } from "@/components/copy-command";
 import { FAQS, RELEASE_AUDIT } from "@/lib/seo";
@@ -10,12 +11,14 @@ import {
   BraveBrandIcon,
   ClockIcon,
   CompactIcon,
+  ChromiumBrandIcon,
   DocumentIcon,
   ExaBrandIcon,
   FirecrawlBrandIcon,
   GithubBrandIcon,
   GlobeIcon,
   CratesIoBrandIcon,
+  JsonSchemaBrandIcon,
   RustOfficialIcon,
   ResultsIcon,
   SchemaIcon,
@@ -149,7 +152,6 @@ export default function Home() {
               <HeroIsometricArtwork />
             </div>
             <div className="hero">
-              <p className="hero-kicker"><RustOfficialIcon size={20} /> Built with Rust</p>
               <h1 id="hero-title">
                 <span className="hero-title__line hero-title__line--primary">Browser Search API</span>
                 <span className="hero-title__line hero-title__line--secondary">No API Key, No Billing</span>
@@ -162,15 +164,16 @@ export default function Home() {
                 <a className="primary-button" href="https://github.com/Kevin-Liu-01/local-search" target="_blank" rel="noreferrer">
                   <GithubBrandIcon size={17} /> View on GitHub
                 </a>
+                <AgentCopyButton />
                 <a className="secondary-button" href="https://crates.io/crates/local-search" target="_blank" rel="noreferrer">
                   <CratesIoBrandIcon size={22} /> crates.io
                 </a>
               </div>
               <CopyCommand value="cargo install local-search" />
               <div className="hero-proof" aria-label="Product benefits">
-                <span><CheckIcon size={14} /> Stable JSON</span>
-                <span><CheckIcon size={14} /> Authenticated browser state</span>
-                <span><CheckIcon size={14} /> Google, Bing, DuckDuckGo & Brave</span>
+                <span><RustOfficialIcon size={15} /> Built with Rust</span>
+                <span><JsonSchemaBrandIcon size={16} /> Stable JSON</span>
+                <span><ChromiumBrandIcon size={16} /> Authenticated browser state</span>
               </div>
             </div>
           </div>

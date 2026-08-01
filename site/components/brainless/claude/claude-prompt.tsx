@@ -86,6 +86,7 @@ export function ClaudePrompt({
   defaultValue = "",
   onChange,
   onKeyDown,
+  readOnly = false,
   placeholder = "",
   mode = "auto",
   effort = "xhigh",
@@ -96,6 +97,7 @@ export function ClaudePrompt({
   defaultValue?: string;
   onChange?: React.ChangeEventHandler<HTMLInputElement>;
   onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>;
+  readOnly?: boolean;
   placeholder?: string;
   mode?: ClaudeMode;
   /** Effort chip above the prompt. Pass `false` to hide. */
@@ -144,6 +146,7 @@ export function ClaudePrompt({
           aria-label="Prompt"
           placeholder={placeholder}
           onKeyDown={onKeyDown}
+          readOnly={readOnly}
           {...(controlled
             ? { value, onChange }
             : { defaultValue, onChange })}

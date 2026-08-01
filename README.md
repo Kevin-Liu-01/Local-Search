@@ -4,6 +4,14 @@
   </a>
 </p>
 
+<p align="center">
+  <a href="https://crates.io/crates/local-search"><img alt="crates.io" src="https://img.shields.io/crates/v/local-search?style=flat-square&amp;logo=rust&amp;logoColor=white&amp;label=crates.io&amp;color=168f94"></a>
+  <img alt="Release binary: 1.06 MB" src="https://img.shields.io/badge/release%20binary-1.06%20MB-168f94?style=flat-square&amp;logo=rust&amp;logoColor=white">
+  <img alt="Median warm startup: 4.61 ms" src="https://img.shields.io/badge/warm%20startup-4.61%20ms-168f94?style=flat-square">
+  <a href="https://github.com/Kevin-Liu-01/Local-Search/blob/main/LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-555?style=flat-square"></a>
+  <a href="https://local-search-xi.vercel.app"><img alt="Documentation" src="https://img.shields.io/badge/docs-local--search-555?style=flat-square"></a>
+</p>
+
 # local-search
 
 Free structured web search for agents, powered by your local browser.
@@ -28,24 +36,6 @@ the browser.
 - `lsearch cleanup` so agents do not leave browser instances or stale profile
   markers behind.
 - Compatibility binaries: `local-search` and `local-browser`.
-
-## Small Native Footprint
-
-`local-search` is a small Rust binary, not another agent runtime. In a July 27,
-2026 release audit on arm64 macOS, the primary `lsearch` executable measured
-1,055,072 bytes (1.06 MB). Size-oriented linking and a current-thread async
-runtime also reduced warm CLI process startup in the same audit.
-
-| Release measurement | Before | Optimized | Change |
-|---|---:|---:|---:|
-| `lsearch` executable | 4,623,984 bytes | **1,055,072 bytes** | **77.2% smaller** |
-| Median warm `lsearch --version` process startup | 7.20 ms | **4.61 ms** | **36% faster** |
-| Compressed crates.io package | — | **54.3 KiB** | — |
-
-Startup figures are the median of 200 alternating warm process launches using
-Rust 1.97.1 on `aarch64-apple-darwin`. They measure CLI startup, not browser or
-search-engine latency, and should be treated as a recorded build result rather
-than a universal guarantee.
 
 ## Install
 

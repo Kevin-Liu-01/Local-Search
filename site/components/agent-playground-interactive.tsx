@@ -19,14 +19,12 @@ import {
   CodexBrandIcon,
   CursorBrandIcon,
   PlayIcon,
-  RotateIcon,
-  SearchIcon,
-  StopIcon,
 } from "@/components/icons";
 import { traces, traceJson, type SearchTrace } from "@/lib/traces";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type Agent = "claude" | "codex" | "cursor";
+type DemoPhase = "typing" | "running" | "complete" | "leaving";
 
 const agents: { id: Agent; label: string }[] = [
   { id: "claude", label: "Claude Code" },
@@ -42,18 +40,92 @@ const agentIcons = {
 
 export function AgentPlaygroundInteractive() {
   const surfaceRef = useRef<HTMLDivElement>(null);
-  const [agent, setAgent] = useState<Agent>("claude");
-  const [traceId, setTraceId] = useState(traces[0].id);
+  const [cycleIndex, setCycleIndex] = useState(0);
+  const [sequenceKey, setSequenceKey] = useState(0);
+  const [skipTyping, setSkipTyping] = useState(false);
+  const [phase, setPhase] = useState<DemoPhase>("typing");
+  const [promptValue, setPromptValue] = useState("");
   const [step, setStep] = useState(0);
-  const trace = useMemo(() => traces.find((item) => item.id === traceId) ?? traces[0], [traceId]);
+  const agent = agents[cycleIndex].id;
+  const trace = traces[cycleIndex] ?? traces[0];
+  const promptText = `Search for “${trace.query}” and return three results.`;
   const running = step > 0 && step < 4;
-  const complete = step === 4;
 
   useEffect(() => {
-    if (!running) return;
-    const timer = window.setTimeout(() => setStep((current) => Math.min(current + 1, 4)), 650);
-    return () => window.clearTimeout(timer);
-  }, [running, step]);
+    let cancelled = false;
+    let typingFrame = 0;
+    const timers: number[] = [];
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const schedule = (callback: () => void, delay: number) => {
+      const timer = window.setTimeout(() => {
+        if (!cancelled) callback();
+      }, delay);
+      timers.push(timer);
+    };
+
+    const beginRun = () => {
+      setPromptValue("");
+      setPhase("running");
+      setStep(1);
+      schedule(() => setStep(2), 480);
+      schedule(() => setStep(3), 1_050);
+      schedule(() => {
+        setStep(4);
+        setPhase("complete");
+      }, 1_700);
+      schedule(() => setPhase("leaving"), 3_600);
+      schedule(() => {
+        setSkipTyping(false);
+        setCycleIndex((current) => (current + 1) % agents.length);
+      }, 4_050);
+    };
+
+    schedule(() => {
+      setStep(0);
+      setPhase("typing");
+      setPromptValue(skipTyping ? promptText : "");
+
+      if (skipTyping) {
+        schedule(beginRun, 120);
+      } else if (reduceMotion) {
+        setPromptValue(promptText);
+        schedule(beginRun, 650);
+      } else {
+        schedule(() => {
+          const startedAt = window.performance.now();
+          const duration = Math.max(1_100, promptText.length * 17);
+          let previousLength = 0;
+
+          const typePrompt = (now: number) => {
+            if (cancelled) return;
+            const progress = Math.min((now - startedAt) / duration, 1);
+            const nextLength = Math.min(
+              promptText.length,
+              Math.floor(progress * promptText.length),
+            );
+            if (nextLength !== previousLength) {
+              previousLength = nextLength;
+              setPromptValue(promptText.slice(0, nextLength));
+            }
+            if (progress < 1) {
+              typingFrame = window.requestAnimationFrame(typePrompt);
+            } else {
+              schedule(beginRun, 460);
+            }
+          };
+
+          typingFrame = window.requestAnimationFrame(typePrompt);
+        }, 320);
+      }
+    }, 0);
+
+    return () => {
+      cancelled = true;
+      timers.forEach((timer) => window.clearTimeout(timer));
+      window.cancelAnimationFrame(typingFrame);
+    };
+  }, [cycleIndex, promptText, sequenceKey, skipTyping]);
 
   useEffect(() => {
     const surface = surfaceRef.current;
@@ -68,22 +140,26 @@ export function AgentPlaygroundInteractive() {
       viewport.scrollTop = viewport.scrollHeight;
     });
     return () => window.cancelAnimationFrame(frame);
-  }, [agent, step, traceId]);
+  }, [agent, phase, step, trace.id]);
 
-  function runTrace() {
-    setStep(1);
+  function runTraceNow() {
+    setSkipTyping(true);
+    setSequenceKey((current) => current + 1);
   }
 
-  function selectTrace(id: string) {
-    setTraceId(id);
-    setStep(0);
+  function selectAgent(index: number) {
+    setSkipTyping(false);
+    setCycleIndex(index);
+    setSequenceKey((current) => current + 1);
   }
 
   return (
     <div className="playground__frame">
-        <div className="playground__toolbar">
-          <div className="agent-tabs" role="tablist" aria-label="Coding agent interface">
-            {agents.map((item) => {
+      <div className={`agent-window agent-window--${phase}`}>
+        <div className="agent-window__bar">
+          <span className="window-dots" aria-hidden><i /><i /><i /></span>
+          <div className="agent-tabs agent-tabs--terminal" role="tablist" aria-label="Coding agent interface">
+            {agents.map((item, index) => {
               const AgentIcon = agentIcons[item.id];
               return (
                 <button
@@ -92,67 +168,62 @@ export function AgentPlaygroundInteractive() {
                   role="tab"
                   aria-selected={agent === item.id}
                   className={agent === item.id ? "agent-tab is-active" : "agent-tab"}
-                  onClick={() => setAgent(item.id)}
+                  onClick={() => selectAgent(index)}
                 >
-                  <AgentIcon size={15} />{item.label}
+                  <AgentIcon size={15} />
+                  {item.label}
+                  <span className="agent-tab__signal" aria-hidden />
                 </button>
               );
             })}
           </div>
-          <a href="https://github.com/theswerd/brainless" target="_blank" rel="noreferrer">
-            Agent shells by brainless ↗
-          </a>
+          <span>~/repos/Local-Search</span>
         </div>
-
-        <div className="trace-presets" aria-label="Captured search traces">
-          {traces.map((item) => (
-            <button
-              key={item.id}
-              type="button"
-              className={trace.id === item.id ? "trace-preset is-active" : "trace-preset"}
-              onClick={() => selectTrace(item.id)}
-            >
-              <SearchIcon size={14} />
-              <span><b>{item.label}</b><small>{item.query}</small></span>
-              <span className="trace-latency">{item.latency}</span>
-            </button>
-          ))}
-        </div>
-
-        <div className="agent-window">
-          <div className="agent-window__bar">
-            <span className="window-dots" aria-hidden><i /><i /><i /></span>
-            <span>{agent === "cursor" ? "local-search — Cursor" : `Terminal — ${agent}`}</span>
-            <span>~/repos/Local-Search</span>
-          </div>
-          <div ref={surfaceRef} className="agent-surface" role="tabpanel" aria-live="polite">
+        <div
+          ref={surfaceRef}
+          className={`agent-surface agent-cycle agent-cycle--${phase}`}
+          role="tabpanel"
+          aria-busy={running}
+        >
+          <div className="agent-cycle__content" key={`${agent}-${sequenceKey}`}>
             {agent === "claude" && (
-              <ClaudeTrace trace={trace} step={step} running={running} onRun={runTrace} />
+              <ClaudeTrace
+                trace={trace}
+                step={step}
+                running={running}
+                promptValue={promptValue}
+                phase={phase}
+                onRun={runTraceNow}
+              />
             )}
             {agent === "codex" && (
-              <CodexTrace trace={trace} step={step} running={running} onRun={runTrace} />
+              <CodexTrace
+                trace={trace}
+                step={step}
+                running={running}
+                promptValue={promptValue}
+                phase={phase}
+                onRun={runTraceNow}
+              />
             )}
             {agent === "cursor" && (
-              <CursorTrace trace={trace} step={step} running={running} onRun={runTrace} />
+              <CursorTrace
+                trace={trace}
+                step={step}
+                running={running}
+                promptValue={promptValue}
+                phase={phase}
+                onRun={runTraceNow}
+              />
             )}
           </div>
         </div>
-
-        <div className="playground__footer">
-          <div>
-            <span className={running ? "status-dot is-running" : complete ? "status-dot is-done" : "status-dot"} />
-            {running ? "Running local trace" : complete ? `Completed in ${trace.latency}` : "Ready to run"}
-          </div>
-          <button type="button" className="run-button" onClick={runTrace} disabled={running}>
-            {running ? <StopIcon size={16} /> : complete ? <RotateIcon size={16} /> : <PlayIcon size={16} />}
-            {running ? "Running…" : complete ? "Replay trace" : "Run search"}
-          </button>
-        </div>
+      </div>
     </div>
   );
 }
 
-function ClaudeTrace({ trace, step, running, onRun }: TraceProps) {
+function ClaudeTrace({ trace, step, running, promptValue, phase, onRun }: TraceProps) {
   return (
     <div className="trace-stack trace-stack--claude">
       <ClaudeHeader
@@ -163,7 +234,7 @@ function ClaudeTrace({ trace, step, running, onRun }: TraceProps) {
         tips={["Use lsearch when current web context is required"]}
         whatsNew={["Structured browser search with zero API credits"]}
       />
-      <ClaudeMessage role="user">Search for “{trace.query}” and return three results.</ClaudeMessage>
+      {step >= 1 && <ClaudeMessage role="user">Search for “{trace.query}” and return three results.</ClaudeMessage>}
       {step >= 1 && <ClaudeMessage>I’ll search through the managed local browser and keep the output compact.</ClaudeMessage>}
       {step >= 2 && (
         <ClaudeToolCall
@@ -179,16 +250,16 @@ function ClaudeTrace({ trace, step, running, onRun }: TraceProps) {
       {running && <ClaudeThinking verbs={["Searching", "Parsing", "Normalizing"]} showTokens={false} />}
       {step >= 3 && <TraceSteps trace={trace} complete={completeStep(step)} />}
       {step >= 4 && <TraceResults trace={trace} />}
-      <ClaudePrompt placeholder="Select a capture above or replay this trace" onKeyDown={(event) => event.key === "Enter" && onRun()} />
+      <ClaudePrompt value={promptValue} readOnly inputClassName={phase === "typing" ? "is-autotyping" : undefined} placeholder={running ? "local-search is running…" : "Next search will start automatically"} onKeyDown={(event) => event.key === "Enter" && onRun()} />
     </div>
   );
 }
 
-function CodexTrace({ trace, step, running, onRun }: TraceProps) {
+function CodexTrace({ trace, step, running, promptValue, phase, onRun }: TraceProps) {
   return (
     <div className="trace-stack trace-stack--codex">
       <CodexHeader model="gpt-5.6-sol high" directory="~/repos/Local-Search" />
-      <CodexMessage role="user">Search for “{trace.query}” and return three results.</CodexMessage>
+      {step >= 1 && <CodexMessage role="user">Search for “{trace.query}” and return three results.</CodexMessage>}
       {step >= 1 && <CodexMessage>I’ll use the local browser and return the normalized output.</CodexMessage>}
       {step >= 2 && (
         <CodexExec
@@ -203,12 +274,12 @@ function CodexTrace({ trace, step, running, onRun }: TraceProps) {
       {running && <CodexWorking label={step < 3 ? "Searching" : "Normalizing"} />}
       {step >= 3 && <TraceSteps trace={trace} complete={completeStep(step)} />}
       {step >= 4 && <TraceResults trace={trace} />}
-      <CodexPrompt directory="~/repos/Local-Search" placeholder="Press Enter to replay this trace" onKeyDown={(event) => event.key === "Enter" && onRun()} />
+      <CodexPrompt value={promptValue} readOnly inputClassName={phase === "typing" ? "is-autotyping" : undefined} directory="~/repos/Local-Search" placeholder={running ? "local-search is running…" : "Next search will start automatically"} onKeyDown={(event) => event.key === "Enter" && onRun()} />
     </div>
   );
 }
 
-function CursorTrace({ trace, step, running, onRun }: TraceProps) {
+function CursorTrace({ trace, step, running, promptValue, phase, onRun }: TraceProps) {
   return (
     <div className="cursor-trace">
       <aside className="cursor-rail">
@@ -221,7 +292,7 @@ function CursorTrace({ trace, step, running, onRun }: TraceProps) {
       <div className="cursor-thread">
         <div className="cursor-thread__header"><b>Search with local browser</b><span>Agent · Auto</span></div>
         <div className="cursor-thread__body">
-          <div className="cursor-user">Search for “{trace.query}” and return three results.</div>
+          {step >= 1 && <div className="cursor-user">Search for “{trace.query}” and return three results.</div>}
           {step >= 1 && <p>I’ll run the query through your managed browser and inspect the normalized response.</p>}
           {step >= 2 && (
             <details className="cursor-tool" open={step >= 4}>
@@ -235,7 +306,7 @@ function CursorTrace({ trace, step, running, onRun }: TraceProps) {
           {step >= 4 && <TraceResults trace={trace} />}
         </div>
         <div className="cursor-composer">
-          <input aria-label="Cursor prompt" placeholder="Press Enter to replay this trace" onKeyDown={(event) => event.key === "Enter" && onRun()} />
+          <input aria-label="Cursor prompt" value={promptValue} readOnly className={phase === "typing" ? "is-autotyping" : undefined} placeholder={running ? "local-search is running…" : "Next search will start automatically"} onKeyDown={(event) => event.key === "Enter" && onRun()} />
           <button type="button" onClick={onRun} aria-label="Run trace"><PlayIcon size={14} /></button>
         </div>
       </div>
@@ -275,5 +346,7 @@ type TraceProps = {
   trace: SearchTrace;
   step: number;
   running: boolean;
+  promptValue: string;
+  phase: DemoPhase;
   onRun: () => void;
 };

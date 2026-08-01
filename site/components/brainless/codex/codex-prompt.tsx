@@ -26,6 +26,7 @@ export function CodexPrompt({
   defaultValue = "",
   onChange,
   onKeyDown,
+  readOnly = false,
   placeholder = "Use /skills to list available skills",
   mode = "default",
   model = "gpt-5.6-sol low",
@@ -37,6 +38,7 @@ export function CodexPrompt({
   defaultValue?: string;
   onChange?: React.ChangeEventHandler<HTMLInputElement>;
   onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>;
+  readOnly?: boolean;
   placeholder?: string;
   mode?: CodexMode;
   model?: string;
@@ -65,6 +67,7 @@ export function CodexPrompt({
             aria-label="Prompt"
             placeholder={placeholder}
             onKeyDown={onKeyDown}
+            readOnly={readOnly}
             {...(controlled
               ? { value, onChange }
               : { defaultValue, onChange })}

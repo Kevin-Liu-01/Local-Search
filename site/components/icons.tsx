@@ -110,6 +110,14 @@ export function CratesIoBrandIcon(props: BrandIconProps) {
   return <BrandAssetIcon {...props} name="crates-io" src="/brand/crates-io.png" />;
 }
 
+export function JsonSchemaBrandIcon(props: BrandIconProps) {
+  return <BrandAssetIcon {...props} name="json-schema" src="/brand/json-schema.svg" />;
+}
+
+export function ChromiumBrandIcon(props: BrandIconProps) {
+  return <BrandAssetIcon {...props} name="chromium" src="/brand/chromium.svg" />;
+}
+
 export function ClaudeBrandIcon(props: BrandIconProps) {
   return <BrandAssetIcon {...props} name="claude" src="/brand/claude.svg" />;
 }
