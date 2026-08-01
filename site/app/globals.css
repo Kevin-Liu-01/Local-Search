@@ -128,7 +128,7 @@ code, pre { font-family: var(--font-manrope), sans-serif; }
   background: repeating-linear-gradient(45deg, transparent 0 5px, color-mix(in srgb, var(--ink) 8%, transparent) 5px 6px);
 }
 .site-header + main .hero-shell > .hero-spacer:first-child { border-top: 0; }
-.reticle { position: absolute; z-index: 3; width: 11px; height: 11px; }
+.reticle { position: absolute; z-index: 9999; width: 11px; height: 11px; }
 .reticle::before, .reticle::after { position: absolute; background: color-mix(in srgb, var(--ink) 38%, var(--line)); content: ""; }
 .reticle::before { top: 5px; left: 0; width: 11px; height: 1px; }
 .reticle::after { top: 0; left: 5px; width: 1px; height: 11px; }
