@@ -262,6 +262,21 @@ lsearch search "open source browser automation rust" --limit 10
 lsearch search "firecrawl alternatives" --engine duckduckgo --with-content --limit 5
 ```
 
+Interactive searches render as a concise colored result list with clickable
+titles and URLs. Agents and shell pipelines continue to receive the same compact
+JSON on stdout:
+
+```bash
+lsearch search "rust browser automation"              # colored list in a terminal
+lsearch search "rust browser automation" | jq .       # compact JSON through the pipe
+lsearch search "rust browser automation" --json       # force stable JSON in a PTY
+lsearch search "rust browser automation" --format table
+lsearch search "rust browser automation" --format json --pretty
+```
+
+`--format auto` is the search default. Status and animation stay on stderr, so
+they never contaminate agent-readable stdout. `NO_COLOR=1` disables ANSI color.
+
 Google is the default engine for speed. DuckDuckGo, Bing, and Brave Search remain
 available with `--engine duckduckgo`, `--engine bing`, and `--engine brave`.
 

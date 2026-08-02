@@ -1,5 +1,6 @@
 use std::{
     collections::{BTreeMap, BTreeSet, VecDeque},
+    io::{self, IsTerminal as _},
     path::{Path, PathBuf},
     process::Stdio,
     time::Duration,
@@ -13,7 +14,7 @@ use crate::{
     cli::{
         BrowserKind, Cli, Command, ConnectArgs, CookiesCommand, LaunchArgs, MapArgs, OpenArgs,
         OptionalPathArgs, PathArgs, ReadArgs, ReadFormat, RecordArgs, RequestArgs, ScreenshotArgs,
-        ScrollDirection, SearchArgs, SearchEngine, TabsCommand, WaitArgs,
+        ScrollDirection, SearchArgs, SearchEngine, SearchFormat, TabsCommand, WaitArgs,
     },
     config::{self, Config},
     error::{Error, IoContext, Result},
@@ -38,6 +39,7 @@ pub async fn run(cli: Cli) -> Result<()> {
                 with_content: false,
                 content_chars: 2_000,
                 new_tab: false,
+                format: SearchFormat::Auto,
             };
             search_command(&cli, &args).await
         }
@@ -589,10 +591,39 @@ fn prepare_search_results(value: &mut Value, args: &SearchArgs) {
 }
 
 fn print_search(cli: &Cli, args: &SearchArgs, value: &Value) -> Result<()> {
-    print_json(
-        &json!({ "ok": true, "query": args.query, "engine": format!("{:?}", args.engine).to_lowercase(), "search": value }),
+    let machine_engine = format!("{:?}", args.engine).to_lowercase();
+    let envelope =
+        json!({ "ok": true, "query": args.query, "engine": machine_engine, "search": value });
+    let output = resolve_search_format(
+        args.format,
+        cli.json,
         cli.pretty,
-    )
+        io::stdout().is_terminal(),
+    );
+
+    match output {
+        SearchFormat::Auto => unreachable!("search output format must be resolved"),
+        SearchFormat::Json => print_json(&envelope, cli.pretty),
+        SearchFormat::Table => {
+            ui::print_search_results(&args.query, search_engine_label(args.engine), value)
+        }
+    }
+}
+
+fn resolve_search_format(
+    requested: SearchFormat,
+    force_json: bool,
+    pretty: bool,
+    stdout_is_terminal: bool,
+) -> SearchFormat {
+    if force_json || pretty {
+        return SearchFormat::Json;
+    }
+    match requested {
+        SearchFormat::Auto if stdout_is_terminal => SearchFormat::Table,
+        SearchFormat::Auto | SearchFormat::Json => SearchFormat::Json,
+        SearchFormat::Table => SearchFormat::Table,
+    }
 }
 
 async fn load_search_cache(args: &SearchArgs) -> Option<Value> {
@@ -1065,10 +1096,11 @@ fn urlencoding(input: &str) -> String {
 mod tests {
     use serde_json::json;
 
-    use crate::cli::SearchEngine;
+    use crate::cli::{SearchEngine, SearchFormat};
 
     use super::{
-        search_engine_label, search_engine_url, truncate_search_snippets, validate_content_page,
+        resolve_search_format, search_engine_label, search_engine_url, truncate_search_snippets,
+        validate_content_page,
     };
 
     #[test]
@@ -1077,6 +1109,30 @@ mod tests {
         assert_eq!(
             search_engine_url(SearchEngine::Brave, "rust browser"),
             "https://search.brave.com/search?q=rust+browser"
+        );
+    }
+
+    #[test]
+    fn automatic_search_output_only_uses_tables_in_terminals() {
+        assert_eq!(
+            resolve_search_format(SearchFormat::Auto, false, false, true),
+            SearchFormat::Table
+        );
+        assert_eq!(
+            resolve_search_format(SearchFormat::Auto, false, false, false),
+            SearchFormat::Json
+        );
+    }
+
+    #[test]
+    fn explicit_json_and_pretty_output_override_a_terminal_table() {
+        assert_eq!(
+            resolve_search_format(SearchFormat::Table, true, false, true),
+            SearchFormat::Json
+        );
+        assert_eq!(
+            resolve_search_format(SearchFormat::Table, false, true, true),
+            SearchFormat::Json
         );
     }
 

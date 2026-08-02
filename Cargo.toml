@@ -1,12 +1,12 @@
 [package]
 name = "local-search"
-version = "0.1.2"
+version = "0.1.3"
 edition = "2024"
 autobins = false
 description = "Free structured web search for agents through a local browser"
 license = "MIT"
 repository = "https://github.com/Kevin-Liu-01/local-search"
-homepage = "https://github.com/Kevin-Liu-01/local-search"
+homepage = "https://lsearch.dev"
 readme = "README.md"
 exclude = ["site/"]
 keywords = ["search", "browser", "agents", "cdp", "scraping"]

@@ -264,7 +264,7 @@ code, pre { font-family: var(--font-manrope), sans-serif; }
 }
 .hero-title__line { display: block; }
 .hero-title__line--primary { font-weight: 550; }
-.hero-title__line--secondary { font-weight: 360; letter-spacing: -.052em; }
+.hero-title__line--secondary { color: var(--accent); font-weight: 360; letter-spacing: -.052em; }
 .hero-copy {
   max-width: 950px;
   margin: 24px 0 0;

@@ -22,6 +22,27 @@ fn help_includes_search_and_artifact_commands() {
 }
 
 #[test]
+fn search_help_documents_human_and_agent_output_modes() {
+    let mut cmd = Command::cargo_bin("lsearch").unwrap();
+    cmd.args(["search", "--help"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("--format <FORMAT>"))
+        .stdout(predicate::str::contains("auto"))
+        .stdout(predicate::str::contains("table"))
+        .stdout(predicate::str::contains("json"));
+}
+
+#[test]
+fn global_help_documents_the_json_override() {
+    let mut cmd = Command::cargo_bin("lsearch").unwrap();
+    cmd.arg("--help")
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("--json"));
+}
+
+#[test]
 fn invalid_wait_arguments_return_stable_error_json() {
     let mut cmd = Command::cargo_bin("local-browser").unwrap();
     cmd.args(["--cdp", "ws://127.0.0.1:1/devtools/browser/missing", "wait"])

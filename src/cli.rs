@@ -26,6 +26,10 @@ pub struct Cli {
     #[arg(long, global = true)]
     pub pretty: bool,
 
+    /// Force stable JSON search output, even in an interactive terminal.
+    #[arg(long, global = true)]
+    pub json: bool,
+
     /// Search query. Used when no subcommand is provided.
     #[arg(value_name = "QUERY")]
     pub query: Vec<String>,
@@ -184,6 +188,16 @@ pub struct SearchArgs {
     /// Use a new tab and leave the current tab untouched.
     #[arg(long)]
     pub new_tab: bool,
+    /// Search-result presentation. Auto uses a colored list in terminals and JSON in pipes.
+    #[arg(long, value_enum, default_value_t = SearchFormat::Auto)]
+    pub format: SearchFormat,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq, ValueEnum)]
+pub enum SearchFormat {
+    Auto,
+    Json,
+    Table,
 }
 
 #[derive(Debug, Args)]
