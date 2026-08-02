@@ -55,7 +55,7 @@ export const FAQS = [
   },
   {
     question: "How small and fast is the local-search Rust binary?",
-    answer: `The compressed local-search 0.1.2 crates.io package is 54.3 KiB. In the July 27, 2026 arm64 macOS release audit, the compiled lsearch executable measured ${RELEASE_AUDIT.binaryBytes.toLocaleString("en-US")} bytes (${RELEASE_AUDIT.binarySize}), down from ${RELEASE_AUDIT.baselineBinaryBytes.toLocaleString("en-US")} bytes. Median warm CLI process startup fell from ${RELEASE_AUDIT.baselineStartupMedianMs.toFixed(2)} to ${RELEASE_AUDIT.startupMedianMs.toFixed(2)} milliseconds across ${RELEASE_AUDIT.startupSamples} alternating launches. These figures describe that machine and build, not search latency.`,
+    answer: `The compressed local-search 0.1.3 crates.io package is 56.8 KiB. In the July 27, 2026 arm64 macOS release audit, the compiled lsearch executable measured ${RELEASE_AUDIT.binaryBytes.toLocaleString("en-US")} bytes (${RELEASE_AUDIT.binarySize}), down from ${RELEASE_AUDIT.baselineBinaryBytes.toLocaleString("en-US")} bytes. Median warm CLI process startup fell from ${RELEASE_AUDIT.baselineStartupMedianMs.toFixed(2)} to ${RELEASE_AUDIT.startupMedianMs.toFixed(2)} milliseconds across ${RELEASE_AUDIT.startupSamples} alternating launches. These figures describe that machine and build, not search latency.`,
   },
   {
     question: "Is local-search free and open source?",

@@ -186,7 +186,7 @@ export default function Home() {
         <section className="metric-strip" aria-label="local-search product summary">
           <article><b>$0</b><span>per local search</span></article>
           <article><b>4</b><span>search engines</span></article>
-          <article><b>54.3 KiB</b><span>crates.io package</span></article>
+          <article><b>56.8 KiB</b><span>crates.io package</span></article>
           <article><b>0</b><span>API keys</span></article>
         </section>
         <ReticleSpacer />
