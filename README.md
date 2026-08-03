@@ -6,6 +6,7 @@
 
 <p align="center">
   <a href="https://crates.io/crates/local-search"><img alt="crates.io" src="https://img.shields.io/crates/v/local-search?style=flat-square&amp;logo=rust&amp;logoColor=white&amp;label=crates.io&amp;color=168f94"></a>
+  <a href="https://www.npmjs.com/package/@kevinliu01/localsearch"><img alt="npm" src="https://img.shields.io/npm/v/%40kevinliu01%2Flocalsearch?style=flat-square&amp;logo=npm&amp;logoColor=white&amp;label=npm&amp;color=168f94"></a>
   <img alt="Release binary: 1.06 MB" src="https://img.shields.io/badge/release%20binary-1.06%20MB-168f94?style=flat-square&amp;logo=rust&amp;logoColor=white">
   <img alt="Median warm startup: 4.61 ms" src="https://img.shields.io/badge/warm%20startup-4.61%20ms-168f94?style=flat-square">
   <a href="https://github.com/Kevin-Liu-01/Local-Search/blob/main/LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-555?style=flat-square"></a>
@@ -38,6 +39,19 @@ the browser.
 - Compatibility binaries: `local-search` and `local-browser`.
 
 ## Install
+
+Install through npm (Node.js 18+ and Rust/Cargo are required for the native
+build):
+
+```sh
+npm install -g @kevinliu01/localsearch
+```
+
+The npm package compiles and installs the same versioned Rust crate inside the
+package, then exposes `lsearch`, `localsearch`, `local-search`, and
+`local-browser`. There is no separate JavaScript implementation.
+
+Or install directly with Cargo:
 
 ```sh
 cargo install local-search

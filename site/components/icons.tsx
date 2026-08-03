@@ -106,6 +106,10 @@ export function CargoBrandIcon(props: BrandIconProps) {
   return <BrandAssetIcon {...props} name="cargo" src="/brand/cargo.png" />;
 }
 
+export function NpmBrandIcon(props: BrandIconProps) {
+  return <BrandAssetIcon {...props} name="npm" src="/brand/npm.svg" />;
+}
+
 export function CratesIoBrandIcon(props: BrandIconProps) {
   return <BrandAssetIcon {...props} name="crates-io" src="/brand/crates-io.png" />;
 }

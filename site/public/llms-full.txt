@@ -15,6 +15,8 @@ Coding agents often need current web context, but hosted search APIs require a s
 Stable package:
 
 ```sh
+npm install -g @kevinliu01/localsearch
+# or
 cargo install local-search
 ```
 
@@ -128,7 +130,8 @@ local-search does not require a local-search cloud account or hosted local-searc
 - License: MIT
 - Author: Kevin Liu
 - Source: https://github.com/Kevin-Liu-01/Local-Search
-- Package: https://crates.io/crates/local-search
+- npm package: https://www.npmjs.com/package/@kevinliu01/localsearch
+- Cargo package: https://crates.io/crates/local-search
 - Author site: https://www.kevin-liu.tech/
 
 ## Frequently asked questions

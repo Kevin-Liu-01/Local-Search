@@ -27,6 +27,7 @@ function publicAsset(relativePath: string, mimeType: string) {
 
 const diagram = publicAsset("social/local-search-isometric.png", "image/png");
 const cargo = publicAsset("brand/cargo.png", "image/png");
+const npm = publicAsset("brand/npm.svg", "image/svg+xml");
 
 const searchEngines = [
   ["Google", publicAsset("brand/google.svg", "image/svg+xml")],
@@ -216,26 +217,42 @@ export function createSocialImage() {
           style={{
             position: "absolute",
             left: 58,
-            bottom: 35,
+            bottom: 27,
             display: "flex",
-            alignItems: "center",
+            flexDirection: "column",
+            alignItems: "flex-start",
             color: color.ink,
             fontSize: 19,
             fontWeight: 650,
             letterSpacing: -0.3,
           }}
         >
-          <img
-            alt="Cargo"
-            src={cargo}
-            width="35"
-            height="35"
-            style={{ width: 35, height: 35, objectFit: "contain" }}
-          />
-          <span style={{ marginLeft: 13, marginRight: 10, display: "flex", color: color.accent }}>
-            $
-          </span>
-          cargo install local-search
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <img
+              alt="Cargo"
+              src={cargo}
+              width="35"
+              height="35"
+              style={{ width: 35, height: 35, objectFit: "contain" }}
+            />
+            <span style={{ marginLeft: 13, marginRight: 10, display: "flex", color: color.accent }}>
+              $
+            </span>
+            <span style={{ display: "flex" }}>cargo install local-search</span>
+          </div>
+          <div style={{ marginTop: 6, display: "flex", alignItems: "center" }}>
+            <img
+              alt="npm"
+              src={npm}
+              width="35"
+              height="35"
+              style={{ width: 35, height: 35, objectFit: "contain" }}
+            />
+            <span style={{ marginLeft: 13, marginRight: 10, display: "flex", color: color.accent }}>
+              $
+            </span>
+            <span style={{ display: "flex" }}>npm install -g @kevinliu01/localsearch</span>
+          </div>
         </div>
       </div>
     ),

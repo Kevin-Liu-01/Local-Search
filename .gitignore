@@ -1,6 +1,8 @@
 /target/
 /.local-browser/
 /artifacts/
+/npm/localsearch/vendor/
+*.tgz
 /.env.bench.local
 __pycache__/
 *.har

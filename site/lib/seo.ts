@@ -10,6 +10,7 @@ export const SOCIAL_IMAGE_ALT = "local-search — an open-source Rust browser se
 
 export const REPOSITORY_URL = "https://github.com/Kevin-Liu-01/Local-Search";
 export const CRATE_URL = "https://crates.io/crates/local-search";
+export const NPM_URL = "https://www.npmjs.com/package/@kevinliu01/localsearch";
 export const AUTHOR_URL = "https://www.kevin-liu.tech/";
 export const AUTHOR_GITHUB_URL = "https://github.com/Kevin-Liu-01";
 export const AUTHOR_X_URL = "https://x.com/kevskgs";
@@ -35,7 +36,7 @@ export const FAQS = [
   },
   {
     question: "Does local-search need a search API key?",
-    answer: "No. local-search uses the browser already running on your machine, so there is no hosted search account, metered search plan, or paid API key. Install it from crates.io and run searches from the shell.",
+    answer: "No. local-search uses the browser already running on your machine, so there is no hosted search account, metered search plan, or paid API key. Install it through npm or crates.io and run searches from the shell.",
   },
   {
     question: "Which coding agents can use local-search?",
@@ -59,7 +60,7 @@ export const FAQS = [
   },
   {
     question: "Is local-search free and open source?",
-    answer: "Yes. local-search is MIT-licensed open-source software published on GitHub and crates.io. It does not require a local-search subscription, hosted search account, or paid API dependency. Queries still use the selected public search engine through the browser on your machine.",
+    answer: "Yes. local-search is MIT-licensed open-source software published on GitHub, npm, and crates.io. It does not require a local-search subscription, hosted search account, or paid API dependency. Queries still use the selected public search engine through the browser on your machine.",
   },
 ] as const;
 
@@ -135,11 +136,11 @@ export const STRUCTURED_DATA = {
       description: SITE_DESCRIPTION,
       applicationCategory: "DeveloperApplication",
       applicationSubCategory: "Browser search CLI for AI agents",
-      softwareVersion: "0.1.2",
+      softwareVersion: "0.1.3",
       operatingSystem: "macOS, Linux, and Windows with Chrome or Chromium",
       runtimePlatform: "Chrome or Chromium",
-      downloadUrl: CRATE_URL,
-      installUrl: CRATE_URL,
+      downloadUrl: [CRATE_URL, NPM_URL],
+      installUrl: [CRATE_URL, NPM_URL],
       license: "https://opensource.org/license/mit",
       isAccessibleForFree: true,
       offers: {
@@ -174,7 +175,7 @@ export const STRUCTURED_DATA = {
         },
       ],
       author: { "@id": `${SITE_URL}/#author` },
-      sameAs: [REPOSITORY_URL, CRATE_URL],
+      sameAs: [REPOSITORY_URL, CRATE_URL, NPM_URL],
       subjectOf: { "@id": `${SITE_URL}/#benchmarks` },
     },
     {
@@ -185,7 +186,7 @@ export const STRUCTURED_DATA = {
       codeRepository: REPOSITORY_URL,
       programmingLanguage: "Rust",
       runtimePlatform: "Chrome or Chromium",
-      version: "0.1.2",
+      version: "0.1.3",
       license: "https://opensource.org/license/mit",
       author: { "@id": `${SITE_URL}/#author` },
       targetProduct: { "@id": `${SITE_URL}/#software` },

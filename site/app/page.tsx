@@ -2,6 +2,7 @@ import { AgentPlayground } from "@/components/agent-playground";
 import { AgentCopyButton } from "@/components/agent-copy-button";
 import { LocalSearchLogo } from "@/components/brand-logo";
 import { CopyCommand } from "@/components/copy-command";
+import { InstallCommand } from "@/components/install-command";
 import { FAQS, RELEASE_AUDIT } from "@/lib/seo";
 import type { ReactNode } from "react";
 import {
@@ -169,7 +170,7 @@ export default function Home() {
                   <CratesIoBrandIcon size={22} /> crates.io
                 </a>
               </div>
-              <CopyCommand value="cargo install local-search" />
+              <InstallCommand />
               <div className="hero-proof" aria-label="Product benefits">
                 <span><RustOfficialIcon size={15} /> Built with Rust</span>
                 <span><JsonSchemaBrandIcon size={16} /> Stable JSON</span>
@@ -392,7 +393,7 @@ export default function Home() {
 
         <section className="closing-cta">
           <h2><span>Give agents the web.</span><span>Skip search bills.</span></h2>
-          <CopyCommand value="cargo install local-search" />
+          <InstallCommand />
           <div className="closing-links">
             <a href="https://github.com/Kevin-Liu-01/local-search" target="_blank" rel="noreferrer">Get started on GitHub <ChevronRightIcon size={16} /></a>
             <a href="https://crates.io/crates/local-search" target="_blank" rel="noreferrer">View the crate <ChevronRightIcon size={16} /></a>
@@ -407,6 +408,7 @@ export default function Home() {
         <div>
           <a href="https://github.com/Kevin-Liu-01/local-search" target="_blank" rel="noreferrer"><span>GitHub</span><ArrowUpRightIcon size={11} /></a>
           <a href="https://crates.io/crates/local-search" target="_blank" rel="noreferrer"><span>crates.io</span><ArrowUpRightIcon size={11} /></a>
+          <a href="https://www.npmjs.com/package/@kevinliu01/localsearch" target="_blank" rel="noreferrer"><span>npm</span><ArrowUpRightIcon size={11} /></a>
           <a href="https://rustfoundation.org/policy/rust-trademark-policy/" target="_blank" rel="noreferrer"><span>Rust/Cargo attribution</span><ArrowUpRightIcon size={11} /></a>
           <a href="https://github.com/Kevin-Liu-01" target="_blank" rel="noreferrer"><span>Built by Kevin Liu</span><ArrowUpRightIcon size={11} /></a>
         </div>

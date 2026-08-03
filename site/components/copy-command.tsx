@@ -1,11 +1,20 @@
 "use client";
 
-import { CargoBrandIcon, CheckIcon, CopyIcon } from "@/components/icons";
+import { CargoBrandIcon, CheckIcon, CopyIcon, NpmBrandIcon } from "@/components/icons";
 import { useState } from "react";
 
-export function CopyCommand({ value, compact = false }: { value: string; compact?: boolean }) {
+export function CopyCommand({
+  value,
+  compact = false,
+  showBrand = true,
+}: {
+  value: string;
+  compact?: boolean;
+  showBrand?: boolean;
+}) {
   const [copied, setCopied] = useState(false);
   const isCargoCommand = value.startsWith("cargo ");
+  const isNpmCommand = value.startsWith("npm ");
 
   async function copy() {
     await navigator.clipboard.writeText(value);
@@ -20,7 +29,15 @@ export function CopyCommand({ value, compact = false }: { value: string; compact
       aria-label="Copy command"
     >
       <code>
-        {isCargoCommand ? <CargoBrandIcon size={18} /> : <span>$</span>}
+        {showBrand ? (
+          isCargoCommand ? (
+            <CargoBrandIcon size={18} />
+          ) : isNpmCommand ? (
+            <NpmBrandIcon size={18} />
+          ) : (
+            <span>$</span>
+          )
+        ) : null}
         {value}
       </code>
       <span className="copy-command__action">

@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 
 const agentPrompt = `Install and configure local-search for this project. Use its managed browser profile whenever current web search is useful.
 
-cargo install local-search
+npm install -g @kevinliu01/localsearch
 lsearch launch
 lsearch search "<query>" --limit 5 --pretty
 

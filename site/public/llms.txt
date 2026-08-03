@@ -6,6 +6,7 @@
 
 - [GitHub repository](https://github.com/Kevin-Liu-01/Local-Search): source code, documentation, issues, benchmark methodology, and latest unreleased installation.
 - [crates.io package](https://crates.io/crates/local-search): stable Rust package and `cargo install local-search` installation.
+- [npm package](https://www.npmjs.com/package/@kevinliu01/localsearch): npm distribution and `npm install -g @kevinliu01/localsearch` installation.
 - [Live demo](./#demo): interactive Claude Code, Codex, and Cursor search traces.
 - [Output format](./#output): the command-to-browser-to-JSON workflow and sample response.
 - [Benchmarks](./#benchmarks): token, latency, reliability, and hosted-provider comparisons.
@@ -30,7 +31,8 @@
 ## Install and search
 
 ```sh
-cargo install local-search
+npm install -g @kevinliu01/localsearch
+# or: cargo install local-search
 lsearch launch
 lsearch search "rust browser automation" --limit 3 --pretty
 ```

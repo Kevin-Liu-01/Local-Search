@@ -328,6 +328,73 @@ code, pre { font-family: var(--font-manrope), sans-serif; }
   text-transform: uppercase;
 }
 .copy-command:hover { border-color: #aaa; }
+.install-command {
+  width: min(100%, 520px);
+  min-height: 52px;
+  margin-top: 14px;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: white;
+}
+.install-command > .copy-command {
+  min-width: 0;
+  min-height: 42px;
+  flex: 1 1 auto;
+  margin: 0;
+  padding-left: 14px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+.install-command > .copy-command:hover { border-color: transparent; }
+.install-command > .copy-command code { font-size: 12px; }
+.install-command__switch {
+  width: 132px;
+  height: 42px;
+  flex: 0 0 132px;
+  padding: 3px;
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--paper);
+}
+.install-command__indicator {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: calc(50% - 3px);
+  height: 34px;
+  border: 1px solid color-mix(in srgb, var(--accent) 36%, var(--line));
+  border-radius: 4px;
+  background: var(--accent-soft);
+  box-shadow: 0 1px 2px rgba(16, 55, 57, .08);
+  transform: translateX(0);
+  transition: transform 260ms cubic-bezier(.22, 1, .36, 1);
+}
+.install-command--npm .install-command__indicator { transform: translateX(100%); }
+.install-command__switch button {
+  min-width: 0;
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: var(--muted);
+  border: 0;
+  background: transparent;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 720;
+  cursor: pointer;
+  transition: color 140ms ease;
+}
+.install-command__switch button.is-active { color: var(--accent-deep); }
 .hero-proof { margin-top: 16px; display: flex; flex-wrap: wrap; justify-content: flex-start; gap: 13px 25px; }
 .hero-proof > span { display: flex; align-items: center; gap: 7px; color: var(--muted); font-size: 12px; }
 .hero-proof svg { color: var(--accent); }
@@ -911,7 +978,12 @@ main > .closing-cta,
 
 .closing-cta { padding: 135px 24px; display: flex; flex-direction: column; align-items: center; color: white; background: var(--ink); text-align: center; }
 .closing-cta h2 { max-width: 960px; margin: 0; font-size: clamp(48px, 6.5vw, 88px); line-height: 1; font-weight: 600; letter-spacing: -.04em; text-wrap: balance; }
-.closing-cta .copy-command { margin-top: 41px; color: white; border-color: #4d4e49; background: #21221f; }
+.closing-cta .install-command { margin-top: 41px; border-color: #4d4e49; background: #21221f; }
+.closing-cta .install-command .copy-command { color: white; background: transparent; }
+.closing-cta .install-command__switch { border-color: #4d4e49; background: #21221f; }
+.closing-cta .install-command__indicator { border-color: #70716b; background: #f4f5f0; }
+.closing-cta .install-command__switch button { color: #a9aaa4; }
+.closing-cta .install-command__switch button.is-active { color: var(--ink); }
 .closing-cta .copy-command__action { border-color: #4d4e49; }
 .closing-links { margin-top: 22px; display: flex; gap: 23px; }
 .closing-links a { display: flex; align-items: center; gap: 5px; color: #bbbcb5; font-size: 12px; text-decoration: none; }
