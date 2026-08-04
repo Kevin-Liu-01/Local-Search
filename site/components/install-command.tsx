@@ -11,7 +11,7 @@ const commands: Record<Installer, string> = {
   npm: "npm install -g @kevinliu01/localsearch",
 };
 
-export function InstallCommand({ initial = "npm" }: { initial?: Installer }) {
+export function InstallCommand({ initial = "cargo" }: { initial?: Installer }) {
   const [installer, setInstaller] = useState<Installer>(initial);
 
   return (

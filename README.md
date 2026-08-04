@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://local-search-xi.vercel.app">
-    <img src="https://raw.githubusercontent.com/Kevin-Liu-01/Local-Search/main/site/public/social/local-search-demo.gif?v=2026-08-04" alt="local-search running structured Google, Bing, DuckDuckGo, and Brave searches through a local browser" width="100%">
+    <img src="https://raw.githubusercontent.com/Kevin-Liu-01/Local-Search/main/site/public/social/local-search-demo.gif?v=2026-08-04-colored-engines" alt="local-search running structured Google, Bing, DuckDuckGo, and Brave searches through a local browser" width="100%">
   </a>
 </p>
 
