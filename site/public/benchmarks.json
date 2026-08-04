@@ -28,7 +28,7 @@
       "optimized_median_ms": 4.61,
       "improvement_percent": 36
     },
-    "compressed_crate_bytes": 51554,
+    "compressed_crate_bytes": 51555,
     "compressed_crate_version": "0.1.4",
     "compressed_crate_registry_verified": "2026-08-04",
     "compressed_crate_url": "https://crates.io/api/v1/crates/local-search/0.1.4/download",
