@@ -33,7 +33,7 @@
     <text x="76" y="440" fill="#0D6F74" font-size="21" font-weight="740">No API key. No metered search bill.</text>
 
     <path d="M76 477.5H576M242.5 477.5V535M409.5 477.5V535" stroke="#D7D7D1"/>
-    <text x="76" y="510" fill="#151515" font-size="22" font-weight="780">50.4 KiB</text>
+    <text x="76" y="510" fill="#151515" font-size="22" font-weight="780">50.3 KiB</text>
     <text x="76" y="531" fill="#6F6F69" font-size="9.5" font-weight="720" letter-spacing="1.3">CRATES.IO PACKAGE</text>
     <text x="265" y="510" fill="#0D6F74" font-size="22" font-weight="780">96.5%</text>
     <text x="265" y="531" fill="#6F6F69" font-size="9.5" font-weight="720" letter-spacing="1.3">LESS AGENT CONTEXT</text>

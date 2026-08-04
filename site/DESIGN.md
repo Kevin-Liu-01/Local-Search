@@ -205,7 +205,7 @@ fixed-size terminal—not a slideshow inside a marketing card.
 
 - The summary strip is a single aligned row of compact facts on desktop and a
   responsive grid on smaller screens.
-- Values stay on one line (`50.4 KiB`, not a broken number/unit stack).
+- Values stay on one line (`50.3 KiB`, not a broken number/unit stack).
 - Treat package-size and startup figures as recorded release measurements, not
   universal guarantees.
 - Keep the dither subtle enough that numbers remain the dominant signal.

@@ -6,7 +6,7 @@ Your browser is already a search API.
 
 local-search gives coding agents structured web search through local Chrome.
 
-No API key. No metered search bill. 50.4 KiB crate.
+No API key. No metered search bill. 50.3 KiB crate.
 
 `cargo install local-search`
 
@@ -24,7 +24,7 @@ https://github.com/Kevin-Liu-01/Local-Search
 
 ## Standalone post C · Numbers
 
-local-search is a 50.4 KiB Rust crate that turns your browser into a search API.
+local-search is a 50.3 KiB Rust crate that turns your browser into a search API.
 
 Matched provider run:
 • 53.4 tokens/result
@@ -84,7 +84,7 @@ Google, Bing, DuckDuckGo, and Brave Search all run through your local browser.
 
 The CLI is small, too:
 
-• 50.4 KiB compressed crates.io package
+• 50.3 KiB compressed crates.io package
 • 1.06 MB arm64 macOS release binary
 • 4.61 ms median warm process start
 
