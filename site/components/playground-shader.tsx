@@ -15,16 +15,34 @@ export function PlaygroundShader() {
   const root = useRef<HTMLDivElement>(null);
   const [hasEntered, setHasEntered] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [hasWebGL, setHasWebGL] = useState(false);
   const [reduceMotion, setReduceMotion] = useState(true);
 
   useEffect(() => {
+    let webglSupported = false;
+    try {
+      const canvas = document.createElement("canvas");
+      webglSupported = Boolean(
+        canvas.getContext("webgl2") ||
+          canvas.getContext("webgl") ||
+          canvas.getContext("experimental-webgl"),
+      );
+    } catch {}
+    const webglTimer = globalThis.setTimeout(
+      () => setHasWebGL(webglSupported),
+      0,
+    );
+
     const motion = globalThis.matchMedia?.("(prefers-reduced-motion: reduce)");
     const syncMotion = () => setReduceMotion(motion?.matches ?? true);
 
     syncMotion();
     motion?.addEventListener("change", syncMotion);
 
-    return () => motion?.removeEventListener("change", syncMotion);
+    return () => {
+      globalThis.clearTimeout(webglTimer);
+      motion?.removeEventListener("change", syncMotion);
+    };
   }, []);
 
   useEffect(() => {
@@ -57,7 +75,7 @@ export function PlaygroundShader() {
       <span className="playground-shader__image playground-shader__image--indigo" />
       <span className="playground-shader__image playground-shader__image--aurora" />
 
-      {hasEntered ? (
+      {hasEntered && hasWebGL ? (
         <GrainGradient
           className="playground-shader__canvas"
           width="100%"

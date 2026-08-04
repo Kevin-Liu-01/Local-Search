@@ -72,8 +72,10 @@ lsearch launch --browser-path "/Applications/Brave Browser.app/Contents/MacOS/Br
 lsearch launch --no-persist
 ```
 
-Use `--no-persist` to avoid saving the endpoint as the default. Use a separate
-profile path rather than Chrome's default user profile.
+Use `--no-persist` to avoid saving the endpoint as the default. The launched
+process still gets a port-scoped lifecycle marker so `cleanup --port PORT
+--kill` can stop it. Use a separate profile path rather than Chrome's default
+user profile.
 
 Use `lsearch doctor --pretty` to inspect supported browsers and discovered
 endpoints. Discover and persist an existing browser connection:
@@ -401,9 +403,10 @@ requested.
 ## Clean up managed browser state
 
 Inspect by default; add `--kill` to stop only managed listener PIDs, remove stale
-Chrome marker files, clear the saved endpoint, and preserve profile
-cookies/history. Use `--force` only when SIGTERM is insufficient and force is
-clearly in scope:
+Chrome marker files, clear a saved loopback endpoint only when it uses the same
+port, and preserve profile cookies/history. PID markers are scoped by custom
+port. Use `--force` only when SIGTERM is insufficient and force is clearly in
+scope:
 
 ```bash
 lsearch cleanup --pretty

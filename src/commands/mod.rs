@@ -260,8 +260,8 @@ async fn start_managed_browser(args: &LaunchArgs) -> Result<ManagedLaunch> {
             target_id: None,
         })
         .await?;
-        write_managed_pid(child.id())?;
     }
+    write_managed_pid(child.id(), args.port)?;
 
     Ok(ManagedLaunch {
         endpoint,
@@ -283,9 +283,9 @@ async fn cleanup(cli: &Cli, args: &crate::cli::CleanupArgs) -> Result<()> {
         .map(|path| config::display_path(path))
         .collect::<Vec<_>>();
     let pids = managed_browser_pids(args.port)?;
-    let pid_file = config::managed_pid_file()?;
+    let pid_file = config::managed_pid_file(args.port)?;
 
-    if args.kill {
+    let saved_endpoint_cleared = if args.kill {
         for pid in &pids {
             terminate_pid(*pid, args.force).await?;
         }
@@ -297,8 +297,23 @@ async fn cleanup(cli: &Cli, args: &crate::cli::CleanupArgs) -> Result<()> {
         if pid_file.exists() {
             std::fs::remove_file(&pid_file).at(config::display_path(&pid_file))?;
         }
-        config::save(&Config::default()).await?;
-    }
+        clear_saved_endpoint_for_port(args.port).await?
+    } else {
+        false
+    };
+
+    let actions = if args.kill {
+        let mut actions = vec![
+            "terminated managed browser pids",
+            "removed stale profile marker files",
+        ];
+        if saved_endpoint_cleared {
+            actions.push("cleared saved endpoint");
+        }
+        actions
+    } else {
+        vec!["pass --kill to terminate managed browser pids and remove stale profile marker files"]
+    };
 
     print_json(
         &json!({
@@ -309,11 +324,7 @@ async fn cleanup(cli: &Cli, args: &crate::cli::CleanupArgs) -> Result<()> {
             "profile": config::display_path(&profile),
             "pidFile": config::display_path(&pid_file),
             "profileMarkerFiles": existing_marker_files,
-            "actions": if args.kill {
-                json!(["terminated managed browser pids", "removed stale profile marker files", "cleared saved endpoint"])
-            } else {
-                json!(["pass --kill to terminate managed browser pids and remove stale profile marker files"])
-            },
+            "actions": actions,
         }),
         cli.pretty,
     )
@@ -340,8 +351,8 @@ fn managed_profile_marker_files(profile: &Path) -> Vec<PathBuf> {
     .collect()
 }
 
-fn write_managed_pid(pid: u32) -> Result<()> {
-    let path = config::managed_pid_file()?;
+fn write_managed_pid(pid: u32, port: u16) -> Result<()> {
+    let path = config::managed_pid_file(port)?;
     if let Some(parent) = path.parent() {
         std::fs::create_dir_all(parent).at(config::display_path(parent))?;
     }
@@ -350,7 +361,7 @@ fn write_managed_pid(pid: u32) -> Result<()> {
 
 fn managed_browser_pids(port: u16) -> Result<Vec<u32>> {
     let mut pids = Vec::new();
-    let pid_file = config::managed_pid_file()?;
+    let pid_file = config::managed_pid_file(port)?;
     if let Ok(raw) = std::fs::read_to_string(&pid_file)
         && let Ok(pid) = raw.trim().parse::<u32>()
         && pid_is_live(pid)
@@ -359,7 +370,7 @@ fn managed_browser_pids(port: u16) -> Result<Vec<u32>> {
     }
 
     let output = std::process::Command::new("lsof")
-        .args(["-nP", "-tiTCP", &format!(":{port}"), "-sTCP:LISTEN"])
+        .args(["-nP", &format!("-tiTCP:{port}"), "-sTCP:LISTEN"])
         .output();
     if let Ok(output) = output
         && output.status.success()
@@ -375,6 +386,27 @@ fn managed_browser_pids(port: u16) -> Result<Vec<u32>> {
         }
     }
     Ok(pids)
+}
+
+async fn clear_saved_endpoint_for_port(port: u16) -> Result<bool> {
+    let loaded = config::load().await?;
+    if loaded
+        .endpoint
+        .as_deref()
+        .is_some_and(|endpoint| endpoint_uses_local_port(endpoint, port))
+    {
+        config::save(&Config::default()).await?;
+        return Ok(true);
+    }
+    Ok(false)
+}
+
+fn endpoint_uses_local_port(endpoint: &str, port: u16) -> bool {
+    let Ok(url) = url::Url::parse(endpoint) else {
+        return false;
+    };
+    matches!(url.host_str(), Some("127.0.0.1" | "localhost" | "::1"))
+        && url.port_or_known_default() == Some(port)
 }
 
 fn pid_is_live(pid: u32) -> bool {
@@ -542,10 +574,11 @@ async fn search(
         SearchEngine::Duckduckgo => ".result__a",
     };
     let requested_results = args.limit.clamp(1, 3);
-    let query = serde_json::to_string(&args.query)?;
     client
-        .wait_for_js(&format!(
-            "(() => {{ const body = document.body?.innerText || ''; const onQuery = new URL(location.href).searchParams.get('q') === {query}; const resultsReady = document.querySelectorAll('{result_selector}').length >= {requested_results}; const genericReady = document.querySelectorAll('a[href]').length > 5 && body.length > 100; return (onQuery && (resultsReady || genericReady)) || /captcha|unusual traffic|verify you are human|solve the challenge|one last step/i.test(body); }})()"
+        .wait_for_js(&scripts::search_ready(
+            &args.query,
+            result_selector,
+            requested_results,
         ))
         .await?;
     let mut value = client.evaluate(scripts::search_results(), true).await?;
@@ -1099,9 +1132,29 @@ mod tests {
     use crate::cli::{SearchEngine, SearchFormat};
 
     use super::{
-        resolve_search_format, search_engine_label, search_engine_url, truncate_search_snippets,
-        validate_content_page,
+        endpoint_uses_local_port, resolve_search_format, search_engine_label, search_engine_url,
+        truncate_search_snippets, validate_content_page,
     };
+
+    #[test]
+    fn saved_endpoint_cleanup_only_matches_the_requested_local_port() {
+        assert!(endpoint_uses_local_port(
+            "ws://127.0.0.1:9322/devtools/browser/id",
+            9322
+        ));
+        assert!(endpoint_uses_local_port(
+            "http://localhost:9444/json/version",
+            9444
+        ));
+        assert!(!endpoint_uses_local_port(
+            "ws://127.0.0.1:9322/devtools/browser/id",
+            9444
+        ));
+        assert!(!endpoint_uses_local_port(
+            "wss://remote.example.com:9322/devtools/browser/id",
+            9322
+        ));
+    }
 
     #[test]
     fn brave_search_uses_the_public_browser_surface() {

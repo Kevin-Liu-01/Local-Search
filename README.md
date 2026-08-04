@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://local-search-xi.vercel.app">
+  <a href="https://lsearch.dev">
     <img src="https://raw.githubusercontent.com/Kevin-Liu-01/Local-Search/main/site/public/social/local-search-demo.gif?v=2026-08-04-colored-engines" alt="local-search running structured Google, Bing, DuckDuckGo, and Brave searches through a local browser" width="100%">
   </a>
 </p>
@@ -7,10 +7,10 @@
 <p align="center">
   <a href="https://crates.io/crates/local-search"><img alt="crates.io" src="https://img.shields.io/crates/v/local-search?style=flat-square&amp;logo=rust&amp;logoColor=white&amp;label=crates.io&amp;color=168f94"></a>
   <a href="https://www.npmjs.com/package/@kevinliu01/localsearch"><img alt="npm" src="https://img.shields.io/npm/v/%40kevinliu01%2Flocalsearch?style=flat-square&amp;logo=npm&amp;logoColor=white&amp;label=npm&amp;color=168f94"></a>
-  <img alt="Release binary: 1.06 MB" src="https://img.shields.io/badge/release%20binary-1.06%20MB-168f94?style=flat-square&amp;logo=rust&amp;logoColor=white">
-  <img alt="Median warm startup: 4.61 ms" src="https://img.shields.io/badge/warm%20startup-4.61%20ms-168f94?style=flat-square">
+  <img alt="Recorded arm64 build: 1.06 MB" src="https://img.shields.io/badge/recorded%20arm64%20build-1.06%20MB-168f94?style=flat-square&amp;logo=rust&amp;logoColor=white">
+  <img alt="Recorded median warm startup: 4.61 ms" src="https://img.shields.io/badge/recorded%20warm%20startup-4.61%20ms-168f94?style=flat-square">
   <a href="https://github.com/Kevin-Liu-01/Local-Search/blob/main/LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-555?style=flat-square"></a>
-  <a href="https://local-search-xi.vercel.app"><img alt="Documentation" src="https://img.shields.io/badge/docs-local--search-555?style=flat-square"></a>
+  <a href="https://lsearch.dev"><img alt="Documentation" src="https://img.shields.io/badge/docs-local--search-555?style=flat-square"></a>
 </p>
 
 # local-search
@@ -120,8 +120,8 @@ lsearch cleanup --kill --pretty
 - Search engine: the search site queried inside the browser.
 - Browser backend: the local browser automation transport used to load pages.
 
-Search engines are switched with `--engine`. Google is the built-in default for
-the fastest cold searches. Pass `--engine` when you want DuckDuckGo, Bing, or Brave Search:
+Search engines are switched with `--engine`. Google is the built-in default.
+Pass `--engine` when you want DuckDuckGo, Bing, or Brave Search:
 
 ```sh
 lsearch search "open source browser automation" --engine duckduckgo
@@ -167,8 +167,8 @@ lsearch --cdp ws://127.0.0.1:9222/devtools/browser/... search "browser tooling" 
 
 Safari is not currently a supported local signed-in browser backend. Safari's
 official WebDriver automation uses isolated automation sessions, not the normal
-profile state this project depends on. In practice: use Google, DuckDuckGo, or
-Bing as the search engine inside a managed Chrome/Chromium profile; do not expect
+profile state this project depends on. In practice: use Google, DuckDuckGo,
+Bing, or Brave Search inside a managed Chrome/Chromium profile; do not expect
 `--browser safari` to reuse your normal Safari session.
 
 ## Token Benchmarks
@@ -364,7 +364,9 @@ lsearch cleanup --kill --pretty
 
 when the task is done and the managed browser should be stopped. Cleanup only
 targets the managed local-search browser listener and stale profile marker files;
-it does not delete cookies, history, or profile data.
+it does not delete cookies, history, or profile data. Custom ports use separate
+PID markers, and cleanup only clears a saved loopback endpoint when its port
+matches the cleanup request.
 
 ## Browser Setup
 

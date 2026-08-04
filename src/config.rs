@@ -34,8 +34,13 @@ pub fn managed_devtools_file() -> Result<PathBuf> {
     Ok(managed_profile_dir()?.join("DevToolsActivePort"))
 }
 
-pub fn managed_pid_file() -> Result<PathBuf> {
-    Ok(config_dir()?.join("managed-chrome.pid"))
+pub fn managed_pid_file(port: u16) -> Result<PathBuf> {
+    let name = if port == 9322 {
+        "managed-chrome.pid".to_owned()
+    } else {
+        format!("managed-chrome-{port}.pid")
+    };
+    Ok(config_dir()?.join(name))
 }
 
 pub fn search_cache_dir() -> Result<PathBuf> {
@@ -86,4 +91,29 @@ pub async fn save(config: &Config) -> Result<PathBuf> {
     let raw = serde_json::to_vec_pretty(config)?;
     std::fs::write(&path, raw).at(path.display().to_string())?;
     Ok(path)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::managed_pid_file;
+
+    #[test]
+    fn managed_pid_files_are_scoped_to_non_default_ports() {
+        assert_eq!(
+            managed_pid_file(9322)
+                .unwrap()
+                .file_name()
+                .unwrap()
+                .to_string_lossy(),
+            "managed-chrome.pid"
+        );
+        assert_eq!(
+            managed_pid_file(9444)
+                .unwrap()
+                .file_name()
+                .unwrap()
+                .to_string_lossy(),
+            "managed-chrome-9444.pid"
+        );
+    }
 }

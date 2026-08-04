@@ -113,9 +113,9 @@ A separate release audit was recorded on July 27, 2026 using Rust 1.97.1 on arm6
 - Primary `lsearch` executable: 1,055,072 bytes (1.06 MB), down from 4,623,984 bytes before optimization, or 77.2% smaller.
 - Median warm `lsearch --version` process startup: 4.61 milliseconds, down from 7.20 milliseconds, or 36% faster.
 - Startup sample: 200 alternating warm launches for each binary.
-- Compressed `local-search` 0.1.3 crate package: 56.8 KiB.
+- Compressed `local-search` 0.1.4 crate package: 50.4 KiB.
 
-These measurements describe CLI process startup and native distribution size, not browser or search-engine latency. Machine-readable results are published at https://local-search-xi.vercel.app/benchmarks.json.
+These measurements describe CLI process startup and native distribution size, not browser or search-engine latency. Machine-readable results are published at https://www.lsearch.dev/benchmarks.json.
 
 ## Privacy and network boundary
 
@@ -125,7 +125,8 @@ local-search does not require a local-search cloud account or hosted local-searc
 
 - Name: local-search
 - Command: lsearch
-- Package version: 0.1.2
+- Cargo package version: 0.1.4
+- npm package version: 0.1.5
 - Programming language: Rust
 - License: MIT
 - Author: Kevin Liu

@@ -1,6 +1,7 @@
-const configuredSiteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://lsearch.dev";
+const configuredSiteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.lsearch.dev";
 
 export const SITE_URL = configuredSiteUrl.replace(/\/$/, "");
+export const SITE_LAST_UPDATED = "2026-08-04";
 export const SITE_NAME = "local-search";
 export const SITE_TITLE = "local-search: Free Browser Search API for AI Agents";
 export const SITE_DESCRIPTION = "Open-source Rust CLI for structured Google, Bing, DuckDuckGo, and Brave Search through your local browser. Built for coding agents, with no API key or search bill.";
@@ -56,7 +57,7 @@ export const FAQS = [
   },
   {
     question: "How small and fast is the local-search Rust binary?",
-    answer: `The compressed local-search 0.1.3 crates.io package is 56.8 KiB. In the July 27, 2026 arm64 macOS release audit, the compiled lsearch executable measured ${RELEASE_AUDIT.binaryBytes.toLocaleString("en-US")} bytes (${RELEASE_AUDIT.binarySize}), down from ${RELEASE_AUDIT.baselineBinaryBytes.toLocaleString("en-US")} bytes. Median warm CLI process startup fell from ${RELEASE_AUDIT.baselineStartupMedianMs.toFixed(2)} to ${RELEASE_AUDIT.startupMedianMs.toFixed(2)} milliseconds across ${RELEASE_AUDIT.startupSamples} alternating launches. These figures describe that machine and build, not search latency.`,
+    answer: `The compressed local-search 0.1.4 crates.io package is 50.4 KiB. In the July 27, 2026 arm64 macOS release audit, the compiled lsearch executable measured ${RELEASE_AUDIT.binaryBytes.toLocaleString("en-US")} bytes (${RELEASE_AUDIT.binarySize}), down from ${RELEASE_AUDIT.baselineBinaryBytes.toLocaleString("en-US")} bytes. Median warm CLI process startup fell from ${RELEASE_AUDIT.baselineStartupMedianMs.toFixed(2)} to ${RELEASE_AUDIT.startupMedianMs.toFixed(2)} milliseconds across ${RELEASE_AUDIT.startupSamples} alternating launches. These figures describe that machine and build, not search latency.`,
   },
   {
     question: "Is local-search free and open source?",
@@ -121,7 +122,7 @@ export const STRUCTURED_DATA = {
         { "@type": "Thing", name: "Structured web search" },
       ],
       author: { "@id": `${SITE_URL}/#author` },
-      dateModified: RELEASE_AUDIT.date,
+      dateModified: SITE_LAST_UPDATED,
       inLanguage: "en-US",
       hasPart: [
         { "@id": `${SITE_URL}/#benchmarks` },
@@ -136,7 +137,7 @@ export const STRUCTURED_DATA = {
       description: SITE_DESCRIPTION,
       applicationCategory: "DeveloperApplication",
       applicationSubCategory: "Browser search CLI for AI agents",
-      softwareVersion: "0.1.3",
+      softwareVersion: "0.1.4",
       operatingSystem: "macOS, Linux, and Windows with Chrome or Chromium",
       runtimePlatform: "Chrome or Chromium",
       downloadUrl: [CRATE_URL, NPM_URL],
@@ -186,7 +187,8 @@ export const STRUCTURED_DATA = {
       codeRepository: REPOSITORY_URL,
       programmingLanguage: "Rust",
       runtimePlatform: "Chrome or Chromium",
-      version: "0.1.3",
+      version: "0.1.4",
+      dateModified: SITE_LAST_UPDATED,
       license: "https://opensource.org/license/mit",
       author: { "@id": `${SITE_URL}/#author` },
       targetProduct: { "@id": `${SITE_URL}/#software` },

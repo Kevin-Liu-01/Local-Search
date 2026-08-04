@@ -3,7 +3,7 @@
   "product": "local-search",
   "command": "lsearch",
   "repository": "https://github.com/Kevin-Liu-01/Local-Search",
-  "updated": "2026-07-27",
+  "updated": "2026-08-04",
   "native_release_audit": {
     "date": "2026-07-27",
     "platform": "aarch64-apple-darwin",
@@ -28,7 +28,10 @@
       "optimized_median_ms": 4.61,
       "improvement_percent": 36
     },
-    "compressed_crate_bytes": 198612,
+    "compressed_crate_bytes": 51564,
+    "compressed_crate_version": "0.1.4",
+    "compressed_crate_registry_verified": "2026-08-04",
+    "compressed_crate_url": "https://crates.io/api/v1/crates/local-search/0.1.4/download",
     "scope": "CLI process startup and native distribution size; not browser or search-engine latency"
   },
   "search_benchmarks": {

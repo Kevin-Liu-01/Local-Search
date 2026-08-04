@@ -156,6 +156,21 @@ pub fn rendered_html() -> &'static str {
     "document.documentElement.outerHTML"
 }
 
+pub fn search_ready(query: &str, result_selector: &str, requested_results: usize) -> String {
+    format!(
+        r#"(() => {{
+const pageText = `${{document.title}}\n${{document.body?.innerText || ''}}`;
+const onQuery = new URL(location.href).searchParams.get('q') === {};
+const resultsReady = document.querySelectorAll({}).length >= {};
+const challenged = /captcha|unusual traffic|verify(?:ing)? (?:you are|you're) (?:a human|not a bot)|not a robot|bots use|bot detection|solve the challenge|following challenge|select all squares|drag the slider|one last step/i.test(pageText);
+return challenged || (onQuery && resultsReady);
+}})()"#,
+        string(query),
+        string(result_selector),
+        requested_results
+    )
+}
+
 pub fn search_results() -> &'static str {
     r#"(() => {
 const clean = (s) => (s || '').trim().replace(/\s+/g, ' ');
@@ -167,20 +182,39 @@ const normalizeSearchUrl = (href) => {
     const parsed = new URL(url);
     const uddg = parsed.searchParams.get('uddg');
     if (/duckduckgo\.com$/i.test(parsed.hostname) && uddg) return new URL(uddg).href;
+    const bingTarget = parsed.searchParams.get('u');
+    if (/bing\.com$/i.test(parsed.hostname) && /\/ck\/a/i.test(parsed.pathname) && bingTarget?.startsWith('a1')) {
+      const encoded = bingTarget.slice(2).replace(/-/g, '+').replace(/_/g, '/');
+      const decoded = atob(encoded.padEnd(Math.ceil(encoded.length / 4) * 4, '='));
+      return new URL(decoded).href;
+    }
   } catch {}
   return url;
 };
+const pageText = `${document.title}\n${document.body?.innerText || ''}`;
+const blocked = /captcha|unusual traffic|verify(?:ing)? (?:you are|you're) (?:a human|not a bot)|not a robot|bots use|bot detection|solve the challenge|following challenge|select all squares|drag the slider|one last step/i.test(pageText);
+if (blocked) return { url: location.href, title: document.title, results: [], blocked: true };
+const isGoogleSearch = /google\..*\/search/i.test(location.href);
+const isBingSearch = /bing\.com\/search/i.test(location.href);
 const isBraveSearch = /search\.brave\.com\/search/i.test(location.href);
-const resultLinks = isBraveSearch
-  ? document.querySelectorAll('.snippet[data-type="web"] a.l1')
-  : document.querySelectorAll('a[href]');
+const isDuckDuckGoSearch = /duckduckgo\.com\/html/i.test(location.href);
+const resultLinks = isGoogleSearch
+  ? Array.from(document.querySelectorAll('a[href]')).filter((a) => a.querySelector('h3'))
+  : isBingSearch
+    ? document.querySelectorAll('li.b_algo h2 a')
+    : isBraveSearch
+      ? document.querySelectorAll('.snippet[data-type="web"] a.l1')
+      : isDuckDuckGoSearch
+        ? document.querySelectorAll('.result__a')
+        : [];
 const candidates = Array.from(resultLinks).map((a) => {
   const url = normalizeSearchUrl(a.href);
-  const title = clean(a.querySelector('.title')?.innerText || a.innerText || a.textContent);
+  const title = clean(a.querySelector('h3, .title')?.innerText || a.innerText || a.textContent);
   if (!url || !title || title.length < 3) return null;
-  if (/google\..*\/search|bing\.com\/search|search\.brave\.com\/search|duckduckgo\.com\/?|javascript:|#/.test(url)) return null;
-  const container = a.closest('.snippet[data-type="web"], article, li, div, section') || a.parentElement;
-  const snippet = clean(container?.querySelector('.content')?.innerText || container?.innerText || '').replace(title, '').slice(0, 500);
+  if (/google\..*\/search|bing\.com\/(?:search|copilotsearch)|search\.brave\.com\/search|duckduckgo\.com\/(?:html)?\/?(?:\?|$)|javascript:|#/.test(url)) return null;
+  const container = a.closest('.snippet[data-type="web"], .result, li.b_algo, div.MjjYud, article') || a.parentElement;
+  const snippetNode = container?.querySelector('.VwiC3b, [data-sncf], .b_caption p, .b_snippet, .content, .snippet-description, .result__snippet');
+  const snippet = clean(snippetNode?.innerText || container?.innerText || '').replace(title, '').slice(0, 500);
   return { title, url, snippet, domain: new URL(url).hostname.replace(/^www\./, '') };
 }).filter(Boolean);
 const seen = new Set();
@@ -190,7 +224,7 @@ for (const item of candidates) {
   seen.add(item.url);
   results.push({ rank: results.length + 1, ...item });
 }
-return { url: location.href, title: document.title, results, blocked: /captcha|unusual traffic|verify you are human|solve the challenge|one last step/i.test(document.body.innerText || '') };
+return { url: location.href, title: document.title, results, blocked: false };
 })()"#
 }
 
@@ -293,7 +327,7 @@ return {{
 
 #[cfg(test)]
 mod tests {
-    use super::{readable, search_results};
+    use super::{readable, search_ready, search_results};
 
     #[test]
     fn readable_falls_back_when_preferred_container_is_empty() {
@@ -307,8 +341,23 @@ mod tests {
         let script = search_results();
 
         assert!(script.contains("solve the challenge"));
+        assert!(script.contains("following challenge"));
+        assert!(script.contains("drag the slider"));
         assert!(script.contains("one last step"));
         assert!(script.contains("search\\.brave\\.com\\/search"));
         assert!(script.contains(".snippet[data-type=\"web\"] a.l1"));
+        assert!(script.contains("li.b_algo h2 a"));
+        assert!(script.contains(".result__a"));
+        assert!(script.contains("bingTarget?.startsWith('a1')"));
+    }
+
+    #[test]
+    fn search_ready_waits_for_results_or_an_engine_challenge() {
+        let script = search_ready("rust browser", "li.b_algo h2 a", 3);
+
+        assert!(script.contains("rust browser"));
+        assert!(script.contains("li.b_algo h2 a"));
+        assert!(script.contains(">= 3"));
+        assert!(script.contains("following challenge"));
     }
 }

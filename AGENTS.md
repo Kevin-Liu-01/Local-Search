@@ -138,8 +138,9 @@ program -> normalized Rust value -> stable stdout envelope
 - `record` emits a HAR-shaped collection of CDP events; do not describe it as
   full browser HAR parity or imply that it captures response bodies.
 - `cleanup` is a safe inspection by default. `--kill` stops managed listener
-  PIDs and clears stale markers but preserves profile cookies/history. `--force`
-  is exceptional.
+  PIDs and clears stale markers but preserves profile cookies/history. Custom
+  ports use separate PID markers; `--no-persist` skips endpoint persistence, not
+  lifecycle tracking. `--force` is exceptional.
 - Safari normal-profile automation is intentionally unsupported because Safari
   WebDriver uses an isolated automation session. Do not pretend it provides the
   same signed-in local-profile behavior.

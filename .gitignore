@@ -9,5 +9,6 @@ __pycache__/
 *.mhtml
 *.png
 !site/public/brand/*.png
+!site/public/social/local-search-benchmark.png
 !site/public/social/local-search-isometric.png
 *.pdf
