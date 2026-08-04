@@ -394,6 +394,7 @@ code, pre { font-family: var(--font-manrope), sans-serif; }
   cursor: pointer;
   transition: color 140ms ease;
 }
+.install-command__switch button:first-of-type { padding-right: 8px; }
 .install-command__switch button.is-active { color: var(--accent-deep); }
 .hero-proof { margin-top: 16px; display: flex; flex-wrap: wrap; justify-content: flex-start; gap: 13px 25px; }
 .hero-proof > span { display: flex; align-items: center; gap: 7px; color: var(--muted); font-size: 12px; }
