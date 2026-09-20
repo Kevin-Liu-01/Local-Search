@@ -6,8 +6,8 @@ fn no_arguments_show_the_branded_quick_start() {
     let mut cmd = Command::cargo_bin("lsearch").unwrap();
     cmd.assert()
         .success()
-        .stdout(predicate::str::contains("Browser Search API"))
-        .stdout(predicate::str::contains("lsearch search"));
+        .stdout(predicate::str::contains("Local Browser API for Agents"))
+        .stdout(predicate::str::contains("--engine google"));
 }
 
 #[test]

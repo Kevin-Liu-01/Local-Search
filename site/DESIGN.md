@@ -8,21 +8,26 @@ local-search system unless the product direction is being changed intentionally.
 
 ## Product thesis
 
-The browser already on the developer's machine is the product asset.
-local-search turns it into a search interface for shell-capable agents without a
-hosted search API key or a metered search account. The website should make that
-idea understandable in seconds and then prove it with the real command surface,
-agent output, and reproducible benchmark evidence.
+The browser on the developer's machine is the product asset. local-search is a
+local browser API for agents: one CLI for searching the web, reading pages,
+extracting records, interacting with sites, and using sessions in a dedicated
+Chrome profile. It is the bridge between an agent command and that local browser,
+not a search engine, hosted browser, or transparent network tunnel. The website
+should make this category understandable in seconds and then prove it with the
+real command surface, browser boundary, agent output, and reproducible benchmark
+evidence.
 
 The experience should feel like compact agent infrastructure: explicit, local,
 inspectable, native, and fast. It should not look like a generic AI SaaS page.
 
 ## Design principles
 
-1. **State the product before decorating it.** The primary claim is “Browser
-   Search API”; the immediate payoff is “No API Key, No Billing.”
-2. **Show the real mechanism.** Search engines, the local browser boundary,
-   agent shells, stable JSON, and measured output are the visual subject matter.
+1. **State the product before decorating it.** The primary claim is “A Local
+   Browser API for Agents”; the immediate outcome is “Search. Read. Use Signed-In
+   Sites.”
+2. **Show the real mechanism.** Agent commands, the local browser boundary,
+   search engines and sites, stable output, and measured proof are the visual
+   subject matter.
 3. **Stack the narrative.** The page progresses vertically through claim,
    installation, live agent proof, workflow, output, benchmarks, FAQ, and final
    action. Do not turn it into a collection of unrelated side-by-side cards.
@@ -43,6 +48,12 @@ inspectable, native, and fast. It should not look like a generic AI SaaS page.
 ## Voice and copy
 
 - Write short, direct sentences at the developer's level.
+- Call local-search a “local browser API for agents.” Use “bridge” only to
+  explain the relationship between an agent command and the browser. Avoid
+  “tunnel,” which implies a transparent network proxy.
+- Make clear that search is one capability. Mention reading pages such as Reddit
+  or docs, extraction, interaction, or browser-authenticated requests before
+  narrowing the story to search engines.
 - Use sentence case. Avoid jargon when the command or output can demonstrate the
   point more clearly.
 - Marketing section headings do not use eyebrow copy. Small labels are allowed
@@ -57,6 +68,8 @@ inspectable, native, and fast. It should not look like a generic AI SaaS page.
 - Say “no hosted search API key” or “no metered search bill” when precision is
   needed. Do not imply that public search engines, network access, or a browser
   are unnecessary.
+- Describe signed-in state as sessions in the dedicated local-search browser
+  profile. Do not imply silent access to the user's ordinary Chrome profile.
 - Do not describe temporary, simulated, or decorative UI as a live search.
 - Performance, cost, package-size, reliability, and provider comparisons must
   match committed evidence and include methodology or a link to it.
@@ -138,11 +151,12 @@ The hero is one integrated composition inside the rails:
 
 - Copy occupies the left field on desktop. The isometric mechanism occupies the
   right field without creating a separate card.
-- The headline is exactly two conceptual lines: `Browser Search API` followed by
-  the cyan `No API Key, No Billing` payoff.
-- Supporting copy explains that Claude Code, Codex, Cursor, or another
-  shell-capable agent receives structured web search through the browser on the
-  user's machine.
+- The headline is exactly two conceptual lines: `A Local Browser API for Agents`
+  followed by the cyan `Search. Read. Use Signed-In Sites.` outcome.
+- Supporting copy gives concrete examples: search Google, read Reddit or docs,
+  and work with a site signed into inside the dedicated local-search browser.
+  It ends with the simple mechanism: the browser does the work and the agent
+  receives compact data.
 - Primary actions appear in this order: View on GitHub, Agent Prompt, crates.io.
 - Agent Prompt copies a useful instruction and confirms success in place; its
   changed width must not reflow surrounding content unexpectedly.
@@ -150,7 +164,7 @@ The hero is one integrated composition inside the rails:
   Cargo is the default selection. Cargo and npm are two presentations of the
   same product, with the selector embedded at the left of the command row.
 - The proof row uses real Rust, JSON, and Chromium/browser-state iconography for
-  “Built with Rust,” “Stable JSON,” and “Authenticated browser state.”
+  “Built with Rust,” “Agent-ready output,” and “Local browser sessions.”
 - On small screens, hide the supporting paragraph before compromising headline,
   actions, install control, or diagram readability.
 
@@ -212,8 +226,10 @@ fixed-size terminal—not a slideshow inside a marketing card.
 
 ## Workflow and JSON output
 
-This chapter makes one argument: an agent asks, the local browser searches, and
-compact JSON returns.
+This chapter makes one argument: an agent calls one command, the local browser
+acts on the real site, and compact data returns. Search is the concrete example;
+the surrounding copy also names reading, extraction, interaction, and signed-in
+browser sessions.
 
 - The introduction, command, three-step circuit, field explanation, and JSON
   output form one bordered bento composition. Do not restore separate “how it
@@ -222,8 +238,8 @@ compact JSON returns.
   cards. Agent, Browser, and Agent context nodes share three continuous signal
   paths.
 - Step labels do not include `01`, `02`, or `03` prefixes.
-- Keep the diagram phrases simple: “Run one command,” “Search locally,” and
-  “Return clean JSON.”
+- Keep the diagram phrases simple: “Call one command,” “Use the local browser,”
+  and “Return compact data.”
 - Desktop uses horizontal circuit geometry. Mobile uses a purpose-built vertical
   circuit; do not rotate or squeeze the desktop artwork.
 - The command example must use supported current syntax.
@@ -364,9 +380,10 @@ Benchmarks are evidence, not decoration.
 - Their background matches `--page` and uses the site's dither field. The left
   side contains the claim and installation paths; the right side contains the
   isometric browser/engine artwork.
-- Social copy is left aligned: cyan `$0 Browser Search API`, then `No API Key,
-  No Billing`. Show four search-engine logos and four compatible-agent logos in
-  aligned groups. Cargo appears above npm when both install commands are shown.
+- Social copy is left aligned: `A Local Browser API` followed by the cyan `for
+  Agents`, then `No API Key, No Billing`. Show four search-engine logos and four
+  compatible-agent logos in aligned groups. Cargo appears above npm when both
+  install commands are shown.
 - Keep text and logos inside social-image safe areas. Never depend on a white
   gradient to make the composition readable.
 - The README GIF is the 960×540 asset at

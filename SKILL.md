@@ -1,12 +1,19 @@
 ---
 name: local-search
-description: Use the local-search (`lsearch`) Rust CLI for browser-backed web search, readable page extraction, site mapping, structured DOM extraction, browser interaction, authenticated in-browser requests, tab and cookie control, and PNG/PDF/MHTML/HTML/HAR artifacts. Use when an agent needs current web results through a local Chrome or Chromium profile without a hosted search API key or metered search bill, especially from Claude Code, Codex, Cursor, OpenClaw, or another shell-capable agent.
+description: Use local-search (`lsearch`) as a local browser API for agents. Search Google, Bing, Brave, or DuckDuckGo; read Reddit, documentation, and other pages; extract records; interact with sites; make browser-authenticated requests through a dedicated Chrome profile; manage tabs and cookies; and capture PNG, PDF, MHTML, HTML, or HAR-like artifacts. Use when Claude Code, Codex, Cursor, OpenClaw, or another shell-capable agent needs the web or a local browser session without a separate hosted API integration for every site.
 ---
 
 # local-search
 
-Use `lsearch` as a shell-native search and browser API. Let the browser on the
-machine perform the network work; consume compact structured data in the agent.
+Use `lsearch` as a local browser API for shell-capable agents. It is the bridge
+between an agent command and a dedicated Chrome profile on the user's machine:
+the browser loads the real site, keeps its own sessions and cookies local, and
+returns compact structured data or readable text to the agent.
+
+Search is one part of the interface, not the whole product. Use the same CLI to
+read Reddit or documentation, extract repeated records, interact with pages, or
+make a request through browser-authenticated state. It is not a search engine,
+hosted browser, or transparent network tunnel.
 
 ## Core operating rules
 

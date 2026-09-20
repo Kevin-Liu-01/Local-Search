@@ -154,12 +154,12 @@ export default function Home() {
             </div>
             <div className="hero">
               <h1 id="hero-title">
-                <span className="hero-title__line hero-title__line--primary">Browser Search API</span>
-                <span className="hero-title__line hero-title__line--secondary">No API Key, No Billing</span>
+                <span className="hero-title__line hero-title__line--primary">A Local Browser API for Agents</span>
+                <span className="hero-title__line hero-title__line--secondary">Search. Read. Use Signed-In Sites.</span>
               </h1>
               <p className="hero-copy">
-                Give Claude Code, Codex, Cursor, or any shell-capable agent structured web search
-                <br className="hero-line-break" /> through the browser on your machine. No API key. No metered search bill.
+                One CLI lets agents search Google, read Reddit and docs, and work with sites you sign into
+                <br className="hero-line-break" /> in the local-search browser. Your browser does the work; the agent gets compact data.
               </p>
               <div className="hero-actions">
                 <a className="primary-button" href="https://github.com/Kevin-Liu-01/local-search" target="_blank" rel="noreferrer">
@@ -173,8 +173,8 @@ export default function Home() {
               <InstallCommand />
               <div className="hero-proof" aria-label="Product benefits">
                 <span><RustOfficialIcon size={15} /> Built with Rust</span>
-                <span><JsonSchemaBrandIcon size={16} /> Stable JSON</span>
-                <span><ChromiumBrandIcon size={16} /> Authenticated browser state</span>
+                <span><JsonSchemaBrandIcon size={16} /> Agent-ready output</span>
+                <span><ChromiumBrandIcon size={16} /> Local browser sessions</span>
               </div>
             </div>
           </div>
@@ -195,14 +195,14 @@ export default function Home() {
         <section className="content-section output-workflow-section" id="output">
           <div className="output-bento" id="workflow">
             <div className="output-bento__intro">
-              <h2><span>Ask. Search.</span><span>Return JSON.</span></h2>
-              <p><code>lsearch</code> bridges a coding agent and the browser already on your machine. One shell call goes in; compact search context comes back.</p>
+              <h2><span>Agent calls.</span><span>Browser acts.</span></h2>
+              <p><code>lsearch</code> is a simple bridge between an agent and a local browser. Search, read, extract, and use signed-in sites without adding a separate integration for each one.</p>
             </div>
             <div className="output-bento__command">
-              <span className="bento-label">One native command</span>
-              <h3>Search from any shell-capable agent.</h3>
-              <CopyCommand value={'lsearch search "rust browser automation" --limit 3 --pretty'} />
-              <p>No SDK, API key, hosted search account, or agent-specific integration.</p>
+              <span className="bento-label">One command surface</span>
+              <h3>Start with search. Keep the browser.</h3>
+              <CopyCommand value={'lsearch "rust browser automation" --engine google --limit 3 --json'} />
+              <p>Switch search engines, read a URL, or use a signed-in site through the same local browser.</p>
             </div>
             <div className="workflow-timeline">
               <svg className="workflow-circuit workflow-circuit--desktop" viewBox="0 0 1120 96" preserveAspectRatio="none" aria-hidden="true">
@@ -243,25 +243,25 @@ export default function Home() {
               <div className="workflow-list" aria-label="How local-search works">
                 <article>
                   <div className="workflow-top"><span className="workflow-index">Agent</span><div className="workflow-icon"><TerminalIcon size={22} /></div></div>
-                  <div><h3>Run one command</h3><p>Any shell-capable agent runs <code>lsearch</code>.</p></div>
-                  <code className="workflow-code">query + limit</code>
+                  <div><h3>Call one command</h3><p>The agent asks to search, read, extract, or interact.</p></div>
+                  <code className="workflow-code">search · read · request</code>
                 </article>
                 <article>
                   <div className="workflow-top"><span className="workflow-index">Browser</span><div className="workflow-icon"><GlobeIcon size={22} /></div></div>
-                  <div><h3>Search locally</h3><p>Managed Chrome searches with your local state.</p></div>
-                  <span className="workflow-state"><i /> Runs locally</span>
+                  <div><h3>Use the local browser</h3><p>Chrome loads the real site with its local browser state.</p></div>
+                  <span className="workflow-state"><i /> Sessions stay local</span>
                 </article>
                 <article>
                   <div className="workflow-top"><span className="workflow-index">Agent context</span><div className="workflow-icon"><SearchIcon size={22} /></div></div>
-                  <div><h3>Return clean JSON</h3><p>Only stable result fields reach the agent.</p></div>
-                  <span className="workflow-state"><CheckIcon size={13} /> Compact + valid</span>
+                  <div><h3>Return compact data</h3><p>The agent gets stable JSON or clean readable text.</p></div>
+                  <span className="workflow-state"><CheckIcon size={13} /> Agent-ready output</span>
                 </article>
               </div>
             </div>
             <div className="output-bento__json-copy">
-              <span className="bento-label">Returned agent context</span>
-              <h3>Stable fields, not search-page chrome.</h3>
-              <p>The browser stays local. Your agent receives only the result data it can act on.</p>
+              <span className="bento-label">Search output</span>
+              <h3>Give agents results, not page chrome.</h3>
+              <p>Every search engine becomes the same compact result contract. Other commands return clean page content, records, or browser responses.</p>
               <div className="json-field-list" aria-label="Returned JSON fields"><code>rank</code><code>title</code><code>url</code><code>domain</code><code>snippet</code><code>content?</code></div>
             </div>
             <div className="json-panel">
@@ -373,7 +373,7 @@ export default function Home() {
         <section className="content-section faq-section" id="faq" aria-labelledby="faq-title">
           <header className="faq-header">
             <h2 id="faq-title">Frequently asked questions.</h2>
-            <p>Quick answers about installation, compatible agents, search engines, privacy, and how local-search compares.</p>
+            <p>Quick answers about agents, browser sessions, search engines, privacy, and how the local bridge works.</p>
           </header>
           <div className="faq-grid">
             {FAQS.map(({ question, answer }, index) => {
@@ -392,7 +392,7 @@ export default function Home() {
         <ReticleSpacer />
 
         <section className="closing-cta">
-          <h2><span>Give agents the web.</span><span>Skip search bills.</span></h2>
+          <h2><span>One local browser.</span><span>One interface for your agents.</span></h2>
           <InstallCommand />
           <div className="closing-links">
             <a href="https://github.com/Kevin-Liu-01/local-search" target="_blank" rel="noreferrer">Get started on GitHub <ChevronRightIcon size={16} /></a>
@@ -404,7 +404,7 @@ export default function Home() {
       <ReticleSpacer />
       <footer className="site-footer">
         <a className="brand" href="#top"><LocalSearchLogo className="brand-logo" />local-search</a>
-        <p>Free structured web search for agents, powered by your local browser.</p>
+        <p>Search, read, and use browser sessions through one agent-ready CLI.</p>
         <div>
           <a href="https://github.com/Kevin-Liu-01/local-search" target="_blank" rel="noreferrer"><span>GitHub</span><ArrowUpRightIcon size={11} /></a>
           <a href="https://crates.io/crates/local-search" target="_blank" rel="noreferrer"><span>crates.io</span><ArrowUpRightIcon size={11} /></a>

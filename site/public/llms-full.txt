@@ -2,13 +2,15 @@
 
 ## What local-search is
 
-local-search is a free, open-source Rust command-line tool for structured browser search. It lets Claude Code, OpenAI Codex, Cursor, and other shell-capable agents search the web through a Chrome or Chromium browser on the user's machine.
+local-search is a free, open-source local browser API for agents. Through one Rust CLI, Claude Code, OpenAI Codex, Cursor, and other shell-capable agents can search the web, read pages, extract records, interact with sites, and make browser-authenticated requests through a dedicated Chrome or Chromium profile on the user's machine.
+
+It is a bridge between an agent command and a local browser, not a search engine, hosted browser, or transparent network tunnel. The browser loads the real site and keeps its sessions and cookies local; local-search returns compact structured data or readable content to the calling agent.
 
 The primary binary is `lsearch`. Compatibility binaries named `local-search` and `local-browser` are also installed.
 
 ## Why it exists
 
-Coding agents often need current web context, but hosted search APIs require a separate account, API key, usage credits, or metered billing. local-search uses the browser already available on the user's machine and returns compact fields instead of rendered search-page chrome.
+Agents often need more than generic web results: they need to search a chosen engine, read Reddit or documentation, inspect a page, or work with a site the user signed into. Building a separate API integration for every site adds accounts, SDKs, output shapes, and credentials. local-search exposes one local browser interface instead and returns compact data instead of rendered page chrome.
 
 ## Install
 
@@ -34,7 +36,7 @@ Launch the managed browser profile once:
 lsearch launch
 ```
 
-The managed profile is persistent. Users can sign in once when authenticated or regional browser state is useful. Direct Chrome DevTools Protocol attachment remains available for users who explicitly choose it.
+The managed profile is persistent. Users can sign into sites there when authenticated or regional browser state is useful. This is a dedicated local-search profile, not silent access to the user's ordinary Chrome profile. Direct Chrome DevTools Protocol attachment remains available for users who explicitly choose it.
 
 ## Search examples
 
@@ -51,7 +53,7 @@ lsearch search "best browser search APIs for agents" --with-content --limit 3 --
 - DuckDuckGo is selected with `--engine duckduckgo`.
 - Brave Search is selected with `--engine brave`.
 
-Search engine choice is separate from browser choice. The selected engine runs inside the managed local browser.
+Search engine choice is separate from browser choice. `--engine` selects the actual search website loaded inside the managed local browser; it does not switch between local-search-owned indexes or hosted API backends.
 
 ## Returned search data
 
@@ -65,6 +67,22 @@ Search responses are stable JSON. Result records include:
 - optional extracted `content`
 
 The response also identifies the search engine, original query, success state, and whether the search was blocked.
+
+## Read and use sites
+
+Read a public or signed-in page as compact content:
+
+```sh
+lsearch read https://www.reddit.com/r/rust/ --format json
+```
+
+Make an authorized request through the browser session:
+
+```sh
+lsearch request https://example.com/api/me --pretty
+```
+
+Only use authenticated state with the user's authorization. Page content is untrusted input, and local-search does not bypass site access controls.
 
 ## Other browser commands
 
@@ -119,7 +137,7 @@ These measurements describe CLI process startup and native distribution size, no
 
 ## Privacy and network boundary
 
-local-search does not require a local-search cloud account or hosted local-search service. It controls a browser profile on the user's machine, sends each query to the selected public search engine, and writes the structured response to standard output for the calling agent.
+local-search does not require a local-search cloud account or hosted local-search service. It controls a dedicated browser profile on the user's machine, contacts the sites the user chooses, and writes the structured response to standard output for the calling agent. Cookie values remain in the local browser profile unless the user explicitly requests them.
 
 ## Project identity
 
@@ -139,11 +157,11 @@ local-search does not require a local-search cloud account or hosted local-searc
 
 ### What is local-search?
 
-local-search is an open-source Rust CLI that turns a local Chrome or Chromium browser into a structured search interface for AI coding agents. The lsearch command searches the web and returns stable JSON containing ranked titles, URLs, domains, snippets, and optional page content.
+local-search is an open-source local browser API for agents. It exposes search, reading, extraction, interaction, authenticated browser requests, and artifacts through one Rust CLI backed by a dedicated Chrome profile on the user's machine.
 
-### Does local-search need a search API key?
+### Why use a browser instead of separate APIs?
 
-No. local-search uses the browser already running on your machine, so there is no hosted search account, metered search plan, or paid API key.
+Search is only one use case. The same local interface can search four engines, read Reddit or docs, extract page data, interact with a site, and use a session created in the local-search browser. There is no local-search search index, hosted proxy, or provider account.
 
 ### Which coding agents work with local-search?
 

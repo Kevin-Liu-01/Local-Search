@@ -2,7 +2,7 @@ use std::path::PathBuf;
 
 use clap::{Args, Parser, Subcommand, ValueEnum};
 
-/// Free structured web search for agents through a local browser.
+/// A local browser API for agents.
 #[derive(Debug, Parser)]
 #[command(name = "lsearch", version, about, long_about = None)]
 pub struct Cli {

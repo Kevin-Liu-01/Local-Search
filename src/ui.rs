@@ -35,18 +35,20 @@ pub fn print_welcome() -> crate::error::Result<()> {
     let rendered = if color {
         format!(
             "{TEAL}{MARK}{RESET}\n\
-             {TEAL}Browser Search API{RESET}  {DIM}No API key · No billing{RESET}\n\
-             {DIM}Structured web search through your local browser.{RESET}\n\n\
-               {DIM}${RESET} lsearch search \"rust browser automation\" --limit 3\n\
+             {TEAL}Local Browser API for Agents{RESET}\n\
+             {DIM}Search · read · use signed-in sites{RESET}\n\n\
+               {DIM}${RESET} lsearch \"rust browser automation\" --engine google --limit 3\n\
+               {DIM}${RESET} lsearch read https://example.com --format json\n\
                {DIM}${RESET} lsearch launch\n\n\
              {DIM}Run `lsearch --help` for every command.{RESET}"
         )
     } else {
         format!(
             "{MARK}\n\
-             Browser Search API  No API key · No billing\n\
-             Structured web search through your local browser.\n\n\
-               $ lsearch search \"rust browser automation\" --limit 3\n\
+             Local Browser API for Agents\n\
+             Search · read · use signed-in sites\n\n\
+               $ lsearch \"rust browser automation\" --engine google --limit 3\n\
+               $ lsearch read https://example.com --format json\n\
                $ lsearch launch\n\n\
              Run `lsearch --help` for every command."
         )

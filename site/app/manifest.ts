@@ -4,9 +4,9 @@ export const dynamic = "force-static";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "local-search — Browser Search API for AI Agents",
+    name: "local-search — A Local Browser API for Agents",
     short_name: "local-search",
-    description: "Structured web search through your local browser, with no hosted search API key or metered bill.",
+    description: "Let agents search, read, extract, interact, and use signed-in sites through a local Chrome profile.",
     start_url: "/",
     id: "/",
     scope: "/",

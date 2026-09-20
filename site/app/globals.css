@@ -263,8 +263,8 @@ code, pre { font-family: var(--font-manrope), sans-serif; }
   text-wrap: balance;
 }
 .hero-title__line { display: block; }
-.hero-title__line--primary { font-weight: 550; }
-.hero-title__line--secondary { color: var(--accent); font-weight: 360; letter-spacing: -.052em; }
+.hero-title__line--primary { font-size: .78em; font-weight: 550; }
+.hero-title__line--secondary { color: var(--accent); font-size: .72em; font-weight: 390; letter-spacing: -.045em; }
 .hero-copy {
   max-width: 950px;
   margin: 24px 0 0;
@@ -1081,6 +1081,8 @@ button:focus-visible, a:focus-visible, input:focus-visible, summary:focus-visibl
   .hero-dither > i:nth-child(3) { right: 8%; width: 54%; opacity: .04; }
   .hero-isometric-art { top: auto; right: -38px; bottom: 42px; opacity: .62; transform: scale(.58); transform-origin: right bottom; }
   .hero h1 { font-size: clamp(28px, 9vw, 47px); letter-spacing: -.04em; }
+  .hero-title__line--primary { font-size: .82em; }
+  .hero-title__line--secondary { font-size: .68em; }
   .hero-line-break { display: none; }
   .hero-actions { width: 100%; flex-direction: column; }
   .primary-button, .secondary-button, .agent-copy-button { width: 100%; }

@@ -1,6 +1,6 @@
 # local-search
 
-> local-search is an open-source Rust CLI that gives AI coding agents structured web search through a local Chrome or Chromium browser. It returns stable JSON and requires no hosted search API key or metered search plan.
+> local-search is an open-source local browser API for agents. Through one Rust CLI, an agent can search Google, read Reddit or docs, extract and interact with pages, and use sessions in a dedicated Chrome or Chromium profile on the user's machine.
 
 ## Canonical resources
 
@@ -20,9 +20,11 @@
 - Language: Rust
 - License: MIT
 - Search engines: Google, Bing, DuckDuckGo, Brave Search
+- Product boundary: sites run in a dedicated local browser profile; local-search controls the browser and returns structured data to the calling agent
 - Agents: Claude Code, OpenAI Codex, Cursor, and any shell-capable agent
-- Output: stable JSON on standard output
+- Output: stable JSON or clean readable content on standard output
 - Browser: managed local Chrome or Chromium profile
+- Browser capabilities: search, read, extract, map, interact, request, tabs, cookies, and local artifacts
 - Hosted local-search API key: not required
 - Metered local-search API bill: none
 - Recorded arm64 macOS release binary: 1,055,072 bytes (1.06 MB) on July 27, 2026

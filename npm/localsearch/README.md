@@ -1,13 +1,13 @@
 # localsearch
 
 The npm distribution of [`local-search`](https://github.com/Kevin-Liu-01/Local-Search):
-free structured web search for agents through the browser already on your
-machine.
+a local browser API for agents. Search the web, read and extract pages, interact
+with sites, and use sessions in a dedicated Chrome profile through one CLI.
 
 ```sh
 npm install -g @kevinliu01/localsearch
 lsearch launch
-lsearch search "rust browser automation" --limit 5 --json
+lsearch "rust browser automation" --engine google --limit 5 --json
 ```
 
 ## How it works

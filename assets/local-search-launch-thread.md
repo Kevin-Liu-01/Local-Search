@@ -2,9 +2,10 @@
 
 ## Standalone post A · Product
 
-Your browser is already a search API.
+Your browser can already do more than a search API.
 
-local-search gives coding agents structured web search through local Chrome.
+local-search gives agents one local browser API: search Google, read Reddit or
+docs, extract pages, and use sites you sign into in its Chrome profile.
 
 No API key. No metered search bill. 50.3 KiB crate.
 
@@ -24,7 +25,8 @@ https://github.com/Kevin-Liu-01/Local-Search
 
 ## Standalone post C · Numbers
 
-local-search is a 50.3 KiB Rust crate that turns your browser into a search API.
+local-search is a 50.3 KiB Rust crate that turns local Chrome into a browser API
+for agents.
 
 Matched provider run:
 • 53.4 tokens/result
@@ -40,7 +42,9 @@ https://github.com/Kevin-Liu-01/Local-Search
 
 ## 1 · Launch
 
-Introducing local-search: a tiny Rust CLI that turns the browser already on your machine into a structured search API for coding agents.
+Introducing local-search: a local browser API for agents, packaged as a tiny Rust CLI.
+
+Search Google. Read Reddit and docs. Extract or interact with a page. Use sites you sign into in its dedicated Chrome profile.
 
 No API key. No metered search bill.
 
@@ -92,7 +96,7 @@ The binary and startup figures are machine-specific; search latency is measured 
 
 ## 7 · Close
 
-local-search is built around a simple idea: coding agents should search with the browser users already have—without another SDK, API key, or metered search account.
+local-search is built around a simple idea: agents should be able to use a local browser through one clean interface—without wiring up a separate API for every site.
 
 MIT licensed. Written in Rust. Benchmarks + methodology are public.
 

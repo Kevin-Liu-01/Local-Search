@@ -1,13 +1,13 @@
 const configuredSiteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.lsearch.dev";
 
 export const SITE_URL = configuredSiteUrl.replace(/\/$/, "");
-export const SITE_LAST_UPDATED = "2026-08-04";
+export const SITE_LAST_UPDATED = "2026-09-11";
 export const SITE_NAME = "local-search";
-export const SITE_TITLE = "local-search: Free Browser Search API for AI Agents";
-export const SITE_DESCRIPTION = "Open-source Rust CLI for structured Google, Bing, DuckDuckGo, and Brave Search through your local browser. Built for coding agents, with no API key or search bill.";
-export const SOCIAL_TITLE = "Browser Search API. No API Key. No Billing.";
-export const SOCIAL_DESCRIPTION = "A tiny Rust CLI that returns structured Google, Bing, DuckDuckGo, and Brave Search results to coding agents through your local browser.";
-export const SOCIAL_IMAGE_ALT = "local-search — an open-source Rust browser search API for coding agents, with no API key or metered billing.";
+export const SITE_TITLE = "local-search: A Local Browser API for AI Agents";
+export const SITE_DESCRIPTION = "One Rust CLI lets agents search the web, read pages, and use signed-in sites through a local Chrome profile—without a separate API integration for every site.";
+export const SOCIAL_TITLE = "A Local Browser API for Agents";
+export const SOCIAL_DESCRIPTION = "Search Google, read Reddit and docs, and use signed-in sites through one agent-ready local browser CLI.";
+export const SOCIAL_IMAGE_ALT = "local-search is a local browser API that lets agents search, read, and use browser sessions through Chrome on the user's machine.";
 
 export const REPOSITORY_URL = "https://github.com/Kevin-Liu-01/Local-Search";
 export const CRATE_URL = "https://crates.io/crates/local-search";
@@ -33,11 +33,11 @@ export const RELEASE_AUDIT = {
 export const FAQS = [
   {
     question: "What is local-search?",
-    answer: "local-search is an open-source Rust CLI that turns a local Chrome or Chromium browser into a structured search interface for AI coding agents. The lsearch command searches the web and returns stable JSON containing ranked titles, URLs, domains, snippets, and optional page content.",
+    answer: "local-search is a local browser API for agents. Through one Rust CLI, a shell-capable agent can search the web, read pages, extract records, interact with sites, and make browser-authenticated requests through a Chrome profile on your machine.",
   },
   {
-    question: "Does local-search need a search API key?",
-    answer: "No. local-search uses the browser already running on your machine, so there is no hosted search account, metered search plan, or paid API key. Install it through npm or crates.io and run searches from the shell.",
+    question: "Why use a browser instead of separate APIs?",
+    answer: "Search is only one use case. The same local interface can search four engines, read Reddit or docs, extract page data, interact with a site, and use a session you created in the local-search browser. You do not need a separate account, SDK, and response format for every site.",
   },
   {
     question: "Which coding agents can use local-search?",
@@ -45,7 +45,7 @@ export const FAQS = [
   },
   {
     question: "Which search engines does local-search support?",
-    answer: "local-search supports Google, Bing, DuckDuckGo, and Brave Search. Searches run through a managed local browser profile, so results can reflect the region and signed-in browser state that you control.",
+    answer: "local-search supports Google, Bing, Brave Search, and DuckDuckGo behind the same command and JSON contract. Choose one with --engine; the search runs through a managed local browser profile using the region and browser state you control.",
   },
   {
     question: "How does local-search compare with hosted search APIs?",
@@ -53,7 +53,7 @@ export const FAQS = [
   },
   {
     question: "Does local-search send browser credentials to a hosted service?",
-    answer: "local-search does not require a local-search cloud service or hosted account. It controls a browser profile on your machine, sends each query to the selected public search engine, and returns the structured result to the calling agent through standard output.",
+    answer: "local-search has no cloud service or hosted account. It controls a dedicated browser profile on your machine and returns data directly to the calling process. Cookies stay in that local profile unless you explicitly ask to inspect or use them.",
   },
   {
     question: "How small and fast is the local-search Rust binary?",
@@ -67,6 +67,10 @@ export const FAQS = [
 
 export const KEYWORDS = [
   "browser search API",
+  "browser API for agents",
+  "local browser API",
+  "authenticated browser automation",
+  "AI agent browser access",
   "local search API",
   "AI agent web search",
   "coding agent search",
@@ -117,7 +121,7 @@ export const STRUCTURED_DATA = {
       isPartOf: { "@id": `${SITE_URL}/#website` },
       mainEntity: { "@id": `${SITE_URL}/#software` },
       about: [
-        { "@type": "Thing", name: "Browser search API" },
+        { "@type": "Thing", name: "Local browser API" },
         { "@type": "Thing", name: "AI coding agents" },
         { "@type": "Thing", name: "Structured web search" },
       ],
@@ -136,7 +140,7 @@ export const STRUCTURED_DATA = {
       alternateName: ["lsearch", "local-search CLI"],
       description: SITE_DESCRIPTION,
       applicationCategory: "DeveloperApplication",
-      applicationSubCategory: "Browser search CLI for AI agents",
+      applicationSubCategory: "Local browser API for AI agents",
       softwareVersion: "0.1.4",
       operatingSystem: "macOS, Linux, and Windows with Chrome or Chromium",
       runtimePlatform: "Chrome or Chromium",
@@ -152,6 +156,10 @@ export const STRUCTURED_DATA = {
         url: CRATE_URL,
       },
       featureList: [
+        "One local browser interface for shell-capable agents",
+        "Readable page extraction and structured record extraction",
+        "Browser-authenticated requests through a dedicated local profile",
+        "One local CLI across four public search engines",
         "Structured Google, Bing, DuckDuckGo, and Brave Search results",
         "Stable JSON output for coding agents",
         "Managed local Chrome profile",
@@ -183,7 +191,7 @@ export const STRUCTURED_DATA = {
       "@type": "SoftwareSourceCode",
       "@id": `${SITE_URL}/#source`,
       name: "local-search source code",
-      description: "MIT-licensed Rust source code for the local-search browser search CLI.",
+      description: "MIT-licensed Rust source code for the local-search browser API for agents.",
       codeRepository: REPOSITORY_URL,
       programmingLanguage: "Rust",
       runtimePlatform: "Chrome or Chromium",

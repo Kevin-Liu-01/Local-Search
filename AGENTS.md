@@ -6,19 +6,20 @@ the complete end-user `lsearch` command surface.
 
 ## Product in one sentence
 
-`local-search` is a small, open-source Rust CLI that turns a local Chrome or
-Chromium browser into a structured search and browser interface for shell-capable
-agents—without a hosted search API key, metered search account, or agent-specific
-SDK.
+`local-search` is a small, open-source local browser API for shell-capable agents.
+Through one Rust CLI, agents can search, read, extract, interact, and use sessions
+in a dedicated Chrome or Chromium profile—without a hosted browser service or a
+separate SDK for every site.
 
 The Cargo package is `local-search`. The preferred executable is `lsearch`.
 `local-search` and legacy `local-browser` remain compatibility binaries.
 
 ## Non-negotiable product principles
 
-1. **The local browser is the product boundary.** Search and browser work happen
-   in a browser on the user's machine. Do not replace this with a hosted or paid
-   search API dependency.
+1. **The local browser is the product boundary.** Browser work happens in a
+   dedicated profile on the user's machine. local-search is the bridge between
+   an agent command and that browser, not a hosted service or transparent network
+   tunnel. Do not replace it with a hosted browser or paid search API dependency.
 2. **Agent output is compact and stable.** Preserve structured stdout, stable
    JSON field names, useful error codes, and low-noise stderr. Treat output shape
    changes as public API changes.

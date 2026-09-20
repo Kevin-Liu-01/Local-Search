@@ -139,31 +139,9 @@ export function createSocialImage() {
             alignItems: "flex-start",
           }}
         >
-          <div style={{ display: "flex", alignItems: "baseline" }}>
-            <div
-              style={{
-                display: "flex",
-                color: color.accent,
-                fontSize: 84,
-                lineHeight: 1,
-                fontWeight: 800,
-                letterSpacing: -4.2,
-              }}
-            >
-              $0
-            </div>
-            <div
-              style={{
-                marginLeft: 17,
-                display: "flex",
-                fontSize: 56,
-                lineHeight: 1,
-                fontWeight: 720,
-                letterSpacing: -3,
-              }}
-            >
-              Browser Search API
-            </div>
+          <div style={{ display: "flex", alignItems: "baseline", fontSize: 47, lineHeight: 1, fontWeight: 720, letterSpacing: -2.4 }}>
+            <div style={{ display: "flex" }}>A Local Browser API&nbsp;</div>
+            <div style={{ display: "flex", color: color.accent }}>for Agents</div>
           </div>
 
           <div

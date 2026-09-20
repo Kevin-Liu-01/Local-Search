@@ -4,11 +4,13 @@
   "config": {
     "nativeVersion": "0.1.4"
   },
-  "description": "Free structured web search for agents through a local browser",
+  "description": "A local browser API for agents: search, read, extract, and use Chrome sessions",
   "keywords": [
     "search",
     "browser",
+    "browser-api",
     "agents",
+    "ai-agents",
     "cdp",
     "rust",
     "cli"

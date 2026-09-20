@@ -15,21 +15,28 @@
 
 # local-search
 
-Free structured web search for agents, powered by your local browser.
+A local browser API for agents.
+
+One CLI lets an agent search Google, read Reddit and docs, extract page data,
+interact with sites, and use sessions in a dedicated local Chrome profile.
+`local-search` is the bridge: the agent calls a command, your browser does the
+work, and compact JSON or readable text comes back.
 
 ```sh
 lsearch "open source browser automation rust"
 ```
 
-`local-search` gives agents Exa/Firecrawl/Brave/Tavily-style search, read, and
-extract outputs without an API key or metered search bill. The primary CLI is
-`lsearch`. It searches through a local Chrome/Chromium profile, so it can use the
-same public web, logged-in sessions, cookies, and regional results you can see in
-the browser.
+This is not a new search engine, hosted browser, or network tunnel. The primary
+CLI, `lsearch`, controls Chrome/Chromium on your machine. You choose the sites,
+search engine, browser profile, and local state; the agent gets one stable
+interface instead of a separate API integration for every site.
 
 ## What You Get
 
-- Search results as stable JSON, without Exa/Brave/Tavily-style metering.
+- One local browser interface for shell-capable agents.
+- Search results as stable JSON across Google, Bing, Brave, and DuckDuckGo.
+- Readable page extraction for Reddit, documentation, and other websites.
+- Browser-authenticated requests through sessions in the managed profile.
 - Optional result-page content extraction with `--with-content`.
 - Local `read`, `extract`, `map`, `request`, screenshot, MHTML, HTML, and HAR-like
   capture commands.
