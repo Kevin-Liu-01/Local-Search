@@ -16,7 +16,7 @@ use crate::{
         OptionalPathArgs, PathArgs, ReadArgs, ReadFormat, RecordArgs, RequestArgs, ScreenshotArgs,
         ScrollDirection, SearchArgs, SearchEngine, SearchFormat, TabsCommand, WaitArgs,
     },
-    config::{self, Config},
+    config::{self, Config, Connection},
     error::{Error, IoContext, Result},
     output::print_json,
     ui::{self, Spinner},
@@ -43,6 +43,7 @@ pub async fn run(cli: Cli) -> Result<()> {
             };
             search_command(&cli, &args).await
         }
+        Some(Command::UpdateCheck) => crate::updates::print_check(cli.pretty).await,
         Some(Command::Doctor) => print_json(&discovery::doctor().await, cli.pretty),
         Some(Command::Connect(args)) => connect(&cli, args).await,
         Some(Command::Launch(args)) => launch(&cli, args).await,
@@ -141,7 +142,8 @@ pub async fn run(cli: Cli) -> Result<()> {
                     print_json(&json!({ "ok": true, "page": value }), cli.pretty)
                 }
                 Command::Cookies(command) => cookies(&cli, &mut client, command).await,
-                Command::Doctor
+                Command::UpdateCheck
+                | Command::Doctor
                 | Command::Connect(_)
                 | Command::Launch(_)
                 | Command::Cleanup(_)
@@ -153,24 +155,85 @@ pub async fn run(cli: Cli) -> Result<()> {
 }
 
 async fn connect(cli: &Cli, args: &ConnectArgs) -> Result<()> {
-    let spinner = Spinner::start("Finding a local browser");
-    let endpoint =
-        discovery::discover(cli.browser, args.endpoint.as_deref().or(cli.cdp.as_deref())).await?;
+    if (args.existing || args.managed) && cli.cdp.is_some() {
+        return Err(Error::InvalidArgument(
+            "choose either --existing/--managed or --cdp, not both (also check LOCAL_SEARCH_CDP)"
+                .to_owned(),
+        ));
+    }
+    if cli.browser == BrowserKind::Safari {
+        return Err(Error::Unsupported {
+            backend: "safari".to_owned(),
+            feature: "persistent browser connection".to_owned(),
+        });
+    }
+    // Never overwrite a malformed selection as a side effect of connecting.
+    let saved = config::load().await?;
+    if args.managed {
+        return launch(cli, &default_launch_args()).await;
+    }
+    let spinner = Spinner::start(if args.existing {
+        "Waiting for Chrome approval — choose Allow in your browser"
+    } else {
+        "Verifying browser connection"
+    });
+    let (endpoint, connection) = if args.existing {
+        let profile = args
+            .profile
+            .clone()
+            .unwrap_or(discovery::existing_chrome_profile()?);
+        let profile = std::fs::canonicalize(&profile).map_err(|_| existing_disconnected())?;
+        let endpoint = discovery::endpoint_from_devtools_file(&profile.join("DevToolsActivePort"))
+            .await
+            .map_err(|_| existing_disconnected())?;
+        (endpoint, Some(Connection::Existing { profile }))
+    } else if let Some(value) = args.endpoint.as_deref().or(cli.cdp.as_deref()) {
+        (
+            resolve_endpoint(cli, value).await?,
+            Some(Connection::Endpoint),
+        )
+    } else {
+        (
+            selected_endpoint(cli, &saved).await?,
+            saved.connection.clone(),
+        )
+    };
+    let timeout = if args.existing {
+        cli.timeout.max(60_000)
+    } else {
+        cli.timeout
+    };
+    verify_connection(&endpoint, timeout).await.map_err(|_| {
+        if matches!(connection, Some(Connection::Existing { .. })) {
+            existing_disconnected()
+        } else {
+            Error::BrowserDisconnected(
+                "connection could not be verified; check the endpoint and retry connect".to_owned(),
+            )
+        }
+    })?;
     let path = config::save(&Config {
         endpoint: Some(endpoint.websocket_url.clone()),
         target_id: cli.target.clone(),
+        connection,
     })
     .await?;
     spinner.success("Browser connected");
     print_json(
-        &json!({ "ok": true, "endpoint": endpoint, "config": path.display().to_string() }),
+        &json!({ "ok": true, "endpoint": endpoint, "connection": config::load().await?.connection, "config": path.display().to_string() }),
         cli.pretty,
     )
 }
 
 async fn launch(cli: &Cli, args: &LaunchArgs) -> Result<()> {
+    let saved = config::load().await?;
+    let args = remembered_launch_args(args, &saved);
     let spinner = Spinner::start("Starting managed Chrome");
-    let launched = start_managed_browser(args).await?;
+    let launched = start_managed_browser(&args).await?;
+    verify_connection(&launched.endpoint, cli.timeout).await?;
+    if !args.no_persist {
+        save_managed_connection(&args, &launched).await?;
+    }
     spinner.success(if launched.already_running {
         "Managed Chrome is ready"
     } else {
@@ -184,9 +247,28 @@ async fn launch(cli: &Cli, args: &LaunchArgs) -> Result<()> {
             "profile": launched.profile.display().to_string(),
             "endpoint": launched.endpoint,
             "persisted": !args.no_persist,
+            "mode": "managed",
         }),
         cli.pretty,
     )
+}
+
+fn remembered_launch_args(args: &LaunchArgs, saved: &Config) -> LaunchArgs {
+    let mut args = args.clone();
+    if let Some(Connection::Managed {
+        profile,
+        port,
+        browser_path,
+    }) = &saved.connection
+    {
+        args.profile.get_or_insert_with(|| profile.clone());
+        args.port.get_or_insert(*port);
+        if args.browser_path.is_none() {
+            args.browser_path.clone_from(browser_path);
+        }
+    }
+    args.port.get_or_insert(9322);
+    args
 }
 
 struct ManagedLaunch {
@@ -197,32 +279,50 @@ struct ManagedLaunch {
 }
 
 async fn start_managed_browser(args: &LaunchArgs) -> Result<ManagedLaunch> {
-    if let Ok(endpoint) =
-        discovery::discover(BrowserKind::Chromium, Some(&args.port.to_string())).await
-    {
-        if !args.no_persist {
-            config::save(&Config {
-                endpoint: Some(endpoint.websocket_url.clone()),
-                target_id: None,
-            })
-            .await?;
-        }
-        return Ok(ManagedLaunch {
-            endpoint,
-            pid: 0,
-            profile: args
-                .profile
-                .clone()
-                .unwrap_or(config::managed_profile_dir()?),
-            already_running: true,
-        });
-    }
-
+    let port = args.port.unwrap_or(9322);
     let profile = args
         .profile
         .clone()
         .unwrap_or(config::managed_profile_dir()?);
     std::fs::create_dir_all(&profile).at(config::display_path(&profile))?;
+    let profile = std::fs::canonicalize(&profile).at(config::display_path(&profile))?;
+    // Never relaunch a user's everyday Chrome directory with automation flags.
+    if discovery::existing_chrome_profile()
+        .ok()
+        .and_then(|p| std::fs::canonicalize(p).ok())
+        .as_ref()
+        == Some(&profile)
+    {
+        return Err(Error::InvalidArgument("use connect --existing for your everyday Chrome; managed mode needs a separate user-data directory".to_owned()));
+    }
+    if let Ok(Ok(endpoint)) = tokio::time::timeout(
+        Duration::from_secs(2),
+        discovery::discover(BrowserKind::Chromium, Some(&port.to_string())),
+    )
+    .await
+    {
+        if !managed_process_matches(port, &profile)? {
+            return Err(Error::InvalidArgument(format!(
+                "port {port} belongs to a different or unverified browser; choose another --port"
+            )));
+        }
+        return Ok(ManagedLaunch {
+            endpoint,
+            pid: 0,
+            profile,
+            already_running: true,
+        });
+    }
+
+    // A non-CDP listener must not cause us to start Chrome against an occupied port.
+    let probe =
+        std::net::TcpListener::bind((std::net::Ipv4Addr::LOCALHOST, port)).map_err(|_| {
+            Error::InvalidArgument(format!(
+                "port {port} is already in use; choose another --port"
+            ))
+        })?;
+    drop(probe);
+
     clear_stale_chrome_profile_markers(&profile)?;
     let browser_path = args
         .browser_path
@@ -241,8 +341,11 @@ async fn start_managed_browser(args: &LaunchArgs) -> Result<ManagedLaunch> {
 
     let mut endpoint = None;
     for _ in 0..50 {
-        if let Ok(found) =
-            discovery::discover(BrowserKind::Chromium, Some(&args.port.to_string())).await
+        if let Ok(Ok(found)) = tokio::time::timeout(
+            Duration::from_millis(200),
+            discovery::discover(BrowserKind::Chromium, Some(&port.to_string())),
+        )
+        .await
         {
             endpoint = Some(found);
             break;
@@ -254,14 +357,7 @@ async fn start_managed_browser(args: &LaunchArgs) -> Result<ManagedLaunch> {
         timeout_ms: 10_000,
     })?;
 
-    if !args.no_persist {
-        config::save(&Config {
-            endpoint: Some(endpoint.websocket_url.clone()),
-            target_id: None,
-        })
-        .await?;
-    }
-    write_managed_pid(child.id(), args.port)?;
+    write_managed_pid(child.id(), port)?;
 
     Ok(ManagedLaunch {
         endpoint,
@@ -269,6 +365,44 @@ async fn start_managed_browser(args: &LaunchArgs) -> Result<ManagedLaunch> {
         profile,
         already_running: false,
     })
+}
+
+async fn save_managed_connection(args: &LaunchArgs, launched: &ManagedLaunch) -> Result<()> {
+    config::save(&Config {
+        endpoint: Some(launched.endpoint.websocket_url.clone()),
+        target_id: None,
+        connection: Some(Connection::Managed {
+            profile: launched.profile.clone(),
+            port: args.port.unwrap_or(9322),
+            browser_path: args.browser_path.clone(),
+        }),
+    })
+    .await?;
+    Ok(())
+}
+
+fn managed_process_matches(port: u16, profile: &Path) -> Result<bool> {
+    // Verify the actual listener, not just a PID marker which may be stale.
+    let out = std::process::Command::new("lsof")
+        .args(["-nP", &format!("-tiTCP:{port}"), "-sTCP:LISTEN"])
+        .output()
+        .at("lsof")?;
+    let pids: Vec<u32> = String::from_utf8_lossy(&out.stdout)
+        .lines()
+        .filter_map(|line| line.trim().parse().ok())
+        .collect();
+    Ok(!pids.is_empty() && pids.iter().all(|pid| process_uses_profile(*pid, profile)))
+}
+
+fn process_uses_profile(pid: u32, profile: &Path) -> bool {
+    let argument = format!("--user-data-dir={} ", profile.display());
+    std::process::Command::new("ps")
+        .args(["-ww", "-p", &pid.to_string(), "-o", "args="])
+        .output()
+        .is_ok_and(|out| {
+            out.status.success()
+                && format!("{} ", String::from_utf8_lossy(&out.stdout).trim()).contains(&argument)
+        })
 }
 
 async fn cleanup(cli: &Cli, args: &crate::cli::CleanupArgs) -> Result<()> {
@@ -286,8 +420,43 @@ async fn cleanup(cli: &Cli, args: &crate::cli::CleanupArgs) -> Result<()> {
     let pid_file = config::managed_pid_file(args.port)?;
 
     let saved_endpoint_cleared = if args.kill {
-        for pid in &pids {
-            terminate_pid(*pid, args.force).await?;
+        let canonical_profile = std::fs::canonicalize(&profile).unwrap_or_else(|_| profile.clone());
+        let saved = config::load().await?;
+        if matches!(saved.connection, Some(Connection::Existing { profile: ref selected }) if selected == &canonical_profile)
+            || discovery::existing_chrome_profile()
+                .ok()
+                .and_then(|p| std::fs::canonicalize(p).ok())
+                .as_ref()
+                == Some(&canonical_profile)
+            || pids
+                .iter()
+                .any(|pid| !process_uses_profile(*pid, &canonical_profile))
+        {
+            return Err(Error::InvalidArgument("cleanup only stops verified managed browsers; it will not stop an existing browser or clear its profile markers".to_owned()));
+        }
+        if !pids.is_empty() {
+            if args.force {
+                for pid in &pids {
+                    force_kill_pid(*pid)?;
+                }
+            } else {
+                // Browser.close lets Chrome flush cookies and profile data.
+                // A signal (or an implicit SIGKILL) can lose recent sessions.
+                let endpoint = resolve_endpoint(cli, &args.port.to_string()).await?;
+                let mut client = verify_connection(&endpoint, cli.timeout).await?;
+                let close = client.close_browser().await;
+                if !wait_for_browser_exit(&pids, Duration::from_secs(5)).await {
+                    close?;
+                    return Err(Error::InvalidArgument(
+                        "Chrome has not finished closing; retry cleanup or explicitly use --force (unsaved profile data may be lost)".to_owned(),
+                    ));
+                }
+            }
+            if !wait_for_browser_exit(&pids, Duration::from_secs(5)).await {
+                return Err(Error::InvalidArgument(
+                    "managed Chrome is still running; profile markers were left intact".to_owned(),
+                ));
+            }
         }
         for path in &marker_files {
             if path.exists() {
@@ -331,6 +500,16 @@ async fn cleanup(cli: &Cli, args: &crate::cli::CleanupArgs) -> Result<()> {
 }
 
 fn clear_stale_chrome_profile_markers(profile: &Path) -> Result<()> {
+    if let Ok(lock) = std::fs::read_link(profile.join("SingletonLock"))
+        && let Some(pid) = lock
+            .to_string_lossy()
+            .rsplit('-')
+            .next()
+            .and_then(|value| value.parse::<u32>().ok())
+        && pid_is_live(pid)
+    {
+        return Err(Error::InvalidArgument("this profile is already running; reconnect to it instead of launching it on another port".to_owned()));
+    }
     for path in managed_profile_marker_files(profile) {
         if path.exists() {
             std::fs::remove_file(&path).at(config::display_path(&path))?;
@@ -389,13 +568,19 @@ fn managed_browser_pids(port: u16) -> Result<Vec<u32>> {
 }
 
 async fn clear_saved_endpoint_for_port(port: u16) -> Result<bool> {
-    let loaded = config::load().await?;
+    let mut loaded = config::load().await?;
     if loaded
         .endpoint
         .as_deref()
         .is_some_and(|endpoint| endpoint_uses_local_port(endpoint, port))
     {
-        config::save(&Config::default()).await?;
+        // Keep the identity: stopping managed Chrome must not enable discovery
+        // of another browser on the next command.
+        if matches!(loaded.connection, Some(Connection::Managed { .. })) {
+            loaded.endpoint = None;
+            loaded.target_id = None;
+            config::save(&loaded).await?;
+        }
         return Ok(true);
     }
     Ok(false)
@@ -416,36 +601,42 @@ fn pid_is_live(pid: u32) -> bool {
         .is_ok_and(|output| output.status.success())
 }
 
-async fn terminate_pid(pid: u32, force: bool) -> Result<()> {
+fn force_kill_pid(pid: u32) -> Result<()> {
     if pid == std::process::id() {
         return Ok(());
     }
-    let signal = if force { "-KILL" } else { "-TERM" };
-    std::process::Command::new("kill")
-        .args([signal, &pid.to_string()])
+    let status = std::process::Command::new("kill")
+        .args(["-KILL", &pid.to_string()])
         .status()
         .map_err(|source| Error::Io {
             path: "kill".to_owned(),
             source,
         })?;
-    tokio::time::sleep(Duration::from_millis(750)).await;
-    if !force && pid_is_live(pid) {
-        std::process::Command::new("kill")
-            .args(["-KILL", &pid.to_string()])
-            .status()
-            .map_err(|source| Error::Io {
-                path: "kill".to_owned(),
-                source,
-            })?;
+    if !status.success() && pid_is_live(pid) {
+        return Err(Error::InvalidArgument(format!(
+            "could not stop managed browser process {pid}"
+        )));
     }
     Ok(())
+}
+
+async fn wait_for_browser_exit(pids: &[u32], timeout: Duration) -> bool {
+    let deadline = tokio::time::Instant::now() + timeout;
+    loop {
+        if pids.iter().all(|pid| !pid_is_live(*pid)) {
+            return true;
+        }
+        if tokio::time::Instant::now() >= deadline {
+            return false;
+        }
+        tokio::time::sleep(Duration::from_millis(100)).await;
+    }
 }
 
 fn chrome_launch_args(args: &LaunchArgs, profile: &Path) -> Vec<String> {
     let mut chrome_args = vec![
         "--remote-debugging-address=127.0.0.1".to_owned(),
-        format!("--remote-debugging-port={}", args.port),
-        "--remote-allow-origins=*".to_owned(),
+        format!("--remote-debugging-port={}", args.port.unwrap_or(9322)),
         format!("--user-data-dir={}", profile.display()),
         "--no-first-run".to_owned(),
         "--no-default-browser-check".to_owned(),
@@ -474,47 +665,136 @@ async fn cdp_client(cli: &Cli) -> Result<CdpClient> {
             feature: "this command".to_owned(),
         });
     }
-    let (endpoint, mut client) = connect_or_launch_managed(cli).await?;
-    let stored = config::load().await.ok().and_then(|cfg| cfg.target_id);
+    let (endpoint, mut client) = selected_client(cli).await?;
+    let mut saved = config::load().await?;
+    let stored = if cli.cdp.is_none()
+        && saved.endpoint.as_deref() == Some(endpoint.websocket_url.as_str())
+    {
+        saved.target_id.clone()
+    } else {
+        None
+    };
     if let Some(target_id) = cli.target.as_deref() {
         client.attach_or_create(Some(target_id)).await?;
     } else if let Some(target_id) = stored.as_deref() {
         match client.attach_or_create(Some(target_id)).await {
             Ok(_) => {}
             Err(Error::TargetNotFound(_)) => {
-                config::save(&Config {
-                    endpoint: Some(endpoint.websocket_url),
-                    target_id: None,
-                })
-                .await?;
-                client.attach_or_create(None).await?;
+                let target = client.create_target("about:blank").await?;
+                client.attach(&target.target_id).await?;
+                saved.endpoint = Some(endpoint.websocket_url);
+                saved.target_id = Some(target.target_id);
+                config::save(&saved).await?;
             }
             Err(error) => return Err(error),
         }
     } else {
-        client.attach_or_create(None).await?;
+        // Work in a background tab, never navigate the user's arbitrary first tab.
+        let target = client.create_target("about:blank").await?;
+        client.attach(&target.target_id).await?;
+        if cli.cdp.is_none() {
+            saved.endpoint = Some(endpoint.websocket_url);
+            saved.target_id = Some(target.target_id);
+            config::save(&saved).await?;
+        }
     }
     Ok(client)
 }
 
-async fn connect_or_launch_managed(cli: &Cli) -> Result<(BrowserEndpoint, CdpClient)> {
-    if cli.cdp.is_some() || !matches!(cli.browser, BrowserKind::Auto | BrowserKind::Chromium) {
-        let endpoint = discovery::discover(cli.browser, cli.cdp.as_deref()).await?;
-        let client = CdpClient::connect(&endpoint.websocket_url, cli.timeout).await?;
+async fn selected_client(cli: &Cli) -> Result<(BrowserEndpoint, CdpClient)> {
+    if !matches!(cli.browser, BrowserKind::Auto | BrowserKind::Chromium) {
+        return Err(Error::Unsupported {
+            backend: "safari".to_owned(),
+            feature: "persistent browser connection".to_owned(),
+        });
+    }
+    if let Some(value) = &cli.cdp {
+        let endpoint = resolve_endpoint(cli, value).await?;
+        let client = verify_connection(&endpoint, cli.timeout).await?;
         return Ok((endpoint, client));
     }
+    let saved = config::load().await?;
+    let endpoint = selected_endpoint(cli, &saved).await?;
+    let client = verify_connection(&endpoint, cli.timeout)
+        .await
+        .map_err(|_| disconnected(&saved))?;
+    Ok((endpoint, client))
+}
 
-    let args = LaunchArgs {
-        port: 9322,
+fn default_launch_args() -> LaunchArgs {
+    LaunchArgs {
+        port: None,
         profile: None,
         browser_path: None,
         headless: false,
         url: "about:blank".to_owned(),
         no_persist: false,
-    };
-    let launched = start_managed_browser(&args).await?;
-    let client = CdpClient::connect(&launched.endpoint.websocket_url, cli.timeout).await?;
-    Ok((launched.endpoint, client))
+    }
+}
+
+fn existing_disconnected() -> Error {
+    Error::BrowserDisconnected("open the selected Chrome (144+), enable chrome://inspect/#remote-debugging, then retry and Allow Chrome's connection prompt; use --timeout 60000 for more approval time".to_owned())
+}
+
+fn disconnected(saved: &Config) -> Error {
+    match &saved.connection {
+        Some(Connection::Existing { .. }) => existing_disconnected(),
+        Some(Connection::Managed { profile, port, .. }) => Error::BrowserDisconnected(format!("restart the selected profile with lsearch launch --profile {:?} --port {port}", profile.display().to_string())),
+        _ => Error::BrowserDisconnected("restart your selected browser and reconnect with lsearch connect <endpoint> if its endpoint changed".to_owned()),
+    }
+}
+
+async fn resolve_endpoint(cli: &Cli, value: &str) -> Result<BrowserEndpoint> {
+    tokio::time::timeout(
+        Duration::from_millis(cli.timeout),
+        discovery::discover(cli.browser, Some(value)),
+    )
+    .await
+    .map_err(|_| Error::Timeout {
+        operation: "browser endpoint discovery".to_owned(),
+        timeout_ms: cli.timeout,
+    })?
+}
+
+async fn selected_endpoint(cli: &Cli, saved: &Config) -> Result<BrowserEndpoint> {
+    match &saved.connection {
+        Some(Connection::Existing { profile }) => {
+            discovery::endpoint_from_devtools_file(&profile.join("DevToolsActivePort"))
+                .await
+                .map_err(|_| disconnected(saved))
+        }
+        Some(Connection::Managed { .. }) => {
+            let value = saved
+                .endpoint
+                .as_deref()
+                .ok_or_else(|| disconnected(saved))?;
+            // Pin the browser UUID, not just its port: another listener must
+            // never inherit the selected browser's authority.
+            resolve_endpoint(cli, value)
+                .await
+                .map_err(|_| disconnected(saved))
+        }
+        // Old endpoint-only configurations remain explicit selections; never scan
+        // other profiles/ports if that endpoint stops responding.
+        Some(Connection::Endpoint) | None => {
+            let endpoint = saved.endpoint.as_deref().ok_or_else(|| {
+                if saved.connection.is_some() {
+                    disconnected(saved)
+                } else {
+                    Error::BrowserNotConfigured
+                }
+            })?;
+            resolve_endpoint(cli, endpoint)
+                .await
+                .map_err(|_| disconnected(saved))
+        }
+    }
+}
+
+async fn verify_connection(endpoint: &BrowserEndpoint, timeout: u64) -> Result<CdpClient> {
+    let mut client = CdpClient::connect(&endpoint.websocket_url, timeout).await?;
+    client.verify().await?;
+    Ok(client)
 }
 
 async fn open(cli: &Cli, client: &mut CdpClient, args: &OpenArgs) -> Result<()> {
@@ -532,10 +812,11 @@ async fn open(cli: &Cli, client: &mut CdpClient, args: &OpenArgs) -> Result<()> 
 }
 
 async fn search_command(cli: &Cli, args: &SearchArgs) -> Result<()> {
-    if let Some(mut value) = load_search_cache(args).await {
+    // Even a cache hit must honor the chosen, currently connected browser.
+    let mut client = cdp_client(cli).await?;
+    if let Some(mut value) = load_search_cache(args, &client.cache_scope).await {
         prepare_search_results(&mut value, args);
         if args.with_content {
-            let mut client = cdp_client(cli).await?;
             enrich_search_results(&mut client, &mut value, args.content_chars).await?;
         }
         let result_count = value
@@ -550,7 +831,6 @@ async fn search_command(cli: &Cli, args: &SearchArgs) -> Result<()> {
 
     let engine = search_engine_label(args.engine);
     let spinner = Spinner::start(format!("Searching {engine} through your local browser"));
-    let mut client = cdp_client(cli).await?;
     search(cli, &mut client, args, spinner).await
 }
 
@@ -582,7 +862,7 @@ async fn search(
         ))
         .await?;
     let mut value = client.evaluate(scripts::search_results(), true).await?;
-    save_search_cache(args, &value).await;
+    save_search_cache(args, &value, &client.cache_scope).await;
     prepare_search_results(&mut value, args);
     if args.with_content {
         enrich_search_results(client, &mut value, args.content_chars).await?;
@@ -659,11 +939,11 @@ fn resolve_search_format(
     }
 }
 
-async fn load_search_cache(args: &SearchArgs) -> Option<Value> {
+async fn load_search_cache(args: &SearchArgs, scope: &str) -> Option<Value> {
     if args.no_cache || args.cache_ttl == 0 {
         return None;
     }
-    let path = search_cache_path(args).ok()?;
+    let path = search_cache_path(args, scope).ok()?;
     let age = tokio::fs::metadata(&path)
         .await
         .ok()?
@@ -676,7 +956,8 @@ async fn load_search_cache(args: &SearchArgs) -> Option<Value> {
     }
     let record: Value = serde_json::from_slice(&tokio::fs::read(path).await.ok()?).ok()?;
     let engine = format!("{:?}", args.engine).to_lowercase();
-    if record.get("query").and_then(Value::as_str) != Some(args.query.as_str())
+    if record.get("scope").and_then(Value::as_str) != Some(scope)
+        || record.get("query").and_then(Value::as_str) != Some(args.query.as_str())
         || record.get("engine").and_then(Value::as_str) != Some(engine.as_str())
     {
         return None;
@@ -688,11 +969,11 @@ async fn load_search_cache(args: &SearchArgs) -> Option<Value> {
     Some(search)
 }
 
-async fn save_search_cache(args: &SearchArgs, search: &Value) {
+async fn save_search_cache(args: &SearchArgs, search: &Value, scope: &str) {
     if args.no_cache || args.cache_ttl == 0 {
         return;
     }
-    let Ok(path) = search_cache_path(args) else {
+    let Ok(path) = search_cache_path(args, scope) else {
         return;
     };
     let Some(parent) = path.parent() else {
@@ -702,6 +983,7 @@ async fn save_search_cache(args: &SearchArgs, search: &Value) {
         return;
     }
     let record = json!({
+        "scope": scope,
         "engine": format!("{:?}", args.engine).to_lowercase(),
         "query": args.query,
         "search": search,
@@ -711,10 +993,16 @@ async fn save_search_cache(args: &SearchArgs, search: &Value) {
     }
 }
 
-fn search_cache_path(args: &SearchArgs) -> Result<PathBuf> {
+fn search_cache_path(args: &SearchArgs, scope: &str) -> Result<PathBuf> {
     let engine = format!("{:?}", args.engine).to_lowercase();
     let mut hash = 0xcbf2_9ce4_8422_2325_u64;
-    for byte in engine.bytes().chain([0]).chain(args.query.bytes()) {
+    for byte in scope
+        .bytes()
+        .chain([0])
+        .chain(engine.bytes())
+        .chain([0])
+        .chain(args.query.bytes())
+    {
         hash ^= u64::from(byte);
         hash = hash.wrapping_mul(0x0000_0100_0000_01b3);
     }
@@ -987,7 +1275,7 @@ async fn record(cli: &Cli, client: &mut CdpClient, args: &RecordArgs) -> Result<
 }
 
 async fn tabs(cli: &Cli, command: &TabsCommand) -> Result<()> {
-    let (endpoint, mut client) = connect_or_launch_managed(cli).await?;
+    let (endpoint, mut client) = selected_client(cli).await?;
     match command {
         TabsCommand::List => {
             let targets = client.targets().await?;
@@ -1000,11 +1288,21 @@ async fn tabs(cli: &Cli, command: &TabsCommand) -> Result<()> {
             print_json(&json!({ "ok": true, "tab": target }), cli.pretty)
         }
         TabsCommand::Use { target_id } => {
-            config::save(&Config {
-                endpoint: Some(endpoint.websocket_url),
-                target_id: Some(target_id.clone()),
-            })
-            .await?;
+            if cli.cdp.is_some() {
+                return Err(Error::InvalidArgument("--cdp is a one-command override; use connect <endpoint> before saving a tab, or pass --target for this command".to_owned()));
+            }
+            if !client
+                .targets()
+                .await?
+                .iter()
+                .any(|target| &target.target_id == target_id)
+            {
+                return Err(Error::TargetNotFound(target_id.clone()));
+            }
+            let mut saved = config::load().await?;
+            saved.endpoint = Some(endpoint.websocket_url);
+            saved.target_id = Some(target_id.clone());
+            config::save(&saved).await?;
             print_json(&json!({ "ok": true, "targetId": target_id }), cli.pretty)
         }
         TabsCommand::Close { target_id } => {
@@ -1127,6 +1425,26 @@ fn urlencoding(input: &str) -> String {
 
 #[cfg(test)]
 mod tests {
+    #[cfg(unix)]
+    #[tokio::test]
+    async fn shutdown_wait_never_escalates_to_a_forced_kill() {
+        let mut child = std::process::Command::new("/bin/sleep")
+            .arg("30")
+            .spawn()
+            .unwrap();
+        let exited =
+            super::wait_for_browser_exit(&[child.id()], std::time::Duration::from_millis(150))
+                .await;
+        let still_running = child.try_wait().unwrap().is_none();
+        child.kill().unwrap();
+        child.wait().unwrap();
+        assert!(!exited);
+        assert!(
+            still_running,
+            "only explicit --force may kill an unresponsive browser"
+        );
+    }
+
     use serde_json::json;
 
     use crate::cli::{SearchEngine, SearchFormat};
@@ -1135,6 +1453,51 @@ mod tests {
         endpoint_uses_local_port, resolve_search_format, search_engine_label, search_engine_url,
         truncate_search_snippets, validate_content_page,
     };
+
+    #[test]
+    fn launch_remembers_managed_settings_but_explicit_flags_win() {
+        let saved = crate::config::Config {
+            connection: Some(crate::config::Connection::Managed {
+                profile: "/fixture/profile".into(),
+                port: 9444,
+                browser_path: Some("/fixture/chrome".into()),
+            }),
+            ..Default::default()
+        };
+        let mut args = super::default_launch_args();
+        let remembered = super::remembered_launch_args(&args, &saved);
+        assert_eq!(remembered.port, Some(9444));
+        assert_eq!(
+            remembered.profile.unwrap(),
+            std::path::PathBuf::from("/fixture/profile")
+        );
+        assert_eq!(
+            remembered.browser_path.unwrap(),
+            std::path::PathBuf::from("/fixture/chrome")
+        );
+        args.port = Some(9322);
+        args.profile = Some("/fixture/other".into());
+        let overridden = super::remembered_launch_args(&args, &saved);
+        assert_eq!(overridden.port, Some(9322));
+        assert_eq!(
+            overridden.profile.unwrap(),
+            std::path::PathBuf::from("/fixture/other")
+        );
+    }
+
+    #[test]
+    fn search_cache_is_scoped_to_the_browser_session() {
+        use clap::Parser;
+        let cli = crate::cli::Cli::parse_from(["lsearch", "search", "fixture"]);
+        let Some(crate::cli::Command::Search(args)) = cli.command else {
+            panic!("search arguments")
+        };
+        let first =
+            super::search_cache_path(&args, "ws://127.0.0.1:1/devtools/browser/first").unwrap();
+        let second =
+            super::search_cache_path(&args, "ws://127.0.0.1:1/devtools/browser/second").unwrap();
+        assert_ne!(first, second);
+    }
 
     #[test]
     fn saved_endpoint_cleanup_only_matches_the_requested_local_port() {

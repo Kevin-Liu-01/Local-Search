@@ -15,6 +15,7 @@ pub mod config;
 pub mod error;
 pub mod output;
 pub mod ui;
+mod updates;
 
 use cli::Cli;
 use error::Result;
@@ -25,5 +26,10 @@ use error::Result;
 /// Returns a typed error when browser discovery, transport, page execution, or
 /// artifact persistence fails.
 pub async fn run(cli: Cli) -> Result<()> {
-    commands::run(cli).await
+    let check_updates = updates::automatic_check_allowed(&cli);
+    commands::run(cli).await?;
+    if check_updates {
+        updates::recommend().await;
+    }
+    Ok(())
 }

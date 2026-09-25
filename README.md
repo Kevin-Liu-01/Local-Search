@@ -18,11 +18,13 @@
 A local browser API for agents.
 
 One CLI lets an agent search Google, read Reddit and docs, extract page data,
-interact with sites, and use sessions in a dedicated local Chrome profile.
+interact with sites, and use your existing Chrome logins—with Chrome's approval.
+Or choose a separate persistent profile for agent work.
 `local-search` is the bridge: the agent calls a command, your browser does the
 work, and compact JSON or readable text comes back.
 
 ```sh
+lsearch connect --existing  # approve in Chrome; setup below
 lsearch "open source browser automation rust"
 ```
 
@@ -36,7 +38,9 @@ interface instead of a separate API integration for every site.
 - One local browser interface for shell-capable agents.
 - Search results as stable JSON across Google, Bing, Brave, and DuckDuckGo.
 - Readable page extraction for Reddit, documentation, and other websites.
-- Browser-authenticated requests through sessions in the managed profile.
+- Your existing Chrome sessions, with Chrome approval. No cookie export.
+- An explicit choice of everyday Chrome or a separate persistent profile.
+- A remembered browser choice and an honest error when it disconnects—no fallback.
 - Optional result-page content extraction with `--with-content`.
 - Local `read`, `extract`, `map`, `request`, screenshot, MHTML, HTML, and HAR-like
   capture commands.
@@ -84,22 +88,61 @@ local-search --help
 local-browser --help
 ```
 
-## Quick Start
+### Update recommendations
 
-Start the managed browser profile once:
+Opening `lsearch` with no arguments, or successfully setting up a browser with
+`connect` / `launch`, checks for a newer release in interactive terminals. Checks
+use a daily cache and a two-second network timeout. A newer release shows the
+appropriate Cargo or npm update command on stderr; nothing installs automatically.
+Searches, pipelines, `--json`, `--pretty`, and CI do not check automatically.
+Offline or missing `curl`? Startup still succeeds without a notice.
+
+Check explicitly at any time (stable JSON; no browser connection needed):
 
 ```sh
-lsearch launch
+lsearch update-check --pretty
 ```
 
-This opens a persistent Chrome profile owned by `local-search` at:
+Cargo installs check crates.io; the npm bridge checks its own npm package version,
+which can differ from the native crate version. Checks use the system `curl` and
+request only public release metadata, never queries or browser state. Set
+`LOCAL_SEARCH_NO_UPDATE_CHECK=1` to disable automatic checks. An explicit
+`update-check` still runs. Source builds compare against published versions, not
+GitHub commits; rebuild from your checkout to pick up unreleased changes.
+
+## Quick Start
+
+Choose the browser your agent is allowed to use. With **Chrome 144+**, open
+`chrome://inspect/#remote-debugging`, enable remote debugging, then run:
+
+```sh
+lsearch connect --existing
+```
+
+Approve Chrome's connection prompt. `lsearch` uses that browser's sessions in
+place: no cookie copying, no second login. Chrome may ask again for subsequent
+CLI connections. The initial connection allows at least 60 seconds for approval;
+use `--timeout 60000` on later commands if you need more time.
+
+Prefer to keep your everyday browser separate? Choose:
+
+```sh
+lsearch connect --managed
+```
+
+This starts a separate persistent Chrome profile. On macOS it lives at:
 
 ```txt
 ~/Library/Application Support/local-search/chrome-profile
 ```
 
-Sign in to accounts there once if you want authenticated search/read/extract.
-After that:
+Sign in there once if you need authenticated access. Your choice is saved for
+later commands. A disconnected browser returns `browser_disconnected`; it never
+silently opens a different profile. Reopen the selected Chrome or explicitly
+restart the managed profile with `lsearch launch`. It reuses the saved profile,
+port, and executable unless you explicitly override them.
+
+With either mode:
 
 ```sh
 lsearch "latest rust cdp browser automation"
@@ -143,18 +186,21 @@ The shorthand form uses the default search engine:
 lsearch "open source browser automation"
 ```
 
-Matching searches reuse locally cached browser results for five minutes. This
-makes repeated agent queries and depth changes return in a few milliseconds.
+Matching searches reuse locally cached results for five minutes, scoped to the
+connected browser session. Cache hits still verify that your chosen browser is
+connected; another browser or a restarted session cannot inherit those results.
 Use `--no-cache` for a fresh search, or change the window with `--cache-ttl`.
 Search snippets are capped at 120 characters by default; `--snippet-chars`
 changes that cap.
 
 Browser backend is different. Today, `local-search` is built around
 Chrome/Chromium's Chrome DevTools Protocol because it can control a normal local
-profile. The recommended setup is still:
+profile. Choose existing Chrome with approval, or a separate persistent profile:
 
 ```sh
-lsearch launch
+lsearch connect --existing
+# Or, explicitly choose isolation:
+lsearch connect --managed
 ```
 
 To use a different Chromium-family app, pass its executable path when launching
@@ -168,9 +214,20 @@ lsearch launch --browser-path "/Applications/Microsoft Edge.app/Contents/MacOS/M
 To attach to an already-running Chromium/CDP endpoint:
 
 ```sh
+lsearch connect 9222  # verify and remember an explicit endpoint
 lsearch --cdp 9222 search "open source browser automation" --engine google
 lsearch --cdp ws://127.0.0.1:9222/devtools/browser/... search "browser tooling" --engine duckduckgo
 ```
+
+`--cdp` and `LOCAL_SEARCH_CDP` override the browser for one command only. They
+do not replace the saved selection or reuse its target. For a different existing
+Chrome user-data root, use `connect --existing --profile PATH` (not the root's
+`Default` or `Profile N` subfolder). The CLI opens a background work tab unless
+you deliberately select one with `--target` or `tabs use`.
+
+Chrome 136+ does not accept command-line remote-debugging flags against its
+default profile. Existing mode uses Chrome 144+'s consent-based endpoint instead.
+See [Chrome's configuration guide](https://developer.chrome.com/docs/devtools/agents/get-started/configuration).
 
 Safari is not currently a supported local signed-in browser backend. Safari's
 official WebDriver automation uses isolated automation sessions, not the normal
@@ -372,25 +429,29 @@ lsearch cleanup --kill --pretty
 when the task is done and the managed browser should be stopped. Cleanup only
 targets the managed local-search browser listener and stale profile marker files;
 it does not delete cookies, history, or profile data. Custom ports use separate
-PID markers, and cleanup only clears a saved loopback endpoint when its port
-matches the cleanup request.
+PID markers. Cleanup preserves the chosen browser identity after stopping it,
+so later commands report disconnection rather than silently switching profiles.
+Normal `--kill` closes Chrome gracefully so it can save recent cookies. It never
+escalates to SIGKILL automatically. Use `--force` only for an unresponsive browser;
+unsaved session data may be lost.
 
 ## Browser Setup
 
-Recommended:
+Choose explicitly:
 
 ```sh
-lsearch launch
+lsearch connect --existing    # Chrome 144+, enable remote debugging and approve
+# OR: lsearch connect --managed
 lsearch cleanup --pretty       # dry-run managed browser cleanup
 lsearch cleanup --kill         # stop managed browser and clear stale markers
 ```
 
-This avoids Chrome's default-profile remote debugging prompts by using a
-separate persistent `local-search` profile. You can still attach to an existing
-endpoint when needed:
+Managed mode uses a separate persistent profile; existing mode uses Chrome's
+own approval flow. Both remember the selection. To inspect the available endpoints
+without requesting consent, run `lsearch doctor --pretty`. An explicit override:
 
 ```sh
-lsearch --cdp 9222 doctor
+lsearch --cdp 9222 tabs list
 lsearch --cdp ws://127.0.0.1:9222/devtools/browser/... tabs list
 ```
 

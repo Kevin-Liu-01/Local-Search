@@ -47,9 +47,11 @@ pub enum BrowserKind {
 
 #[derive(Debug, Subcommand)]
 pub enum Command {
+    /// Check for a newer published release without installing it or opening a browser.
+    UpdateCheck,
     /// Inspect local browser support and active automation endpoints.
     Doctor,
-    /// Discover and persist a browser connection.
+    /// Choose an existing Chrome session or a separate persistent profile.
     Connect(ConnectArgs),
     /// Start a managed local Chrome profile for prompt-free automation.
     Launch(LaunchArgs),
@@ -113,17 +115,30 @@ pub enum Command {
 
 #[derive(Debug, Args)]
 pub struct ConnectArgs {
-    /// Optional endpoint; auto-discovery is used when omitted.
+    /// Explicit CDP endpoint to verify and remember (advanced).
+    #[arg(conflicts_with_all = ["existing", "managed", "profile"])]
     pub endpoint: Option<String>,
+
+    /// Use your everyday Chrome. Enable <chrome://inspect/#remote-debugging> and approve in Chrome.
+    #[arg(long, conflicts_with = "managed")]
+    pub existing: bool,
+
+    /// Start or reuse a separate persistent local-search Chrome profile.
+    #[arg(long)]
+    pub managed: bool,
+
+    /// Existing Chrome user-data directory (not its Default/Profile N subfolder).
+    #[arg(long, requires = "existing")]
+    pub profile: Option<PathBuf>,
 }
 
-#[derive(Debug, Args)]
+#[derive(Clone, Debug, Args)]
 pub struct LaunchArgs {
-    /// CDP port for the managed local browser.
-    #[arg(long, default_value_t = 9322)]
-    pub port: u16,
+    /// Managed CDP port. Reuses the saved managed port, otherwise 9322.
+    #[arg(long, value_parser = clap::value_parser!(u16).range(1..))]
+    pub port: Option<u16>,
 
-    /// Persistent profile directory. Defaults to the local-search config dir.
+    /// Persistent profile directory. Reuses the saved managed profile when omitted.
     #[arg(long)]
     pub profile: Option<PathBuf>,
 
@@ -158,7 +173,7 @@ pub struct CleanupArgs {
     #[arg(long)]
     pub kill: bool,
 
-    /// Use SIGKILL instead of SIGTERM.
+    /// Force-stop Chrome instead of closing gracefully; unsaved data may be lost.
     #[arg(long, short = 'f')]
     pub force: bool,
 }

@@ -16,6 +16,10 @@ typed errors, browser control, and output rendering.
 - `cli.rs` is declarative command/argument structure.
 - `commands/mod.rs` is orchestration: attach browser, execute command, print
   result.
+- `updates.rs` checks published releases independently of browser commands.
+  Keep automatic notices terminal-only and startup-only, with daily caching,
+  bounded HTTPS requests, and an opt-out. `update-check` is explicit JSON output;
+  registry failures are advisory, never an implicit install or browser fallback.
 - `error.rs` keeps operator-facing messages and machine-readable error codes in
   one place.
 
@@ -30,7 +34,8 @@ typed errors, browser control, and output rendering.
 ## Common tasks → first action
 - New command: add Clap args, add command branch, update README, add CLI test.
 - Managed browser cleanup: keep `cleanup` dry-run by default, kill exact managed
-  listener PIDs only, and never delete profile cookies/data.
+  listener PIDs only, and never delete profile cookies/data. Use graceful CDP
+  shutdown by default; SIGKILL requires explicit `--force`.
 - New output mode: update `output.rs` only if the envelope contract changes.
 - New error: add variant in `error.rs` and stable `code()` mapping.
 

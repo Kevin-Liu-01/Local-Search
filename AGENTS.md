@@ -8,7 +8,8 @@ the complete end-user `lsearch` command surface.
 
 `local-search` is a small, open-source local browser API for shell-capable agents.
 Through one Rust CLI, agents can search, read, extract, interact, and use sessions
-in a dedicated Chrome or Chromium profile—without a hosted browser service or a
+in explicitly chosen existing Chrome (with approval) or a separate persistent
+Chrome/Chromium profile—without a hosted browser service or a
 separate SDK for every site.
 
 The Cargo package is `local-search`. The preferred executable is `lsearch`.
@@ -17,7 +18,7 @@ The Cargo package is `local-search`. The preferred executable is `lsearch`.
 ## Non-negotiable product principles
 
 1. **The local browser is the product boundary.** Browser work happens in a
-   dedicated profile on the user's machine. local-search is the bridge between
+   chosen profile on the user's machine. local-search is the bridge between
    an agent command and that browser, not a hosted service or transparent network
    tunnel. Do not replace it with a hosted browser or paid search API dependency.
 2. **Agent output is compact and stable.** Preserve structured stdout, stable
@@ -30,9 +31,10 @@ The Cargo package is `local-search`. The preferred executable is `lsearch`.
    arbitrary evaluation. Redact cookie values by default. Never leak browser
    credentials, tokens, request bodies, or signed-in page content into fixtures,
    logs, screenshots, or commits.
-5. **Managed Chrome is the stable default.** Prefer `lsearch launch` with its
-   dedicated persistent profile. Keep explicit CDP attachment for users who
-   intentionally choose it.
+5. **Browser choice is explicit and sticky.** Ask for existing Chrome with
+   Chrome approval or a separate persistent profile. Verify before saving.
+   Disconnection is an error, never permission to discover or launch another
+   browser. `--cdp` remains a transient explicit override.
 6. **Automation must not steal focus.** Create background targets for searches,
    reads, and temporary requests. Do not make repeated agent searches pull the
    active window away from the user.
@@ -69,6 +71,10 @@ The Cargo package is `local-search`. The preferred executable is `lsearch`.
 - `src/output.rs` owns stable success and error envelopes.
 - `src/ui.rs` owns interactive human presentation: welcome text, progress,
   colors, hyperlinks, and ranked search rendering.
+- `src/updates.rs` owns advisory release checks: interactive welcome/setup only,
+  daily cache, bounded public-registry requests, and explicit `update-check` JSON.
+  Never put update traffic or notices in normal searches or machine workflows;
+  never automatically install releases or touch browser state.
 - `src/error.rs` defines stable error categories. Prefer adding a meaningful code
   over returning opaque prose.
 - `tests/cli.rs` covers public CLI and output behavior.
@@ -122,16 +128,21 @@ CLI args -> command orchestration -> browser discovery/CDP -> evaluated page
 program -> normalized Rust value -> stable stdout envelope
 ```
 
-- Discovery precedence must remain explicit and debuggable: command/global CDP
-  override, environment override, managed profile endpoint, saved endpoint, then
-  supported localhost discovery.
+- Browser commands use the CLI/environment CDP override, otherwise the saved
+  choice only. Existing Chrome reads its chosen profile's dynamic endpoint;
+  managed/explicit endpoints pin the browser websocket identity. Discovery in
+  doctor is informational, never command fallback. First use requires a choice.
 - Browser selection and search-engine selection are different concepts.
   `--browser` chooses transport; `search --engine` chooses Google, Bing, Brave,
   or DuckDuckGo.
 - Search output normalizes `rank`, `title`, `url`, `domain`, and `snippet`, plus
   engine metadata and the `blocked` flag. Keep page chrome out of agent context.
-- Search cache entries are local, keyed by engine and exact query, TTL-aware, and
+- Search cache entries are local, scoped to the connected browser identity,
+  engine and exact query, TTL-aware, and
   reusable only when they contain at least the requested result depth.
+  Check connection even for cache hits. Do not reuse results across profiles or
+  restarted browser sessions. Default work tabs are background tabs, not a
+  personal tab; explicit `--target` / `tabs use` may select a personal tab.
 - `snapshot` refs such as `@e3` are temporary document-local handles. They must
   be regenerated after navigation or substantial DOM replacement.
 - `request` runs fetch in a temporary tab at the request origin so ambient
@@ -141,7 +152,8 @@ program -> normalized Rust value -> stable stdout envelope
 - `cleanup` is a safe inspection by default. `--kill` stops managed listener
   PIDs and clears stale markers but preserves profile cookies/history. Custom
   ports use separate PID markers; `--no-persist` skips endpoint persistence, not
-  lifecycle tracking. `--force` is exceptional.
+  lifecycle tracking. Normal shutdown uses `Browser.close` to flush profile data;
+  never escalate to SIGKILL without explicit `--force`. `--force` is exceptional.
 - Safari normal-profile automation is intentionally unsupported because Safari
   WebDriver uses an isolated automation session. Do not pretend it provides the
   same signed-in local-profile behavior.
@@ -260,7 +272,7 @@ publishing a bridge that pins it.
 > Machine-derived facts maintained by `agent-docs`; do not hand-edit inside the markers.
 
 <!-- agent-docs:auto:stack start -->
-- **Name:** local-search
+- **Name:** Local-Search
 - **Package manager:** unknown
 - **Languages:** n/a
 - **Framework:** n/a
@@ -273,10 +285,14 @@ publishing a bridge that pins it.
 <!-- agent-docs:auto:dirmap start -->
 | Directory | Skill | Purpose |
 |---|---|---|
+| `site/` | [`site/SKILL.md`](site/SKILL.md) | Next.js landing page, browser workflow, benchmarks, and social assets. |
+| `site/app/` | [`site/app/SKILL.md`](site/app/SKILL.md) | Landing-page composition, global CSS, metadata, and social-card routes. |
+| `site/components/` | [`site/components/SKILL.md`](site/components/SKILL.md) | Interactive agent demos, browser workflow, setup/copy controls, and brand primitives. |
+| `site/lib/` | [`site/lib/SKILL.md`](site/lib/SKILL.md) | Shared metadata, FAQ facts, structured data, and benchmark interpretation. |
 | `src/` | [`src/SKILL.md`](src/SKILL.md) | How to work in `src/`. Read before editing here. |
-| `scripts/` | [`scripts/SKILL.md`](scripts/SKILL.md) | Thin cleanup/maintenance wrappers around the Rust CLI. |
 | `src/bin/` | [`src/bin/SKILL.md`](src/bin/SKILL.md) | CLI binary shims for `lsearch`, `local-search`, and legacy `local-browser`. |
 | `src/browser/` | [`src/browser/SKILL.md`](src/browser/SKILL.md) | How to work in `src/browser/`. Read before editing here. |
+| `tests/` | [`tests/SKILL.md`](tests/SKILL.md) | How to work in `tests/`. Read before editing here. |
 <!-- agent-docs:auto:dirmap end -->
 
 <!-- agent-docs:auto:env start -->

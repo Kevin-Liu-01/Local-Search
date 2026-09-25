@@ -8,9 +8,28 @@ use crate::error::{IoContext, Result};
 pub struct Config {
     pub endpoint: Option<String>,
     pub target_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub connection: Option<Connection>,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(tag = "mode", rename_all = "snake_case")]
+pub enum Connection {
+    Existing {
+        profile: PathBuf,
+    },
+    Managed {
+        profile: PathBuf,
+        port: u16,
+        browser_path: Option<PathBuf>,
+    },
+    Endpoint,
 }
 
 pub fn config_dir() -> Result<PathBuf> {
+    if let Some(path) = std::env::var_os("LOCAL_SEARCH_CONFIG_DIR") {
+        return Ok(PathBuf::from(path));
+    }
     Ok(dirs::config_dir()
         .ok_or_else(|| {
             crate::error::Error::InvalidArgument("cannot resolve config dir".to_owned())
@@ -23,6 +42,9 @@ pub fn config_path() -> Result<PathBuf> {
 }
 
 fn legacy_config_path() -> Option<PathBuf> {
+    if std::env::var_os("LOCAL_SEARCH_CONFIG_DIR").is_some() {
+        return None;
+    }
     dirs::config_dir().map(|dir| dir.join("local-browser/config.json"))
 }
 

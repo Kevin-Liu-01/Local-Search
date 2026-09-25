@@ -8,6 +8,17 @@ pub enum Error {
     )]
     BrowserNotFound,
 
+    #[error(
+        "choose your browser first: lsearch connect --existing (Chrome approval) or lsearch connect --managed (separate persistent profile)"
+    )]
+    BrowserNotConfigured,
+
+    #[error("selected browser is disconnected: {0}. No other browser was opened")]
+    BrowserDisconnected(String),
+
+    #[error("update check failed: {0}")]
+    UpdateCheck(String),
+
     #[error("browser target not found: {0}")]
     TargetNotFound(String),
 
@@ -52,6 +63,9 @@ impl Error {
     pub fn code(&self) -> &'static str {
         match self {
             Self::BrowserNotFound => "browser_not_found",
+            Self::BrowserNotConfigured => "browser_not_configured",
+            Self::BrowserDisconnected(_) => "browser_disconnected",
+            Self::UpdateCheck(_) => "update_check_failed",
             Self::TargetNotFound(_) => "target_not_found",
             Self::Unsupported { .. } => "unsupported",
             Self::Protocol { .. } => "protocol_error",

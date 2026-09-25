@@ -37,9 +37,12 @@ pub fn print_welcome() -> crate::error::Result<()> {
             "{TEAL}{MARK}{RESET}\n\
              {TEAL}Local Browser API for Agents{RESET}\n\
              {DIM}Search · read · use signed-in sites{RESET}\n\n\
+               {DIM}Choose your browser once:{RESET}\n\
+               {DIM}${RESET} lsearch connect --existing\n\
+               {DIM}or{RESET} lsearch connect --managed\n\n\
                {DIM}${RESET} lsearch \"rust browser automation\" --engine google --limit 3\n\
                {DIM}${RESET} lsearch read https://example.com --format json\n\
-               {DIM}${RESET} lsearch launch\n\n\
+               \n\
              {DIM}Run `lsearch --help` for every command.{RESET}"
         )
     } else {
@@ -47,13 +50,28 @@ pub fn print_welcome() -> crate::error::Result<()> {
             "{MARK}\n\
              Local Browser API for Agents\n\
              Search · read · use signed-in sites\n\n\
+               Choose your browser once:\n\
+               $ lsearch connect --existing\n\
+               or lsearch connect --managed\n\n\
                $ lsearch \"rust browser automation\" --engine google --limit 3\n\
                $ lsearch read https://example.com --format json\n\
-               $ lsearch launch\n\n\
+               \n\
              Run `lsearch --help` for every command."
         )
     };
     writeln!(out, "{rendered}").at("stdout")
+}
+
+/// An advisory update notice for interactive startup, on stderr only.
+pub fn recommend_update(package: &str, current: &str, latest: &str, command: &str) {
+    let color = color_enabled(io::stderr().is_terminal());
+    if color {
+        eprintln!(
+            "\n{TEAL}Update available{RESET} {package} {DIM}{current} →{RESET} {latest}\n  {command}"
+        );
+    } else {
+        eprintln!("\nUpdate available: {package} {current} → {latest}\n  {command}");
+    }
 }
 
 /// A compact braille spinner that never contaminates stdout or piped JSON.

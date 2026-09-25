@@ -6,8 +6,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
 use tokio::net::TcpStream;
 use tokio_tungstenite::{
-    MaybeTlsStream, WebSocketStream, connect_async,
-    tungstenite::{client::IntoClientRequest, protocol::Message},
+    MaybeTlsStream, WebSocketStream, connect_async, tungstenite::protocol::Message,
 };
 
 use crate::error::{Error, Result};
@@ -31,20 +30,15 @@ pub struct CdpClient {
     session_id: Option<String>,
     target_id: Option<String>,
     timeout: Duration,
+    pub cache_scope: String,
 }
 
 impl CdpClient {
     pub async fn connect(websocket_url: &str, timeout_ms: u64) -> Result<Self> {
         let timeout = Duration::from_millis(timeout_ms);
-        let mut request = websocket_url.into_client_request()?;
-        if let Some(origin) = websocket_origin(websocket_url) {
-            let value = http::HeaderValue::from_str(&origin).map_err(|err| Error::Protocol {
-                method: "websocket connect".to_owned(),
-                message: err.to_string(),
-            })?;
-            request.headers_mut().insert("Origin", value);
-        }
-        let (socket, _) = tokio::time::timeout(timeout, connect_async(request))
+        // Native CDP clients do not impersonate a web origin. Chrome owns the
+        // approval handshake for its opt-in, everyday-browser endpoint.
+        let (socket, _) = tokio::time::timeout(timeout, connect_async(websocket_url))
             .await
             .map_err(|_| Error::Timeout {
                 operation: "websocket connect".to_owned(),
@@ -57,6 +51,7 @@ impl CdpClient {
             session_id: None,
             target_id: None,
             timeout,
+            cache_scope: websocket_url.to_owned(),
         })
     }
 
@@ -87,6 +82,16 @@ impl CdpClient {
             .cloned()
             .unwrap_or_else(|| json!([]));
         Ok(serde_json::from_value(value)?)
+    }
+
+    pub async fn verify(&mut self) -> Result<()> {
+        self.send_browser("Browser.getVersion", json!({})).await?;
+        Ok(())
+    }
+
+    pub async fn close_browser(&mut self) -> Result<()> {
+        self.send_browser("Browser.close", json!({})).await?;
+        Ok(())
     }
 
     pub async fn create_target(&mut self, url: &str) -> Result<TargetInfo> {
@@ -386,13 +391,6 @@ fn create_target_params(url: &str) -> Value {
     json!({ "url": url, "background": true })
 }
 
-fn websocket_origin(websocket_url: &str) -> Option<String> {
-    let parsed = url::Url::parse(websocket_url).ok()?;
-    let host = parsed.host_str()?;
-    let port = parsed.port()?;
-    Some(format!("http://{host}:{port}"))
-}
-
 fn parse_response(method: &str, response: &Value) -> Result<Value> {
     if let Some(error) = response.get("error") {
         let message = error
@@ -426,6 +424,36 @@ fn decode_data(value: Option<&Value>, method: &str) -> Result<Vec<u8>> {
 #[cfg(test)]
 mod tests {
     use super::create_target_params;
+
+    #[tokio::test]
+    async fn browser_shutdown_uses_the_graceful_protocol_command() {
+        use futures_util::{SinkExt as _, StreamExt as _};
+        use tokio_tungstenite::tungstenite::Message;
+
+        let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let address = listener.local_addr().unwrap();
+        let browser = tokio::spawn(async move {
+            let (stream, _) = listener.accept().await.unwrap();
+            let mut socket = tokio_tungstenite::accept_async(stream).await.unwrap();
+            let message = socket.next().await.unwrap().unwrap();
+            let call: serde_json::Value = serde_json::from_str(message.to_text().unwrap()).unwrap();
+            assert_eq!(call["method"], "Browser.close");
+            assert!(call.get("sessionId").is_none());
+            socket
+                .send(Message::Text(
+                    serde_json::json!({"id":call["id"],"result":{}})
+                        .to_string()
+                        .into(),
+                ))
+                .await
+                .unwrap();
+        });
+        let mut client = super::CdpClient::connect(&format!("ws://{address}"), 1000)
+            .await
+            .unwrap();
+        client.close_browser().await.unwrap();
+        browser.await.unwrap();
+    }
 
     #[test]
     fn creates_targets_without_stealing_focus() {

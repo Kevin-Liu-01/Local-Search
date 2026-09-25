@@ -21,9 +21,13 @@ Browser transport and runtime scripts for local signed-in browser control.
 - Keep JavaScript snippets deterministic and return JSON-serializable values.
 - Resolve `@eN` refs through `data-local-browser-ref`; `snapshot` is what assigns
   those refs.
-- Default command discovery should prefer the managed local-search profile unless
-  the user explicitly passes `--cdp`; direct discovery still supports explicit
-  endpoints.
+- Commands honor the saved explicit connection choice. Existing mode re-reads
+  only that profile's DevToolsActivePort; managed/endpoint mode pins the saved
+  websocket identity. Never auto-discover or launch another profile on failure.
+- First use requires `connect --existing` or `connect --managed`. `--cdp` is a
+  transient override; verify Chrome consent/CDP before persisting a choice.
+- Native websocket connections omit Origin; do not add a wildcard Chrome origin
+  allowlist or simulate approval. Chrome owns the consent prompt.
 
 ## Common tasks → first action
 - Add a CDP primitive: implement it on `CdpClient`, then call it from commands.

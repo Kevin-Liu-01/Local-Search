@@ -50,6 +50,16 @@ pub async fn discover(kind: BrowserKind, explicit: Option<&str>) -> Result<Brows
 }
 
 pub async fn doctor() -> serde_json::Value {
+    let selection = match config::load().await {
+        Ok(saved) => serde_json::json!({
+            "connection": saved.connection,
+            "endpoint": saved.endpoint,
+            "note": "inspection only; doctor does not request Chrome approval or verify this connection"
+        }),
+        Err(error) => {
+            serde_json::json!({"error": {"code": error.code(), "message": error.to_string()}})
+        }
+    };
     let mut endpoints = Vec::new();
     if let Ok(path) = config::managed_devtools_file()
         && let Ok(endpoint) = managed_endpoint_from_devtools_file(&path).await
@@ -75,6 +85,7 @@ pub async fn doctor() -> serde_json::Value {
             }
         },
         "endpoints": endpoints,
+        "selection": selection,
         "config": config::config_path().ok().map(|p| p.display().to_string()),
     })
 }
@@ -302,7 +313,7 @@ fn http_error(url: &Url, message: impl std::fmt::Display) -> Error {
     }
 }
 
-async fn endpoint_from_devtools_file(path: &Path) -> Result<BrowserEndpoint> {
+pub async fn endpoint_from_devtools_file(path: &Path) -> Result<BrowserEndpoint> {
     let raw = tokio::fs::read_to_string(path)
         .await
         .map_err(|source| Error::Io {
@@ -312,15 +323,45 @@ async fn endpoint_from_devtools_file(path: &Path) -> Result<BrowserEndpoint> {
     let mut lines = raw.lines();
     let port = lines
         .next()
-        .ok_or_else(|| Error::InvalidArgument("empty DevToolsActivePort".to_owned()))?;
+        .and_then(|value| value.trim().parse::<u16>().ok())
+        .filter(|port| *port != 0)
+        .ok_or_else(|| Error::InvalidArgument("invalid DevToolsActivePort port".to_owned()))?;
     let browser_path = lines
         .next()
+        .map(str::trim)
         .ok_or_else(|| Error::InvalidArgument("missing browser websocket path".to_owned()))?;
+    let valid_id = browser_path
+        .strip_prefix("/devtools/browser/")
+        .is_some_and(|id| {
+            !id.is_empty() && id.bytes().all(|b| b.is_ascii_alphanumeric() || b == b'-')
+        });
+    if !valid_id {
+        return Err(Error::InvalidArgument(
+            "invalid browser websocket path".to_owned(),
+        ));
+    }
     Ok(BrowserEndpoint {
         backend: "chromium".to_owned(),
         websocket_url: format!("ws://127.0.0.1:{port}{browser_path}"),
         source: path.display().to_string(),
     })
+}
+
+pub fn existing_chrome_profile() -> Result<PathBuf> {
+    let base = dirs::config_dir().ok_or_else(|| {
+        Error::InvalidArgument(
+            "cannot resolve Chrome user-data directory; pass --profile".to_owned(),
+        )
+    })?;
+    #[cfg(target_os = "macos")]
+    let path = base.join("Google/Chrome");
+    #[cfg(target_os = "windows")]
+    let path = dirs::data_local_dir()
+        .unwrap_or(base)
+        .join("Google/Chrome/User Data");
+    #[cfg(not(any(target_os = "macos", target_os = "windows")))]
+    let path = base.join("google-chrome");
+    Ok(path)
 }
 
 fn devtools_files() -> Vec<PathBuf> {
