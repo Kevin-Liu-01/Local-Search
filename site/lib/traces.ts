@@ -27,7 +27,7 @@ export const traces: SearchTrace[] = [
     results: [
       {
         rank: 1,
-        title: "browser_automation — Rust web dev library // Lib.rs",
+        title: "browser_automation: Rust web dev library // Lib.rs",
         domain: "lib.rs",
         url: "https://lib.rs/crates/browser_automation",
         snippet:

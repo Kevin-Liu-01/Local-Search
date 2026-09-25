@@ -1,13 +1,13 @@
 const configuredSiteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.lsearch.dev";
 
 export const SITE_URL = configuredSiteUrl.replace(/\/$/, "");
-export const SITE_LAST_UPDATED = "2026-09-11";
+export const SITE_LAST_UPDATED = "2026-09-24";
 export const SITE_NAME = "local-search";
 export const SITE_TITLE = "local-search: A Local Browser API for AI Agents";
-export const SITE_DESCRIPTION = "One Rust CLI lets agents search the web, read pages, and use signed-in sites through a local Chrome profile—without a separate API integration for every site.";
+export const SITE_DESCRIPTION = "Let your agent search, read pages, and use signed-in sites through your browser. Choose existing Chrome with approval or a separate profile. No cookie export.";
 export const SOCIAL_TITLE = "A Local Browser API for Agents";
-export const SOCIAL_DESCRIPTION = "Search Google, read Reddit and docs, and use signed-in sites through one agent-ready local browser CLI.";
-export const SOCIAL_IMAGE_ALT = "local-search is a local browser API that lets agents search, read, and use browser sessions through Chrome on the user's machine.";
+export const SOCIAL_DESCRIPTION = "Let your agent search, read pages, and use signed-in sites through your local browser. You choose the profile.";
+export const SOCIAL_IMAGE_ALT = "local-search connects AI agents to a browser on your machine for web search, reading pages, and using signed-in sites.";
 
 export const REPOSITORY_URL = "https://github.com/Kevin-Liu-01/Local-Search";
 export const CRATE_URL = "https://crates.io/crates/local-search";
@@ -33,35 +33,35 @@ export const RELEASE_AUDIT = {
 export const FAQS = [
   {
     question: "What is local-search?",
-    answer: "local-search is a local browser API for agents. Through one Rust CLI, a shell-capable agent can search the web, read pages, extract records, interact with sites, and make browser-authenticated requests through a Chrome profile on your machine.",
+    answer: "A command-line tool that lets agents search the web, read pages, extract data, and use websites through Chrome or Chromium on your machine.",
   },
   {
-    question: "Why use a browser instead of separate APIs?",
-    answer: "Search is only one use case. The same local interface can search four engines, read Reddit or docs, extract page data, interact with a site, and use a session you created in the local-search browser. You do not need a separate account, SDK, and response format for every site.",
+    question: "Can it use my logins?",
+    answer: "Yes. Approve access to your existing Chrome, or sign in once in a separate profile. Both keep your logins. Chrome may ask for approval again on later connections.",
   },
   {
-    question: "Which coding agents can use local-search?",
-    answer: "Claude Code, OpenAI Codex, Cursor, OpenClaw, and any other shell-capable coding agent can use local-search. The integration is one CLI command rather than an agent-specific SDK, and the result is returned through standard output as JSON.",
+    question: "Which agents work with it?",
+    answer: "Claude Code, Codex, Cursor, OpenClaw, or any agent that can run a shell command. Results come back as compact JSON.",
   },
   {
-    question: "Which search engines does local-search support?",
-    answer: "local-search supports Google, Bing, Brave Search, and DuckDuckGo behind the same command and JSON contract. Choose one with --engine; the search runs through a managed local browser profile using the region and browser state you control.",
+    question: "Which search engines can I use?",
+    answer: "Google, Bing, Brave, or DuckDuckGo. Choose with --engine. All return the same JSON fields: rank, title, URL, domain, and snippet.",
   },
   {
-    question: "How does local-search compare with hosted search APIs?",
-    answer: "In the July 21, 2026 matched-provider benchmark, local-search fulfilled 24 of 24 requested result depths, used 53.4 normalized tokens per result, recorded 148.7 milliseconds median latency, and consumed $0 in hosted API credits. The full benchmark runner and methodology are public in the repository.",
+    question: "Does it bypass logins or CAPTCHAs?",
+    answer: "No. Your account still needs access. If a site blocks a search or asks for verification, local-search reports it.",
   },
   {
-    question: "Does local-search send browser credentials to a hosted service?",
-    answer: "local-search has no cloud service or hosted account. It controls a dedicated browser profile on your machine and returns data directly to the calling process. Cookies stay in that local profile unless you explicitly ask to inspect or use them.",
+    question: "Where does my data go?",
+    answer: "Your browser sends cookies to the sites you visit. local-search has no hosted service. Page content goes to your agent and may reach its model provider. Only grant access to accounts you trust it with.",
   },
   {
-    question: "How small and fast is the local-search Rust binary?",
-    answer: `The compressed local-search 0.1.4 crates.io package is 50.3 KiB. In the July 27, 2026 arm64 macOS release audit, the compiled lsearch executable measured ${RELEASE_AUDIT.binaryBytes.toLocaleString("en-US")} bytes (${RELEASE_AUDIT.binarySize}), down from ${RELEASE_AUDIT.baselineBinaryBytes.toLocaleString("en-US")} bytes. Median warm CLI process startup fell from ${RELEASE_AUDIT.baselineStartupMedianMs.toFixed(2)} to ${RELEASE_AUDIT.startupMedianMs.toFixed(2)} milliseconds across ${RELEASE_AUDIT.startupSamples} alternating launches. These figures describe that machine and build, not search latency.`,
+    question: "How small and fast is it?",
+    answer: `Our July 27, 2026 arm64 macOS test measured a ${RELEASE_AUDIT.binarySize} binary and ${RELEASE_AUDIT.startupMedianMs.toFixed(2)} ms median warm startup over ${RELEASE_AUDIT.startupSamples} launches. This measures CLI startup, not search speed. Results vary by build and machine.`,
   },
   {
-    question: "Is local-search free and open source?",
-    answer: "Yes. local-search is MIT-licensed open-source software published on GitHub, npm, and crates.io. It does not require a local-search subscription, hosted search account, or paid API dependency. Queries still use the selected public search engine through the browser on your machine.",
+    question: "Is it free and open source?",
+    answer: "Yes. MIT licensed, with no local-search subscription or per-search fee. You need a local browser and internet access. Each site’s terms still apply.",
   },
 ] as const;
 
@@ -158,11 +158,11 @@ export const STRUCTURED_DATA = {
       featureList: [
         "One local browser interface for shell-capable agents",
         "Readable page extraction and structured record extraction",
-        "Browser-authenticated requests through a dedicated local profile",
+        "Browser-authenticated requests through the local Chrome profile you choose",
         "One local CLI across four public search engines",
         "Structured Google, Bing, DuckDuckGo, and Brave Search results",
         "Stable JSON output for coding agents",
-        "Managed local Chrome profile",
+        "Existing Chrome with approval or a separate persistent local profile",
         "Optional page content extraction",
         "No hosted search API key or metered search bill",
         "1.06 MB arm64 macOS release binary in the July 27, 2026 audit",

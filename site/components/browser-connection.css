@@ -1,0 +1,81 @@
+.browser-connection { margin-top: 52px; padding-top: 52px; border-top: 1px solid var(--line); }
+.connection-heading { display: grid; grid-template-columns: 1.2fr 1fr; align-items: center; gap: 48px; margin-bottom: 32px; }
+.connection-heading h3 { margin: 0; font-size: clamp(30px, 3vw, 40px); font-weight: 620; letter-spacing: -.035em; line-height: 1.2; }
+.connection-heading h3 span { color: var(--accent-deep); }
+.connection-heading > p { margin: 0; max-width: 520px; color: var(--muted); font-size: 18px; line-height: 1.65; }
+.connection-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; align-items: start; }
+.connection-option { min-width: 0; overflow: hidden; border: 1px solid #cbd5cc; border-radius: 12px; }
+.connection-visual { container-type: inline-size; border-bottom: 1px solid #cbd5cc; background: #e9f4f0; }
+.connection-window-bar { display: flex; align-items: center; gap: 10px; min-height: 56px; padding: 12px 20px; border-bottom: 1px solid #ceded5; color: #334a40; font-size: 16px; }
+.connection-window-bar > svg { width: 28px; height: 22px; flex-shrink: 0; }
+.connection-session { display: flex; align-items: center; gap: 6px; margin-left: auto; color: var(--accent-deep); white-space: nowrap; }
+.connection-sites { min-height: 166px; padding: 22px 20px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.connection-site-group { display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 18px; padding: 18px 10px; border: 1px solid #c0dcd0; border-radius: 8px; background: #fff; }
+.connection-site-group b { font-size: 16px; font-weight: 550; line-height: 1.4; }
+.connection-site-logos { display: flex; align-items: center; justify-content: center; gap: 10px; }
+.connection-site-logo { display: flex; flex-shrink: 0; align-items: center; justify-content: center; }
+.connection-visual-note { min-height: 46px; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 8px 16px 16px; color: var(--accent-deep); font-size: 16px; line-height: 1.4; }
+.connection-visual-note svg { flex-shrink: 0; }
+.connection-option--managed { border-color: var(--line); }
+.connection-option--managed .connection-visual { background: #eeefe9; border-color: var(--line); }
+.connection-option--managed .connection-window-bar { color: #50564e; border-color: var(--line); }
+.connection-option--managed .connection-visual-note { color: #535e51; }
+.connection-profiles { min-height: 166px; display: grid; grid-template-columns: 1fr 1px 1fr; align-items: center; gap: 16px; padding: 22px 40px; }
+.connection-profiles > span { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; color: var(--muted); }
+.connection-profiles b { font-size: 16px; font-weight: 550; text-align: center; }
+.connection-profiles > i { height: 64px; border-left: 1px dashed #a3afa1; }
+.connection-profiles .connection-profile-agent { color: var(--accent-deep); }
+.connection-profile-agent > svg { width: 48px; height: 32px; }
+.connection-option-copy { display: flex; flex-direction: column; gap: 18px; padding: 28px; }
+.connection-option-copy h4 { margin: 0; font-size: 25px; font-weight: 630; line-height: 1.3; letter-spacing: -.025em; }
+.connection-option-copy > p { margin: 0; color: var(--muted); font-size: 18px; line-height: 1.6; }
+.connection-option-copy .copy-command { margin-top: 4px; min-height: 64px; gap: 12px; }
+.connection-option-copy .copy-command__action { font-size: 0; }
+.connection-instructions { border-top: 1px solid var(--line); }
+.connection-instructions summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px; padding-top: 12px; font-size: 16px; font-weight: 600; cursor: pointer; list-style: none; }
+.connection-instructions summary::-webkit-details-marker { display: none; }
+.connection-instructions summary svg { flex-shrink: 0; }
+.connection-instructions[open] summary svg { transform: rotate(180deg); }
+.connection-instructions ol { margin: 20px 0 16px; padding-left: 24px; font-size: 16px; line-height: 1.65; }
+.connection-instructions li + li { margin-top: 12px; }
+.connection-instructions code { overflow-wrap: anywhere; color: var(--accent-deep); }
+.connection-instructions > p { margin: 0; font-size: 16px; line-height: 1.65; color: var(--muted); }
+.connection-promise { display: flex; align-items: flex-start; gap: 12px; margin-top: 24px; padding: 20px 24px; border-left: 2px solid var(--accent); background: #e7f1eb; color: #43594a; }
+.connection-promise > svg { flex-shrink: 0; color: var(--accent-deep); }
+.connection-promise p { margin: 0; font-size: 16px; line-height: 1.6; }
+.connection-promise strong { color: var(--accent-deep); font-weight: 650; }
+@container (max-width: 470px) {
+  .connection-sites { grid-template-columns: 1fr; gap: 8px; padding: 18px 16px; }
+  .connection-site-group { flex-direction: row; justify-content: space-between; gap: 12px; min-height: 60px; padding: 12px; }
+  .connection-site-logos { gap: 12px; }
+  .connection-profiles { min-height: 232px; }
+}
+@container (max-width: 290px) {
+  .connection-site-logos { gap: 8px; }
+  .connection-site-logo > span { width: 24px !important; height: 24px !important; }
+}
+@media (max-width: 1100px) {
+  .connection-window-bar { flex-wrap: wrap; padding-inline: 16px; }
+  .connection-session { margin-left: 0; }
+  .connection-option-copy { padding: 24px; }
+}
+@media (max-width: 800px) {
+  .connection-heading { grid-template-columns: 1fr; gap: 20px; }
+  .connection-heading > p { max-width: 620px; }
+  .connection-options { grid-template-columns: 1fr; gap: 24px; }
+  .connection-window-bar { flex-wrap: nowrap; }
+  .connection-session { margin-left: auto; }
+}
+@media (max-width: 600px) {
+  .browser-connection { margin-top: 36px; padding-top: 36px; }
+  .connection-heading { gap: 16px; margin-bottom: 24px; }
+  .connection-heading h3 { font-size: 30px; }
+  .connection-window-bar { flex-wrap: wrap; gap: 8px; }
+  .connection-session { margin-left: 0; }
+  .connection-visual-note { justify-content: flex-start; padding-inline: 16px; }
+  .connection-profiles { padding-inline: 20px; gap: 12px; }
+  .connection-option-copy { padding: 22px 18px; gap: 16px; }
+  .connection-option-copy h4 { font-size: 23px; }
+  .connection-option-copy .copy-command { padding: 12px; }
+  .connection-promise { padding: 18px 16px; }
+}

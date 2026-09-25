@@ -1,0 +1,136 @@
+/* One eclipse dial, not two swapping icons. No motion on initial render. */
+.theme-toggle { --dial-ease: cubic-bezier(.22, 1, .36, 1); flex: 0 0 auto; display: grid; place-items: center; width: 48px; height: 48px; padding: 0; border: 1px solid var(--line); border-radius: 6px; color: var(--accent-deep); background: transparent; touch-action: manipulation; }
+.theme-dial { display: block; overflow: visible; transform-origin: center; }
+.theme-dial__track { stroke: currentColor; stroke-width: .65; opacity: .15; }
+.theme-dial__orbit { transform-origin: 24px 24px; transform: rotate(-45deg); }
+.theme-dial__arc { stroke: currentColor; stroke-width: .8; stroke-linecap: round; opacity: .4; }
+.theme-dial__satellite { fill: currentColor; }
+.theme-dial__body { transform-origin: 24px 24px; transform: rotate(-12deg) scale(.9); }
+.theme-dial__disc { fill: currentColor; }
+.theme-dial__eclipse { transform: translate(0, 0); }
+.theme-dial__rays { transform-origin: 24px 24px; transform: rotate(0deg); }
+.theme-dial__ray { stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; opacity: 1; transform: translateY(0); }
+.theme-dial__star { fill: currentColor; opacity: 0; transform-box: fill-box; transform-origin: center; transform: rotate(-35deg) scale(.45); }
+:root[data-theme="dark"] .theme-dial__orbit { transform: rotate(135deg); }
+:root[data-theme="dark"] .theme-dial__body { transform: rotate(-20deg) scale(1.12); }
+:root[data-theme="dark"] .theme-dial__eclipse { transform: translate(-13px, 9px); }
+:root[data-theme="dark"] .theme-dial__rays { transform: rotate(90deg); }
+:root[data-theme="dark"] .theme-dial__ray { opacity: 0; transform: translateY(5px); }
+:root[data-theme="dark"] .theme-dial__star { opacity: 1; transform: rotate(0deg) scale(1); }
+
+/* Retargetable transitions: a second click reverses the current motion. */
+.theme-toggle[data-animate="true"] .theme-dial { transition: transform 160ms var(--dial-ease); }
+.theme-toggle[data-animate="true"] .theme-dial__orbit { transition: transform 620ms var(--dial-ease); }
+.theme-toggle[data-animate="true"] .theme-dial__body { transition: transform 480ms var(--dial-ease); }
+.theme-toggle[data-animate="true"] .theme-dial__eclipse { transition: transform 480ms cubic-bezier(.65, 0, .35, 1); }
+.theme-toggle[data-animate="true"] .theme-dial__rays { transition: transform 520ms var(--dial-ease); }
+.theme-toggle[data-animate="true"] .theme-dial__ray { transition: transform 300ms var(--dial-ease), opacity 180ms ease-out; }
+.theme-toggle[data-animate="true"] .theme-dial__star { transition: transform 220ms var(--dial-ease), opacity 160ms ease-out; }
+:root[data-theme="dark"] .theme-toggle[data-animate="true"] .theme-dial__star--one { transition-delay: 160ms; }
+:root[data-theme="dark"] .theme-toggle[data-animate="true"] .theme-dial__star--two { transition-delay: 220ms; }
+:root[data-theme="dark"] .theme-toggle[data-animate="true"] .theme-dial__star--three { transition-delay: 280ms; }
+.theme-toggle:active .theme-dial { transform: scale(.9); }
+@media (hover: hover) and (pointer: fine) {
+  .theme-toggle:hover { border-color: var(--accent); background: var(--surface); }
+  .theme-toggle:hover .theme-dial__track { opacity: .3; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .theme-toggle, .theme-toggle .theme-dial, .theme-toggle .theme-dial * { transition: none !important; }
+  .theme-toggle:active .theme-dial { transform: none; }
+}
+@media (max-width: 600px) {
+  .theme-toggle { width: 44px; height: 44px; }
+}
+@media (max-width: 340px) {
+  .site-header .brand-name { display: none; }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #111513;
+  --ink: #eef2ed;
+  --muted: #acb7ad;
+  --line: #354239;
+  --surface: #252e28;
+  --panel: #1a211d;
+  --inverse: #151a16;
+  --action-hover: #d7ded8;
+  --accent-soft: #193d3b;
+  --accent: #5acacb;
+  --accent-deep: #82dddb;
+}
+
+/* Logo colors stay authentic; only single-color marks adapt to their surface. */
+:root[data-theme="dark"] .nav-cta .brand-asset-icon--github,
+:root[data-theme="dark"] .primary-button .brand-asset-icon--github { filter: none; }
+:root[data-theme="dark"] .hero-proof .brand-asset-icon--rust,
+:root[data-theme="dark"] .connection-site-logos .brand-asset-icon--github,
+:root[data-theme="dark"] .connection-site-logos .brand-asset-icon--notion { filter: invert(1); }
+:root[data-theme="dark"] .hero-proof .brand-asset-icon--json-schema { filter: brightness(0) invert(1); }
+:root[data-theme="dark"] .faq-visual--group .faq-visual__tile { background: #fff; border-color: #c9d2ca; }
+:root[data-theme="dark"] .faq-visual__asset[style*="rust-mono"] { filter: invert(1); }
+:root[data-theme="dark"] .brand-asset-icon--tavily { background-color: white; border-radius: 5px; }
+
+/* Keep the install selector's white active tab in both themes. */
+:root[data-theme="dark"] .install-command__switch { border-color: #3b6660; }
+:root[data-theme="dark"] .install-command__switch button.is-active { color: #151515; }
+:root[data-theme="dark"] .closing-logo,
+:root[data-theme="dark"] .closing-cta h2 span { color: var(--accent-deep); }
+:root[data-theme="dark"] .hero-spacer { background-image: repeating-linear-gradient(45deg, transparent 0 7px, #eef2ed0d 7px 8px); }
+:root[data-theme="dark"] .hero-dither > i { opacity: .4; }
+:root[data-theme="dark"] .hero-isometric-scene { filter: drop-shadow(10px 14px 16px #0005); }
+:root[data-theme="dark"] .hero-iso-shadows polygon { fill: #0004; }
+:root[data-theme="dark"] .hero-iso-engine__top { fill: color-mix(in srgb, currentColor 8%, #222b26); }
+:root[data-theme="dark"] .hero-iso-engine__side-left { fill: #28342c; }
+:root[data-theme="dark"] .hero-iso-engine__side-center { fill: #222d26; }
+:root[data-theme="dark"] .hero-iso-engine__side-right { fill: #1c261f; }
+:root[data-theme="dark"] .hero-iso-agent__top { fill: #39423b; stroke: #657269; }
+:root[data-theme="dark"] .hero-iso-agent__left { fill: #252e27; stroke: #566259; }
+:root[data-theme="dark"] .hero-iso-agent__front { fill: #1b231e; stroke: #566259; }
+:root[data-theme="dark"] .hero-iso-tape polygon { fill: #c9f1ef; }
+:root[data-theme="dark"] .hero-iso-tape { color: #151515; }
+
+/* The signed-in and separate-profile illustrations share the page palette. */
+:root[data-theme="dark"] .connection-option,
+:root[data-theme="dark"] .connection-visual,
+:root[data-theme="dark"] .connection-window-bar,
+:root[data-theme="dark"] .connection-site-group { border-color: var(--line); }
+:root[data-theme="dark"] .connection-visual { background: #192e26; }
+:root[data-theme="dark"] .connection-site-group { background: var(--panel); }
+:root[data-theme="dark"] .connection-window-bar { color: var(--ink); }
+:root[data-theme="dark"] .connection-option--managed .connection-visual { background: var(--surface); }
+:root[data-theme="dark"] .connection-option--managed .connection-visual-note { color: var(--muted); }
+:root[data-theme="dark"] .connection-promise { color: var(--muted); background: #192e26; }
+
+/* The browser follows the site theme; agent shells keep their native styling. */
+:root[data-theme="dark"] .sim-browser { background: var(--panel); }
+:root[data-theme="dark"] .paired-demo .sim-browser,
+:root[data-theme="dark"] .sim-browser-tabs,
+:root[data-theme="dark"] .sim-address-row,
+:root[data-theme="dark"] .sim-search-nav,
+:root[data-theme="dark"] .sim-search-results a,
+:root[data-theme="dark"] .sim-browser-footer { border-color: var(--line); }
+:root[data-theme="dark"] .sim-browser-tabs,
+:root[data-theme="dark"] .sim-address-row > div,
+:root[data-theme="dark"] .sim-loading-lines i { background: var(--surface); }
+:root[data-theme="dark"] .sim-address-row,
+:root[data-theme="dark"] .sim-search-results p { color: var(--muted); }
+:root[data-theme="dark"] .sim-search-results strong { color: #8fc0ff; }
+:root[data-theme="dark"] .sim-browser-footer { color: #bed3c3; background: #202f25; }
+.paired-agent-content--cursor { color-scheme: light; --line: #d7d7d1; --muted: #5e625c; --accent-deep: #0d6f74; }
+:root[data-theme="dark"] .paired-agent-tabs button[aria-selected="true"] { box-shadow: inset 0 -2px var(--accent); }
+
+/* Every benchmark keeps the same scale, value, and contrast hierarchy. */
+:root[data-theme="dark"] .benchmark-tabs button[aria-pressed="true"],
+:root[data-theme="dark"] .benchmark-row.is-local { background: #193d34; }
+:root[data-theme="dark"] .benchmark-row { border-bottom-color: var(--line); }
+:root[data-theme="dark"] .benchmark-row.is-local { border-color: #366357; }
+:root[data-theme="dark"] .benchmark-track { background: #28322b; }
+:root[data-theme="dark"] .benchmark-track i,
+:root[data-theme="dark"] .context-proof__track i { background: #819687; }
+:root[data-theme="dark"] .benchmark-row.is-local .benchmark-track { background: #2a4c40; }
+:root[data-theme="dark"] .benchmark-row.is-local .benchmark-track i,
+:root[data-theme="dark"] .context-proof__row.is-local i { background: var(--accent); }
+:root[data-theme="dark"] .benchmark-recorded strong { color: var(--ink); }
+:root[data-theme="dark"] .context-proof { border-color: #365347; background: #1b2e25; }
+:root[data-theme="dark"] .context-proof__track { background: #304437; }

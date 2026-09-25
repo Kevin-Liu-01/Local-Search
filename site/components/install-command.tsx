@@ -24,7 +24,7 @@ export function InstallCommand({ initial = "cargo" }: { initial?: Installer }) {
           aria-pressed={installer === "cargo"}
           onClick={() => setInstaller("cargo")}
         >
-          <CargoBrandIcon size={15} /> Cargo
+          <CargoBrandIcon size={20} /> Cargo
         </button>
         <button
           type="button"
@@ -32,7 +32,7 @@ export function InstallCommand({ initial = "cargo" }: { initial?: Installer }) {
           aria-pressed={installer === "npm"}
           onClick={() => setInstaller("npm")}
         >
-          <NpmBrandIcon size={16} /> npm
+          <NpmBrandIcon size={20} /> npm
         </button>
       </div>
       <CopyCommand key={installer} value={commands[installer]} showBrand={false} />

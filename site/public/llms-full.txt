@@ -2,7 +2,7 @@
 
 ## What local-search is
 
-local-search is a free, open-source local browser API for agents. Through one Rust CLI, Claude Code, OpenAI Codex, Cursor, and other shell-capable agents can search the web, read pages, extract records, interact with sites, and make browser-authenticated requests through a dedicated Chrome or Chromium profile on the user's machine.
+local-search is a free, open-source local browser API for agents. One Rust CLI lets agents search, read pages, extract data, and use signed-in sites. Choose existing Chrome with approval or a separate persistent profile.
 
 It is a bridge between an agent command and a local browser, not a search engine, hosted browser, or transparent network tunnel. The browser loads the real site and keeps its sessions and cookies local; local-search returns compact structured data or readable content to the calling agent.
 
@@ -10,7 +10,7 @@ The primary binary is `lsearch`. Compatibility binaries named `local-search` and
 
 ## Why it exists
 
-Agents often need more than generic web results: they need to search a chosen engine, read Reddit or documentation, inspect a page, or work with a site the user signed into. Building a separate API integration for every site adds accounts, SDKs, output shapes, and credentials. local-search exposes one local browser interface instead and returns compact data instead of rendered page chrome.
+Agents need to search, read discussions and docs, and use signed-in sites. Instead of a separate API integration for each site, local-search gives them one local browser interface. Results come back as compact data without the page clutter.
 
 ## Install
 
@@ -30,13 +30,18 @@ cargo install --git https://github.com/Kevin-Liu-01/Local-Search
 
 ## Recommended setup
 
-Launch the managed browser profile once:
+Ask the user to choose their existing Chrome or a separate persistent profile:
 
 ```sh
-lsearch launch
+lsearch connect --existing
+# OR: lsearch connect --managed
 ```
 
-The managed profile is persistent. Users can sign into sites there when authenticated or regional browser state is useful. This is a dedicated local-search profile, not silent access to the user's ordinary Chrome profile. Direct Chrome DevTools Protocol attachment remains available for users who explicitly choose it.
+Existing mode requires Chrome 144+, enabling chrome://inspect/#remote-debugging, and approving Chrome's connection prompt. It uses the chosen user-data root's DevToolsActivePort and does not copy cookies or relaunch everyday Chrome. Chrome may ask again on later connections. Initial existing connect allows at least 60 seconds for approval; later commands default to 15 seconds, adjustable with --timeout 60000. --profile PATH chooses another existing user-data root (not a Default/Profile N subfolder).
+
+Managed mode explicitly starts/reuses a separate persistent profile. Sign in there once. lsearch launch supports custom --profile, --port, --browser-path, --headless, and --no-persist. The choice is saved only after successful verification. Browser commands without a choice return browser_not_configured. A selected browser that cannot connect returns browser_disconnected, never a fallback browser. Reopen or explicitly relaunch the same profile; do not change the user's choice as a workaround.
+
+Advanced lsearch connect ENDPOINT verifies and saves an explicit CDP endpoint. --cdp/LOCAL_SEARCH_CDP is a one-command override that neither replaces the saved choice nor reuses its target. Ordinary commands create/reuse a background work tab unless --target or tabs use deliberately selects another tab. Search caches are scoped to the browser session and still require a live connection. LOCAL_SEARCH_CONFIG_DIR isolates config/profile/PID paths and disables legacy-config fallback.
 
 ## Search examples
 
@@ -53,7 +58,7 @@ lsearch search "best browser search APIs for agents" --with-content --limit 3 --
 - DuckDuckGo is selected with `--engine duckduckgo`.
 - Brave Search is selected with `--engine brave`.
 
-Search engine choice is separate from browser choice. `--engine` selects the actual search website loaded inside the managed local browser; it does not switch between local-search-owned indexes or hosted API backends.
+Search engine choice is separate from browser choice. `--engine` selects the actual search website inside the chosen browser, not a local-search-owned index or hosted API backend.
 
 ## Returned search data
 
@@ -137,7 +142,7 @@ These measurements describe CLI process startup and native distribution size, no
 
 ## Privacy and network boundary
 
-local-search does not require a local-search cloud account or hosted local-search service. It controls a dedicated browser profile on the user's machine, contacts the sites the user chooses, and writes the structured response to standard output for the calling agent. Cookie values remain in the local browser profile unless the user explicitly requests them.
+local-search has no hosted service. It controls the explicitly chosen local browser and returns data to the calling agent. Cookies stay in the browser unless explicitly requested, but returned signed-in content may enter the agent's model context. Chrome approval grants broad browser authority, not per-site authorization. Only use accounts and tasks authorized by the user. Disable Chrome remote debugging to revoke future existing-browser connections.
 
 ## Project identity
 
@@ -157,11 +162,11 @@ local-search does not require a local-search cloud account or hosted local-searc
 
 ### What is local-search?
 
-local-search is an open-source local browser API for agents. It exposes search, reading, extraction, interaction, authenticated browser requests, and artifacts through one Rust CLI backed by a dedicated Chrome profile on the user's machine.
+local-search is an open-source local browser API for agents: search, read, extract, interact, request, and capture artifacts through the Chrome profile the user chooses.
 
 ### Why use a browser instead of separate APIs?
 
-Search is only one use case. The same local interface can search four engines, read Reddit or docs, extract page data, interact with a site, and use a session created in the local-search browser. There is no local-search search index, hosted proxy, or provider account.
+Search is only one use case. The same interface can search four engines, read Reddit or docs, extract data, interact, and use approved existing logins or sessions in a separate profile. There is no local-search search index, hosted proxy, or provider account.
 
 ### Which coding agents work with local-search?
 

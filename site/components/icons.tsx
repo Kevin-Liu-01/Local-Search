@@ -18,6 +18,12 @@ function BrandAssetIcon({
   );
 }
 
+export function SiteBrandIcon({ name, ...props }: BrandIconProps & {
+  name: "reddit" | "linkedin" | "discord" | "github" | "notion" | "google-docs" | "slack" | "linear" | "figma";
+}) {
+  return <BrandAssetIcon {...props} name={name} src={`/brand/${name === "github" ? "github-mono" : name}.svg`} />;
+}
+
 function Icon({ size = 18, children, ...props }: IconProps) {
   return (
     <svg
@@ -46,6 +52,14 @@ export function ArrowUpRightIcon(props: IconProps) {
 
 export function CheckIcon(props: IconProps) {
   return <Icon {...props}><path d="m5 12 4 4L19 6" {...stroke} /></Icon>;
+}
+
+export function SunIcon(props: IconProps) {
+  return <Icon {...props}><circle cx="12" cy="12" r="4" {...stroke} /><path d="M12 2v2m0 16v2M2 12h2m16 0h2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" {...stroke} /></Icon>;
+}
+
+export function MoonIcon(props: IconProps) {
+  return <Icon {...props}><path d="M20.5 14.5A8.6 8.6 0 0 1 9.5 3.5a8.7 8.7 0 1 0 11 11Z" {...stroke} /></Icon>;
 }
 
 export function ChevronDownIcon(props: IconProps) {
@@ -122,6 +136,10 @@ export function ChromiumBrandIcon(props: BrandIconProps) {
   return <BrandAssetIcon {...props} name="chromium" src="/brand/chromium.svg" />;
 }
 
+export function ChromeColorBrandIcon(props: BrandIconProps) {
+  return <BrandAssetIcon {...props} name="chrome" src="/brand/chrome.svg" />;
+}
+
 export function ClaudeBrandIcon(props: BrandIconProps) {
   return <BrandAssetIcon {...props} name="claude" src="/brand/claude.svg" />;
 }
@@ -152,6 +170,10 @@ export function FirecrawlBrandIcon(props: BrandIconProps) {
 
 export function PlayIcon(props: IconProps) {
   return <Icon {...props}><path d="m8 5 11 7-11 7V5Z" {...stroke} /></Icon>;
+}
+
+export function PauseIcon(props: IconProps) {
+  return <Icon {...props}><path d="M8 5v14M16 5v14" {...stroke} /></Icon>;
 }
 
 export function RotateIcon(props: IconProps) {

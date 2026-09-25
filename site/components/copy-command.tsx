@@ -26,7 +26,7 @@ export function CopyCommand({
       type="button"
       className={compact ? "copy-command copy-command--compact" : "copy-command"}
       onClick={copy}
-      aria-label="Copy command"
+      aria-label={`Copy command: ${value}`}
     >
       <code>
         {showBrand ? (
@@ -35,15 +35,18 @@ export function CopyCommand({
           ) : isNpmCommand ? (
             <NpmBrandIcon size={18} />
           ) : (
-            <span>$</span>
+            <span className="copy-command__prompt">$</span>
           )
         ) : null}
-        {value}
+        {value.split(/(\s+)/).map((word, index) => /^\s+$/.test(word) ? word : (
+          <span className="copy-command__word" key={index}>{word}</span>
+        ))}
       </code>
       <span className="copy-command__action">
-        {copied ? <CheckIcon size={15} /> : <CopyIcon size={15} />}
+        {copied ? <CheckIcon size={18} /> : <CopyIcon size={18} />}
         {copied ? "Copied" : "Copy"}
       </span>
+      <span className="sr-only" role="status">{copied ? "Command copied to clipboard" : ""}</span>
     </button>
   );
 }
