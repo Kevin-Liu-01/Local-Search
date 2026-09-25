@@ -53,6 +53,10 @@ pub enum Command {
     Doctor,
     /// Choose an existing Chrome session or a separate persistent profile.
     Connect(ConnectArgs),
+    /// End local-search access without closing Chrome. Reconnect explicitly to resume.
+    Disconnect,
+    #[command(name = "__browser-session", hide = true)]
+    BrowserSession,
     /// Start a managed local Chrome profile for prompt-free automation.
     Launch(LaunchArgs),
     /// Inspect or stop the managed local-search browser instance.

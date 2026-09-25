@@ -16,6 +16,26 @@ pub enum Error {
     #[error("selected browser is disconnected: {0}. No other browser was opened")]
     BrowserDisconnected(String),
 
+    #[error(
+        "Chrome approval was not completed within {timeout_ms}ms; choose Allow in Chrome, then retry lsearch connect --existing. No connection was saved"
+    )]
+    BrowserApprovalTimeout { timeout_ms: u64 },
+
+    #[error(
+        "Chrome refused the debugging connection; check its permission prompt and retry lsearch connect --existing. No connection was saved"
+    )]
+    BrowserApprovalDenied,
+
+    #[error(
+        "Chrome connection could not be established: {0}. Retry lsearch connect --existing; no connection was saved"
+    )]
+    BrowserConnectionFailed(String),
+
+    #[error(
+        "another command is using or updating this browser connection; retry when it finishes or increase --timeout"
+    )]
+    BrowserBusy,
+
     #[error("update check failed: {0}")]
     UpdateCheck(String),
 
@@ -65,6 +85,10 @@ impl Error {
             Self::BrowserNotFound => "browser_not_found",
             Self::BrowserNotConfigured => "browser_not_configured",
             Self::BrowserDisconnected(_) => "browser_disconnected",
+            Self::BrowserApprovalTimeout { .. } => "browser_approval_timeout",
+            Self::BrowserApprovalDenied => "browser_approval_denied",
+            Self::BrowserConnectionFailed(_) => "browser_connection_failed",
+            Self::BrowserBusy => "browser_busy",
             Self::UpdateCheck(_) => "update_check_failed",
             Self::TargetNotFound(_) => "target_not_found",
             Self::Unsupported { .. } => "unsupported",

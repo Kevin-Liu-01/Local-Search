@@ -10,6 +10,14 @@ pub struct Config {
     pub target_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub connection: Option<Connection>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub session: Option<BrowserSession>,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize, PartialEq, Eq)]
+pub struct BrowserSession {
+    pub directory: PathBuf,
+    pub endpoint: String,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -39,6 +47,28 @@ pub fn config_dir() -> Result<PathBuf> {
 
 pub fn config_path() -> Result<PathBuf> {
     Ok(config_dir()?.join("config.json"))
+}
+
+/// Serialize selection changes; the OS releases this lock when a process exits.
+pub fn selection_lock() -> Result<std::fs::File> {
+    let path = config_dir()?.join("selection.lock");
+    std::fs::create_dir_all(config_dir()?).at("browser selection directory")?;
+    let mut options = std::fs::OpenOptions::new();
+    options.read(true).write(true).create(true).truncate(false);
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::OpenOptionsExt;
+        options.mode(0o600);
+    }
+    let file = options.open(&path).at(path.display().to_string())?;
+    file.try_lock().map_err(|error| match error {
+        std::fs::TryLockError::WouldBlock => crate::error::Error::BrowserBusy,
+        std::fs::TryLockError::Error(source) => crate::error::Error::Io {
+            path: path.display().to_string(),
+            source,
+        },
+    })?;
+    Ok(file)
 }
 
 fn legacy_config_path() -> Option<PathBuf> {

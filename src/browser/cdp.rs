@@ -11,6 +11,37 @@ use tokio_tungstenite::{
 
 use crate::error::{Error, Result};
 
+pub(crate) type BrowserSocket = WebSocketStream<MaybeTlsStream<TcpStream>>;
+
+enum Socket {
+    Direct(Box<BrowserSocket>),
+    #[cfg(unix)]
+    Shared(Box<WebSocketStream<tokio::net::UnixStream>>),
+}
+
+impl Socket {
+    async fn send(
+        &mut self,
+        message: Message,
+    ) -> std::result::Result<(), tokio_tungstenite::tungstenite::Error> {
+        match self {
+            Self::Direct(socket) => socket.send(message).await,
+            #[cfg(unix)]
+            Self::Shared(socket) => socket.send(message).await,
+        }
+    }
+
+    async fn next(
+        &mut self,
+    ) -> Option<std::result::Result<Message, tokio_tungstenite::tungstenite::Error>> {
+        match self {
+            Self::Direct(socket) => socket.next().await,
+            #[cfg(unix)]
+            Self::Shared(socket) => socket.next().await,
+        }
+    }
+}
+
 #[derive(Debug, Clone, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TargetInfo {
@@ -24,7 +55,7 @@ pub struct TargetInfo {
 }
 
 pub struct CdpClient {
-    socket: WebSocketStream<MaybeTlsStream<TcpStream>>,
+    socket: Socket,
     next_id: u64,
     queued: VecDeque<Value>,
     session_id: Option<String>,
@@ -45,7 +76,7 @@ impl CdpClient {
                 timeout_ms,
             })??;
         Ok(Self {
-            socket,
+            socket: Socket::Direct(Box::new(socket)),
             next_id: 1,
             queued: VecDeque::new(),
             session_id: None,
@@ -53,6 +84,64 @@ impl CdpClient {
             timeout,
             cache_scope: websocket_url.to_owned(),
         })
+    }
+
+    #[cfg(unix)]
+    pub(crate) fn into_browser_socket(self) -> BrowserSocket {
+        let Socket::Direct(socket) = self.socket else {
+            unreachable!("only a direct connection can start a helper")
+        };
+        *socket
+    }
+
+    #[cfg(unix)]
+    pub async fn connect_session(
+        session: &crate::config::BrowserSession,
+        timeout_ms: u64,
+    ) -> Result<Self> {
+        let stream = tokio::net::UnixStream::connect(session.directory.join("cdp"))
+            .await
+            .map_err(|_| super::session::disconnected())?;
+        let (socket, _) = tokio::time::timeout(
+            Duration::from_millis(timeout_ms),
+            tokio_tungstenite::client_async("ws://localhost/session", stream),
+        )
+        .await
+        .map_err(|_| Error::BrowserBusy)?
+        .map_err(|_| super::session::disconnected())?;
+        Ok(Self {
+            socket: Socket::Shared(Box::new(socket)),
+            next_id: 1,
+            queued: VecDeque::new(),
+            session_id: None,
+            target_id: None,
+            timeout: Duration::from_millis(timeout_ms),
+            cache_scope: session.endpoint.clone(),
+        })
+    }
+
+    #[cfg(not(unix))]
+    pub async fn connect_session(_: &crate::config::BrowserSession, _: u64) -> Result<Self> {
+        Err(super::session::unsupported())
+    }
+
+    fn socket_error(&self, error: tokio_tungstenite::tungstenite::Error) -> Error {
+        match self.socket {
+            Socket::Direct(_) => Error::WebSocket(error),
+            #[cfg(unix)]
+            Socket::Shared(_) => super::session::disconnected(),
+        }
+    }
+
+    fn socket_closed(&self, method: &str) -> Error {
+        match self.socket {
+            Socket::Direct(_) => Error::Protocol {
+                method: method.to_owned(),
+                message: "websocket closed".to_owned(),
+            },
+            #[cfg(unix)]
+            Socket::Shared(_) => super::session::disconnected(),
+        }
     }
 
     pub async fn attach_or_create(&mut self, target_id: Option<&str>) -> Result<TargetInfo> {
@@ -171,10 +260,11 @@ impl CdpClient {
     pub async fn wait_ready(&mut self) -> Result<()> {
         let attempts = (self.timeout.as_millis() / 250).max(1);
         for _ in 0..attempts {
-            let value = self
-                .evaluate("document.readyState", true)
-                .await
-                .unwrap_or_else(|_| Value::String("loading".to_owned()));
+            let value = match self.evaluate("document.readyState", true).await {
+                Ok(value) => value,
+                Err(error @ Error::BrowserDisconnected(_)) => return Err(error),
+                Err(_) => Value::String("loading".to_owned()),
+            };
             if value
                 .as_str()
                 .is_some_and(|state| state == "interactive" || state == "complete")
@@ -192,12 +282,11 @@ impl CdpClient {
     pub async fn wait_for_js(&mut self, expression: &str) -> Result<Value> {
         let attempts = (self.timeout.as_millis() / 50).max(1);
         for _ in 0..attempts {
-            let ready = self
-                .evaluate(expression, true)
-                .await
-                .ok()
-                .and_then(|value| value.as_bool())
-                .unwrap_or(false);
+            let ready = match self.evaluate(expression, true).await {
+                Ok(value) => value.as_bool().unwrap_or(false),
+                Err(error @ Error::BrowserDisconnected(_)) => return Err(error),
+                Err(_) => false,
+            };
             if ready {
                 return Ok(json!({ "ok": true }));
             }
@@ -340,7 +429,8 @@ impl CdpClient {
         }
         self.socket
             .send(Message::Text(request.to_string().into()))
-            .await?;
+            .await
+            .map_err(|error| self.socket_error(error))?;
 
         if let Some(pos) = self
             .queued
@@ -359,12 +449,9 @@ impl CdpClient {
                     timeout_ms: self.timeout.as_millis().try_into().unwrap_or(u64::MAX),
                 })?;
             let Some(message) = next else {
-                return Err(Error::Protocol {
-                    method: method.to_owned(),
-                    message: "websocket closed".to_owned(),
-                });
+                return Err(self.socket_closed(method));
             };
-            match message? {
+            match message.map_err(|error| self.socket_error(error))? {
                 Message::Text(text) => {
                     let value: Value = serde_json::from_str(&text)?;
                     if value.get("id").and_then(Value::as_u64) == Some(id) {
@@ -373,10 +460,7 @@ impl CdpClient {
                     self.queued.push_back(value);
                 }
                 Message::Close(_) => {
-                    return Err(Error::Protocol {
-                        method: method.to_owned(),
-                        message: "websocket closed".to_owned(),
-                    });
+                    return Err(self.socket_closed(method));
                 }
                 Message::Binary(_) | Message::Ping(_) | Message::Pong(_) | Message::Frame(_) => {}
             }

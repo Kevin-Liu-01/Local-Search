@@ -10,7 +10,7 @@ use chrono::Utc;
 use serde_json::{Value, json};
 
 use crate::{
-    browser::{BrowserEndpoint, CdpClient, discovery, scripts},
+    browser::{BrowserEndpoint, CdpClient, discovery, scripts, session},
     cli::{
         BrowserKind, Cli, Command, ConnectArgs, CookiesCommand, LaunchArgs, MapArgs, OpenArgs,
         OptionalPathArgs, PathArgs, ReadArgs, ReadFormat, RecordArgs, RequestArgs, ScreenshotArgs,
@@ -46,6 +46,8 @@ pub async fn run(cli: Cli) -> Result<()> {
         Some(Command::UpdateCheck) => crate::updates::print_check(cli.pretty).await,
         Some(Command::Doctor) => print_json(&discovery::doctor().await, cli.pretty),
         Some(Command::Connect(args)) => connect(&cli, args).await,
+        Some(Command::Disconnect) => disconnect(&cli).await,
+        Some(Command::BrowserSession) => session::serve().await,
         Some(Command::Launch(args)) => launch(&cli, args).await,
         Some(Command::Cleanup(args)) => cleanup(&cli, args).await,
         Some(Command::Tabs(command)) => tabs(&cli, command).await,
@@ -145,6 +147,8 @@ pub async fn run(cli: Cli) -> Result<()> {
                 Command::UpdateCheck
                 | Command::Doctor
                 | Command::Connect(_)
+                | Command::Disconnect
+                | Command::BrowserSession
                 | Command::Launch(_)
                 | Command::Cleanup(_)
                 | Command::Search(_)
@@ -167,11 +171,12 @@ async fn connect(cli: &Cli, args: &ConnectArgs) -> Result<()> {
             feature: "persistent browser connection".to_owned(),
         });
     }
-    // Never overwrite a malformed selection as a side effect of connecting.
-    let saved = config::load().await?;
     if args.managed {
         return launch(cli, &default_launch_args()).await;
     }
+    let _selection = config::selection_lock()?;
+    // Never overwrite a malformed selection as a side effect of connecting.
+    let saved = config::load().await?;
     let spinner = Spinner::start(if args.existing {
         "Waiting for Chrome approval — choose Allow in your browser"
     } else {
@@ -203,21 +208,61 @@ async fn connect(cli: &Cli, args: &ConnectArgs) -> Result<()> {
     } else {
         cli.timeout
     };
-    verify_connection(&endpoint, timeout).await.map_err(|_| {
-        if matches!(connection, Some(Connection::Existing { .. })) {
-            existing_disconnected()
+    let mut pending = None;
+    let active_session = if matches!(connection, Some(Connection::Existing { .. })) {
+        let existing = saved
+            .session
+            .as_ref()
+            .filter(|session| session.endpoint == endpoint.websocket_url);
+        let mut reused = false;
+        if let Some(existing) = existing {
+            match CdpClient::connect_session(existing, cli.timeout).await {
+                Ok(mut client) => {
+                    client.verify().await?;
+                    reused = true;
+                }
+                Err(Error::BrowserDisconnected(_)) => {}
+                Err(error) => return Err(error),
+            }
+        }
+        if reused {
+            existing.cloned()
         } else {
+            pending = Some(session::start(&endpoint.websocket_url, timeout).await?);
+            pending.as_ref().map(|pending| pending.session.clone())
+        }
+    } else {
+        verify_connection(&endpoint, timeout).await.map_err(|_| {
             Error::BrowserDisconnected(
                 "connection could not be verified; check the endpoint and retry connect".to_owned(),
             )
-        }
-    })?;
-    let path = config::save(&Config {
+        })?;
+        None
+    };
+    let next = Config {
         endpoint: Some(endpoint.websocket_url.clone()),
-        target_id: cli.target.clone(),
+        target_id: cli.target.clone().or_else(|| {
+            (saved.endpoint.as_deref() == Some(endpoint.websocket_url.as_str()))
+                .then(|| saved.target_id.clone())
+                .flatten()
+        }),
         connection,
-    })
-    .await?;
+        session: active_session,
+    };
+    let path = config::save(&next).await?;
+    if let Some(pending) = pending
+        && let Err(error) = pending.commit().await
+    {
+        config::save(&saved).await?;
+        return Err(error);
+    }
+    if let Some(previous) = saved
+        .session
+        .as_ref()
+        .filter(|previous| next.session.as_ref() != Some(previous))
+    {
+        session::stop(previous).await?;
+    }
     spinner.success("Browser connected");
     print_json(
         &json!({ "ok": true, "endpoint": endpoint, "connection": config::load().await?.connection, "config": path.display().to_string() }),
@@ -225,7 +270,29 @@ async fn connect(cli: &Cli, args: &ConnectArgs) -> Result<()> {
     )
 }
 
+async fn disconnect(cli: &Cli) -> Result<()> {
+    if cli.cdp.is_some() {
+        return Err(Error::InvalidArgument(
+            "disconnect ends the saved connection, not a transient --cdp override".to_owned(),
+        ));
+    }
+    let _selection = config::selection_lock()?;
+    let mut saved = config::load().await?;
+    if let Some(session) = &saved.session {
+        session::stop(session).await?;
+    }
+    saved.session = None;
+    saved.endpoint = None;
+    saved.target_id = None;
+    config::save(&saved).await?;
+    print_json(
+        &json!({"ok":true,"disconnected":true,"browserClosed":false}),
+        cli.pretty,
+    )
+}
+
 async fn launch(cli: &Cli, args: &LaunchArgs) -> Result<()> {
+    let _selection = config::selection_lock()?;
     let saved = config::load().await?;
     let args = remembered_launch_args(args, &saved);
     let spinner = Spinner::start("Starting managed Chrome");
@@ -233,6 +300,9 @@ async fn launch(cli: &Cli, args: &LaunchArgs) -> Result<()> {
     verify_connection(&launched.endpoint, cli.timeout).await?;
     if !args.no_persist {
         save_managed_connection(&args, &launched).await?;
+        if let Some(previous) = &saved.session {
+            session::stop(previous).await?;
+        }
     }
     spinner.success(if launched.already_running {
         "Managed Chrome is ready"
@@ -369,6 +439,7 @@ async fn start_managed_browser(args: &LaunchArgs) -> Result<ManagedLaunch> {
 
 async fn save_managed_connection(args: &LaunchArgs, launched: &ManagedLaunch) -> Result<()> {
     config::save(&Config {
+        session: None,
         endpoint: Some(launched.endpoint.websocket_url.clone()),
         target_id: None,
         connection: Some(Connection::Managed {
@@ -406,6 +477,11 @@ fn process_uses_profile(pid: u32, profile: &Path) -> bool {
 }
 
 async fn cleanup(cli: &Cli, args: &crate::cli::CleanupArgs) -> Result<()> {
+    let _selection = if args.kill {
+        Some(config::selection_lock()?)
+    } else {
+        None
+    };
     let profile = args
         .profile
         .clone()
@@ -666,7 +742,14 @@ async fn cdp_client(cli: &Cli) -> Result<CdpClient> {
         });
     }
     let (endpoint, mut client) = selected_client(cli).await?;
+    let _selection = config::selection_lock()?;
     let mut saved = config::load().await?;
+    if cli.cdp.is_none() && saved.endpoint.as_deref() != Some(endpoint.websocket_url.as_str()) {
+        return Err(Error::BrowserDisconnected(
+            "browser choice changed during this command; retry against the selected browser"
+                .to_owned(),
+        ));
+    }
     let stored = if cli.cdp.is_none()
         && saved.endpoint.as_deref() == Some(endpoint.websocket_url.as_str())
     {
@@ -714,6 +797,23 @@ async fn selected_client(cli: &Cli) -> Result<(BrowserEndpoint, CdpClient)> {
         return Ok((endpoint, client));
     }
     let saved = config::load().await?;
+    if matches!(saved.connection, Some(Connection::Existing { .. })) {
+        let session = saved
+            .session
+            .as_ref()
+            .filter(|session| saved.endpoint.as_deref() == Some(session.endpoint.as_str()))
+            .ok_or_else(session::disconnected)?;
+        let mut client = CdpClient::connect_session(session, cli.timeout).await?;
+        client.verify().await?;
+        return Ok((
+            BrowserEndpoint {
+                backend: "chromium".to_owned(),
+                websocket_url: session.endpoint.clone(),
+                source: "approved local session".to_owned(),
+            },
+            client,
+        ));
+    }
     let endpoint = selected_endpoint(cli, &saved).await?;
     let client = verify_connection(&endpoint, cli.timeout)
         .await
@@ -1288,6 +1388,7 @@ async fn tabs(cli: &Cli, command: &TabsCommand) -> Result<()> {
             print_json(&json!({ "ok": true, "tab": target }), cli.pretty)
         }
         TabsCommand::Use { target_id } => {
+            let _selection = config::selection_lock()?;
             if cli.cdp.is_some() {
                 return Err(Error::InvalidArgument("--cdp is a one-command override; use connect <endpoint> before saving a tab, or pass --target for this command".to_owned()));
             }
@@ -1300,6 +1401,11 @@ async fn tabs(cli: &Cli, command: &TabsCommand) -> Result<()> {
                 return Err(Error::TargetNotFound(target_id.clone()));
             }
             let mut saved = config::load().await?;
+            if saved.endpoint.as_deref() != Some(endpoint.websocket_url.as_str()) {
+                return Err(Error::BrowserDisconnected(
+                    "browser choice changed while selecting a tab".to_owned(),
+                ));
+            }
             saved.endpoint = Some(endpoint.websocket_url);
             saved.target_id = Some(target_id.clone());
             config::save(&saved).await?;
