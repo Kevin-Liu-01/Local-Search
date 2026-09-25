@@ -45,6 +45,8 @@ svg { flex-shrink: 0; }
 .site-header nav a { display: inline-flex; align-items: center; min-height: 44px; font-size: 16px; font-weight: 600; color: var(--muted); text-decoration: none; }
 .site-header nav a:hover { color: var(--accent-deep); }
 .header-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; margin-left: auto; }
+.header-docs { display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; padding-inline: 8px; font-size: 16px; font-weight: 650; text-decoration: none; }
+.header-docs:hover, .header-docs[aria-current="page"] { color: var(--accent-deep); text-decoration: underline; text-underline-offset: 7px; }
 .nav-cta { min-height: 48px; padding: 10px 16px; display: inline-flex; align-items: center; gap: 8px; color: var(--inverse); border: 1px solid var(--ink); border-radius: 6px; background: var(--ink); font-size: 16px; font-weight: 650; text-decoration: none; }
 .nav-cta--crates { color: var(--ink); border-color: var(--line); background: transparent; }
 .header-actions .nav-cta--crates:hover { background: var(--panel); border-color: var(--accent); }
@@ -260,6 +262,7 @@ svg { flex-shrink: 0; }
   .site-header { min-height: 68px; gap: 8px; padding: 10px 14px; }
   .brand { gap: 8px; font-size: 18px; }
   .brand-logo { width: 34px; }
+  .site-header .brand-name { display: none; }
   .header-actions { gap: 6px; }
   .header-actions .nav-cta { width: 44px; min-height: 44px; justify-content: center; padding: 0; }
   .header-actions .nav-cta__label { display: none; }

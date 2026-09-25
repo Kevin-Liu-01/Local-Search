@@ -75,11 +75,6 @@ export function ThemeToggle() {
             <circle className="theme-dial__eclipse" cx="42" cy="10" r="9" fill="black" />
           </mask>
         </defs>
-        <circle className="theme-dial__track" cx="24" cy="24" r="19" />
-        <g className="theme-dial__orbit">
-          <path className="theme-dial__arc" d="M24 5a19 19 0 0 1 19 19" />
-          <circle className="theme-dial__satellite" cx="24" cy="5" r="1.6" />
-        </g>
         <g className="theme-dial__rays">
           {Array.from({ length: 8 }, (_, index) => (
             <g key={index} transform={`rotate(${index * 45} 24 24)`}>

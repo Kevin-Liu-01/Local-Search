@@ -19,6 +19,8 @@ profile, with visible commands and native setup disclosures.
 icons and brand-logo own iconography; faq-visual maps collected assets by question.
 theme-toggle owns persisted light/dark selection and follows system changes only
 until the visitor chooses a theme. lib/theme.ts initializes it before first paint.
+site-header is shared by the homepage and docs, with Docs visible on mobile.
+docs-code keeps commands selectable and copyable with success/failure feedback.
 
 ## Patterns to follow / invariants
 <!-- agent-docs:fill:patterns -->

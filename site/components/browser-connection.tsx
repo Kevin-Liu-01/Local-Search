@@ -59,7 +59,7 @@ export function BrowserConnection() {
                 <li>In Chrome 144+, open <code>chrome://inspect/#remote-debugging</code> and enable remote debugging.</li>
                 <li>Run the command above, then approve Chrome’s connection prompt.</li>
               </ol>
-              <p>Chrome may ask again. Each site still controls what your account can access.</p>
+              <p>On macOS and Linux, approve once per connection, not per search. Run <code>lsearch disconnect</code> to end access without closing Chrome. Reconnecting asks for approval again.</p>
             </details>
           </div>
         </article>

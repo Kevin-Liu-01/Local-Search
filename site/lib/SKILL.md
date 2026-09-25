@@ -25,6 +25,7 @@ Run typecheck and build to verify server-rendered metadata.
 
 ## Gotchas
 <!-- agent-docs:fill:gotchas -->
-Existing Chrome authority requires Chrome approval, which may recur for each
-connection. Cookie locality does not mean signed-in page output stays outside
+Existing Chrome authority requires Chrome approval for the retained connection;
+macOS/Linux commands reuse it until disconnect or transport loss. Explicit
+reconnection asks again. Cookie locality does not mean signed-in page output stays outside
 the calling agent's context.

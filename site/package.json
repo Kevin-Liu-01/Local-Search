@@ -3,11 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "node scripts/sync-docs.mjs && next dev",
+    "build": "node scripts/sync-docs.mjs && next build",
     "start": "next start",
     "lint": "eslint .",
     "test": "node --test lib/*.test.mjs",
+    "test:docs": "node scripts/check-docs.mjs",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

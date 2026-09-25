@@ -1,5 +1,9 @@
 # local-search full reference
 
+Illustrated documentation: https://www.lsearch.dev/docs
+Markdown walkthrough: https://www.lsearch.dev/docs-assets/agent-guide.md
+Complete command reference: https://www.lsearch.dev/docs-assets/skill.md
+
 ## What local-search is
 
 local-search is a free, open-source local browser API for agents. One Rust CLI lets agents search, read pages, extract data, and use signed-in sites. Choose existing Chrome with approval or a separate persistent profile.
@@ -30,6 +34,11 @@ cargo install --git https://github.com/Kevin-Liu-01/Local-Search
 
 ## Recommended setup
 
+Current release boundary: persistent existing-browser sessions are a local
+working-tree feature awaiting publication. npm/crates.io can lag the source.
+Inspect installed help and build provenance before promising that behavior.
+From the checkout, use cargo install --path . --locked --force.
+
 Ask the user to choose their existing Chrome or a separate persistent profile:
 
 ```sh
@@ -37,7 +46,9 @@ lsearch connect --existing
 # OR: lsearch connect --managed
 ```
 
-Existing mode requires Chrome 144+, enabling chrome://inspect/#remote-debugging, and approving Chrome's connection prompt. It uses the chosen user-data root's DevToolsActivePort and does not copy cookies or relaunch everyday Chrome. Chrome may ask again on later connections. Initial existing connect allows at least 60 seconds for approval; later commands default to 15 seconds, adjustable with --timeout 60000. --profile PATH chooses another existing user-data root (not a Default/Profile N subfolder).
+Existing mode requires Chrome 144+ on macOS/Linux, enabling chrome://inspect/#remote-debugging, and approving Chrome's connection prompt. A private local helper retains one approved connection across commands, without copying cookies or relaunching Chrome. Run lsearch disconnect to end access without closing Chrome. A lost connection is an error, never an automatic reconnect. Explicit reconnection requires approval again. Initial connect allows at least 60 seconds for approval. --profile PATH chooses another existing user-data root (not a Default/Profile N subfolder). Older existing-browser configurations need one explicit reconnect after upgrading.
+
+Initial approval timeout: browser_approval_timeout. Explicit permission rejection: browser_approval_denied. Ambiguous handshake failure: browser_connection_failed. Ended browser/helper session: browser_disconnected. A busy session or concurrent choice change: browser_busy. None permits silently changing profiles.
 
 Managed mode explicitly starts/reuses a separate persistent profile. Sign in there once. lsearch launch supports custom --profile, --port, --browser-path, --headless, and --no-persist. The choice is saved only after successful verification. Browser commands without a choice return browser_not_configured. A selected browser that cannot connect returns browser_disconnected, never a fallback browser. Reopen or explicitly relaunch the same profile; do not change the user's choice as a workaround.
 
@@ -46,9 +57,9 @@ Advanced lsearch connect ENDPOINT verifies and saves an explicit CDP endpoint. -
 ## Search examples
 
 ```sh
-lsearch "open source browser automation rust"
-lsearch search "site:docs.rs tokio Runtime" --limit 5 --pretty
-lsearch search "best browser search APIs for agents" --with-content --limit 3 --pretty
+lsearch "open source browser automation rust" --limit 3 --json
+lsearch search "site:docs.rs tokio Runtime" --limit 5 --json
+lsearch search "browser search for agents" --with-content --limit 3 --content-chars 1200 --json
 ```
 
 ## Search engines

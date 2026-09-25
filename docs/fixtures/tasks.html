@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Synthetic agent task board</title></head>
+<body>
+  <h1>Synthetic agent task board</h1>
+  <p>This fixture contains no real user or account data.</p>
+  <label for="query">Filter tasks</label><input id="query" name="query" type="search">
+  <article><h2>Read the docs</h2><a href="#docs">Open documentation</a></article>
+  <article><h2>Compare results</h2><a href="#results">Open results</a></article>
+  <p id="status" role="status">2 tasks</p>
+  <script>
+    document.querySelector('#query').addEventListener('input', event => {
+      const cards = [...document.querySelectorAll('article')];
+      cards.forEach(card => { card.hidden = !card.textContent.toLowerCase().includes(event.target.value.toLowerCase()); });
+      document.querySelector('#status').textContent = `${cards.filter(card => !card.hidden).length} tasks`;
+    });
+  </script>
+</body>
+</html>

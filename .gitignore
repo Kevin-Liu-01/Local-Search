@@ -8,7 +8,9 @@ __pycache__/
 *.har
 *.mhtml
 *.png
+!docs/images/0[1-7]-*.png
 !site/public/brand/*.png
 !site/public/social/local-search-benchmark.png
 !site/public/social/local-search-isometric.png
 *.pdf
+site/public/docs-assets/

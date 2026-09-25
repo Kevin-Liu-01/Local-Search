@@ -15,6 +15,38 @@ read Reddit or documentation, extract repeated records, interact with pages, or
 make a request through browser-authenticated state. It is not a search engine,
 hosted browser, or transparent network tunnel.
 
+For a human-readable walkthrough with screenshots, see
+[the illustrated agent guide](docs/agent-guide.md). The retained existing-Chrome
+connection is currently an unreleased working-tree feature. Do not assume a
+published package includes it; check the installed help and build provenance.
+
+## Agent-first decision loop
+
+The user supplies the task and browser authority. You choose the smallest useful
+command, inspect the result, and continue only within that task.
+
+| Task | First command | Keep output bounded |
+| --- | --- | --- |
+| Find sources | `search --engine google --limit 3 --json` | Add page content only if needed. |
+| Read a known public or signed-in URL | `read URL --format json` | Prefer the specific page over an entire feed. |
+| Collect repeated fields | `extract SELECTOR --field name=SOURCE --limit 10` | Inspect the page; do not assume selectors. |
+| Discover site pages | `map URL --depth 1 --limit 10` | Stay on origin and respect access limits. |
+| Interact with a page | `snapshot --limit 40`, then an authorized action | Refresh refs after navigation or DOM changes. |
+| Call a known endpoint | `request URL` | Check status/body; browser state does not guarantee access. |
+| Save visual evidence | `screenshot artifacts/page.png` | Keep private content out of public artifacts. |
+| End browser access | `disconnect` | Leave Chrome and saved logins intact. |
+
+Use the selected connection across commands. Do not run `connect` before every
+search. Ask before initial browser selection or explicit reconnection. A browser
+approval is broad transport authority, not permission to post, send messages,
+purchase, delete, or edit account settings. Obtain user authorization for those
+actions unless it is already explicit in the task. These are agent obligations;
+the CLI is not a per-action approval system.
+
+Cookies remaining local does not keep returned page content local to the browser.
+The calling agent receives that content and may use a hosted model. Retrieve the
+minimum needed; never place signed-in content in public logs, examples, or commits.
+
 ## Core operating rules
 
 1. Ask the user to choose `lsearch connect --existing` (everyday Chrome, with
@@ -106,15 +138,32 @@ lsearch connect --existing
 lsearch connect --existing --profile "/path/to/Chrome user data"
 ```
 
-The connection uses Chrome's `DevToolsActivePort` websocket directly. It does
-not relaunch everyday Chrome, copy cookies, or bypass consent. The user-data root
-is remembered and its endpoint is re-read when Chrome restarts. Chrome may ask
-again for each new CLI connection. `connect --existing` allows at least 60 seconds
-for approval; later commands use `--timeout` (default 15 seconds, raise to 60000
-when needed). Default roots: macOS `~/Library/Application Support/Google/Chrome`,
-Linux's config directory plus `google-chrome`, Windows local app data plus
-`Google/Chrome/User Data`. Consent-based existing-browser support depends on
-Chrome's feature, not just any Chromium-branded application.
+On macOS/Linux, this starts a local helper that owns one approved Chrome
+`DevToolsActivePort` websocket. Subsequent commands reuse it through private,
+same-user Unix sockets. Commands are serialized and responses remain isolated.
+It does not relaunch Chrome, copy cookies, or bypass consent. Access remains
+active between commands until explicitly disconnected or the connection ends.
+
+```bash
+lsearch disconnect
+# {"ok":true,"disconnected":true,"browserClosed":false}
+```
+
+Disconnect leaves Chrome and its cookies intact, retains the browser choice, and
+clears local-search's active endpoint/work-tab selection. It is safe to repeat.
+If Chrome or the helper exits, ordinary commands return `browser_disconnected`.
+Only an explicit `connect --existing` (or `connect` with that saved choice) may
+start another connection and ask for approval again. Older saved existing-browser
+choices need one explicit reconnect after upgrading. Never silently switch to
+managed mode. Choosing another browser explicitly stops the old helper.
+
+`connect --existing` allows at least 60 seconds for approval. Subsequent commands
+use `--timeout` (default 15 seconds) for operations or waiting for a busy helper,
+not another Chrome approval. Default roots: macOS
+`~/Library/Application Support/Google/Chrome`, Linux's config directory plus
+`google-chrome`. Persistent existing-browser mode currently requires macOS/Linux;
+on Windows choose a managed profile explicitly instead. Chrome's consent feature
+is required, not just any Chromium-branded application.
 
 For a separate persistent profile, explicitly choose managed mode:
 
@@ -127,7 +176,7 @@ lsearch launch --pretty
 Sign into sites in that profile once. Those logins remain separate from everyday
 Chrome. Both choices persist across commands. Neither browser is relaunched or
 replaced automatically when disconnected. The CLI returns `browser_disconnected`;
-ask the user to reopen/approve the selected Chrome, explicitly relaunch the saved
+ask the user to explicitly reconnect/approve the selected Chrome, relaunch the saved
 managed profile, or deliberately change the selection. First use without a choice
 returns `browser_not_configured`. A failed connection leaves the previous choice
 untouched. Only successful browser verification saves a new choice.
@@ -156,7 +205,7 @@ user profile.
 
 Use `lsearch doctor --pretty` to inspect supported browsers and discovered
 endpoints. Advanced explicit endpoints are verified and remembered; bare
-`connect` verifies the saved choice, and does not auto-select a browser:
+`connect` verifies/reconnects the saved choice, and does not auto-select a browser:
 
 ```bash
 lsearch connect
@@ -252,10 +301,18 @@ Failures return `{"ok":false,"error":{"code":"browser_not_found",
 "message":"..."}}` on stderr and a nonzero exit status.
 
 Handle stable codes such as `browser_not_configured`, `browser_disconnected`,
-`browser_not_found`, `target_not_found`,
+`browser_approval_timeout`, `browser_approval_denied`, `browser_connection_failed`,
+`browser_busy`, `browser_not_found`, `target_not_found`,
 `unsupported`, `protocol_error`, `timeout`, `invalid_argument`,
 `javascript_error`, `io_error`, `json_error`, `url_error`, `http_error`, and
 `websocket_error` rather than matching full prose messages.
+
+`browser_approval_timeout` means initial Chrome authorization/response did not
+finish in time, not proof that Chrome is closed. `browser_approval_denied` is an
+explicit permission rejection. Ambiguous handshake failures remain
+`browser_connection_failed`. `browser_busy` means a command/selection change is
+still using the connection; retry after it finishes. Do not create a new session
+or switch profiles as recovery for these errors.
 
 Three commands intentionally support raw stdout:
 

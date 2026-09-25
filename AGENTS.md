@@ -47,6 +47,11 @@ The Cargo package is `local-search`. The preferred executable is `lsearch`.
 9. **Compatibility is intentional.** Keep the three binary entry points, legacy
    environment aliases, and documented output contracts unless a breaking change
    is explicitly approved.
+10. **Every capability is agent-first.** Expose it through a discoverable CLI,
+    stable machine output, bounded reads, and actionable errors. Human formatting
+    and marketing demos are presentations of that contract. Docs distinguish the
+    user's browser approval from the agent's task-specific action authority;
+    never imply that Chrome's broad approval is a per-action permission gate.
 
 ## Repository map
 
@@ -64,6 +69,10 @@ The Cargo package is `local-search`. The preferred executable is `lsearch`.
   markers, saved endpoints, and supported local ports.
 - `src/browser/cdp.rs` is the minimal flattened-session Chrome DevTools Protocol
   client. It owns websocket request/response/event plumbing and target sessions.
+- `src/browser/session.rs` owns the consented existing-Chrome helper. It retains
+  one upstream connection, leases it over private Unix sockets, isolates CDP IDs
+  and target sessions, and exits on disconnect/upstream loss. Never reconnect in
+  ordinary commands or expose the helper over TCP. Only explicit connect starts it.
 - `src/browser/scripts.rs` contains deterministic JavaScript evaluated in pages
   for snapshots, search normalization, readable extraction, interactions,
   mapping, and authenticated requests.
@@ -83,6 +92,10 @@ The Cargo package is `local-search`. The preferred executable is `lsearch`.
 
 - `SKILL.md` is the complete agent-facing usage guide for installed `lsearch`.
 - `README.md` is the human-facing project and crates.io documentation.
+- `docs/agent-guide.md` is the short illustrated agent workflow. `docs/visual-guide.html`
+  owns its public-safe screenshot compositions, `docs/images/` the captures, and
+  `docs/verification.md` the dated evidence and release boundary. Never substitute
+  private account screenshots for those intentionally sanitized examples.
 - `SECURITY.md` defines the trust model and disclosure guidance.
 - `npm/localsearch/` is the npm distribution bridge. It installs an explicitly
   pinned crates.io release into a package-local Cargo root and exposes Node
@@ -105,6 +118,11 @@ The Cargo package is `local-search`. The preferred executable is `lsearch`.
 
 - `site/` is a separate Next.js application and is excluded from the Rust crate.
 - `site/app/page.tsx` assembles the landing page.
+- `site/app/docs/page.tsx` is the public, static `/docs` walkthrough. Its scoped
+  CSS owns the desktop section index and mobile contents menu. Keep it aligned
+  with `docs/agent-guide.md` and its release boundary. `site/scripts/sync-docs.mjs`
+  publishes only approved screenshots and Markdown as build assets;
+  `pnpm test:docs` verifies the exported page after `pnpm build`.
 - `site/app/globals.css` contains the visual system and responsive behavior.
 - `site/app/layout.tsx`, `manifest.ts`, `robots.ts`, `sitemap.ts`, and JSON-LD
   components own SEO, GEO/AEO, crawler, and metadata behavior.
@@ -129,7 +147,8 @@ program -> normalized Rust value -> stable stdout envelope
 ```
 
 - Browser commands use the CLI/environment CDP override, otherwise the saved
-  choice only. Existing Chrome reads its chosen profile's dynamic endpoint;
+  choice only. Explicit existing-Chrome connect reads its profile's dynamic endpoint
+  and starts/reuses a consented helper. Ordinary commands only use that helper;
   managed/explicit endpoints pin the browser websocket identity. Discovery in
   doctor is informational, never command fallback. First use requires a choice.
 - Browser selection and search-engine selection are different concepts.

@@ -37,7 +37,7 @@ export const FAQS = [
   },
   {
     question: "Can it use my logins?",
-    answer: "Yes. Approve access to your existing Chrome, or sign in once in a separate profile. Both keep your logins. Chrome may ask for approval again on later connections.",
+    answer: "Yes. On macOS/Linux, approve one existing-Chrome connection and reuse it across commands. Run lsearch disconnect to end access. Reconnecting requires approval again. Or sign in once in a separate persistent profile.",
   },
   {
     question: "Which agents work with it?",

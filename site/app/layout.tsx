@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Manrope } from "next/font/google";
-import { JsonLd } from "@/components/json-ld";
 import { THEME_INIT_SCRIPT } from "@/lib/theme";
 import {
   AUTHOR_URL,
@@ -12,7 +11,6 @@ import {
   SOCIAL_DESCRIPTION,
   SOCIAL_IMAGE_ALT,
   SOCIAL_TITLE,
-  STRUCTURED_DATA,
 } from "@/lib/seo";
 import "./globals.css";
 
@@ -105,7 +103,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="en" data-theme="light" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
-        <JsonLd data={STRUCTURED_DATA} />
       </head>
       <body className={manrope.variable}>{children}</body>
     </html>

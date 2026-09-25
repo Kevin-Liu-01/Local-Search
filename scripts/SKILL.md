@@ -10,6 +10,9 @@ Small agent-callable wrappers around the Rust CLI for cleanup and maintenance.
 
 ## Mental model & key files
 - `local-search-cleanup.sh` delegates to `lsearch cleanup`.
+- `capture-agent-guide.mjs` captures the public-safe visual guide with an isolated
+  agent-browser session. It never attaches to a user's signed-in Chrome. Build
+  site/ first for the local Manrope font; `--serve` opens a loopback preview.
 - Scripts should stay thin; command behavior belongs in Rust.
 
 ## Patterns to follow / invariants

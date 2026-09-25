@@ -1,17 +1,12 @@
 /* One eclipse dial, not two swapping icons. No motion on initial render. */
 .theme-toggle { --dial-ease: cubic-bezier(.22, 1, .36, 1); flex: 0 0 auto; display: grid; place-items: center; width: 48px; height: 48px; padding: 0; border: 1px solid var(--line); border-radius: 6px; color: var(--accent-deep); background: transparent; touch-action: manipulation; }
 .theme-dial { display: block; overflow: visible; transform-origin: center; }
-.theme-dial__track { stroke: currentColor; stroke-width: .65; opacity: .15; }
-.theme-dial__orbit { transform-origin: 24px 24px; transform: rotate(-45deg); }
-.theme-dial__arc { stroke: currentColor; stroke-width: .8; stroke-linecap: round; opacity: .4; }
-.theme-dial__satellite { fill: currentColor; }
 .theme-dial__body { transform-origin: 24px 24px; transform: rotate(-12deg) scale(.9); }
 .theme-dial__disc { fill: currentColor; }
 .theme-dial__eclipse { transform: translate(0, 0); }
 .theme-dial__rays { transform-origin: 24px 24px; transform: rotate(0deg); }
 .theme-dial__ray { stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; opacity: 1; transform: translateY(0); }
 .theme-dial__star { fill: currentColor; opacity: 0; transform-box: fill-box; transform-origin: center; transform: rotate(-35deg) scale(.45); }
-:root[data-theme="dark"] .theme-dial__orbit { transform: rotate(135deg); }
 :root[data-theme="dark"] .theme-dial__body { transform: rotate(-20deg) scale(1.12); }
 :root[data-theme="dark"] .theme-dial__eclipse { transform: translate(-13px, 9px); }
 :root[data-theme="dark"] .theme-dial__rays { transform: rotate(90deg); }
@@ -20,7 +15,6 @@
 
 /* Retargetable transitions: a second click reverses the current motion. */
 .theme-toggle[data-animate="true"] .theme-dial { transition: transform 160ms var(--dial-ease); }
-.theme-toggle[data-animate="true"] .theme-dial__orbit { transition: transform 620ms var(--dial-ease); }
 .theme-toggle[data-animate="true"] .theme-dial__body { transition: transform 480ms var(--dial-ease); }
 .theme-toggle[data-animate="true"] .theme-dial__eclipse { transition: transform 480ms cubic-bezier(.65, 0, .35, 1); }
 .theme-toggle[data-animate="true"] .theme-dial__rays { transition: transform 520ms var(--dial-ease); }
@@ -32,7 +26,6 @@
 .theme-toggle:active .theme-dial { transform: scale(.9); }
 @media (hover: hover) and (pointer: fine) {
   .theme-toggle:hover { border-color: var(--accent); background: var(--surface); }
-  .theme-toggle:hover .theme-dial__track { opacity: .3; }
 }
 @media (prefers-reduced-motion: reduce) {
   .theme-toggle, .theme-toggle .theme-dial, .theme-toggle .theme-dial * { transition: none !important; }

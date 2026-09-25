@@ -6,14 +6,14 @@ import { BrowserWorkflow } from "@/components/browser-workflow";
 import { FaqVisual } from "@/components/faq-visual";
 import { HeroAgentSwitch } from "@/components/hero-agent-switch";
 import { InstallCommand } from "@/components/install-command";
-import { ThemeToggle } from "@/components/theme-toggle";
-import { FAQS } from "@/lib/seo";
+import { SiteHeader } from "@/components/site-header";
+import { JsonLd } from "@/components/json-ld";
+import { FAQS, STRUCTURED_DATA } from "@/lib/seo";
 import {
   ArrowUpRightIcon,
   ChevronRightIcon,
   ChromiumBrandIcon,
   GithubBrandIcon,
-  CratesIoBrandIcon,
   JsonSchemaBrandIcon,
   RustOfficialIcon,
 } from "@/components/icons";
@@ -22,23 +22,8 @@ export default function Home() {
   return (
     <>
       <a className="skip-link" href="#main">Skip to content</a>
-      <header className="site-header">
-        <a className="brand" href="#top" aria-label="local-search home"><LocalSearchLogo className="brand-logo" /><span className="brand-name">local-search</span></a>
-        <nav aria-label="Main navigation">
-          <a href="#demo">Demo</a>
-          <a href="#benchmarks">Benchmarks</a>
-          <a href="#faq">FAQ</a>
-        </nav>
-        <div className="header-actions">
-          <ThemeToggle />
-          <a className="nav-cta" href="https://github.com/Kevin-Liu-01/local-search" target="_blank" rel="noreferrer" aria-label="View local-search on GitHub" title="GitHub">
-            <GithubBrandIcon size={20} /><span className="nav-cta__label">GitHub</span><ArrowUpRightIcon size={16} />
-          </a>
-          <a className="nav-cta nav-cta--crates" href="https://crates.io/crates/local-search" target="_blank" rel="noreferrer" aria-label="View local-search on crates.io" title="crates.io">
-            <CratesIoBrandIcon size={24} /><span className="nav-cta__label">crates.io</span><ArrowUpRightIcon size={16} />
-          </a>
-        </div>
-      </header>
+      <SiteHeader />
+      <JsonLd data={STRUCTURED_DATA} />
 
       <main id="main">
         <section className="hero-shell" id="top" aria-labelledby="hero-title">
@@ -106,7 +91,7 @@ export default function Home() {
           <p>Open source. Runs locally. No hosted search API key.</p>
           <InstallCommand />
           <div className="closing-links">
-            <a href="https://github.com/Kevin-Liu-01/local-search" target="_blank" rel="noreferrer">Read the docs <ChevronRightIcon size={20} /></a>
+            <a href="/docs">Read the docs <ChevronRightIcon size={20} /></a>
             <a href="https://github.com/Kevin-Liu-01/Local-Search/blob/main/SKILL.md" target="_blank" rel="noreferrer">Get the agent skill <ChevronRightIcon size={20} /></a>
           </div>
         </section>

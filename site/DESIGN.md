@@ -114,11 +114,11 @@ The semantic tokens in `app/globals.css` are the source of truth:
 - On first visit follow the device preference. Persist explicit choices locally,
   apply them before first paint, and synchronize other tabs. Storage failures
   must not break the page or toggle. Do not add a page-wide color animation.
-- The toggle is a miniature eclipse dial. A shared masked disc morphs from sun
-  to crescent; eight rays retract, an orbital marker sweeps half a turn, and three
+- The toggle is a sun/moon glyph without an outer circle or orbital track.
+  A shared masked disc morphs from sun to crescent; eight rays retract, and three
   stars appear in sequence. The glyph represents the current theme; the accessible
   label names the action. Pointer/touch changes use interruptible transform and
-  opacity transitions (480ms eclipse, 620ms orbit). This intentionally longer,
+  opacity transitions (480ms eclipse). This intentionally longer,
   occasional delight never delays the actual theme change. Initial load, keyboard
   activation, and reduced motion settle immediately. No looping or extra library.
 - Keep logos recognizable and adapt only monochrome marks to their backgrounds.
@@ -314,7 +314,9 @@ extraction, interaction, and signed-in browser access beyond that example.
   disclosure within each option, including Chrome 144+, remote-debugging settings,
   and explicit approval. Stack the options on phones without shrinking text.
 - State the guarantee once: the choice is remembered and a disconnected browser
-  is reported, never replaced silently. Chrome may ask again on new connections.
+  is reported, never replaced silently. On macOS/Linux one approved existing-Chrome
+  connection is reused between commands; `lsearch disconnect` ends access without
+  closing Chrome. Reconnection is explicit and requires Chrome approval again.
 - Existing logins require Chrome approval; separate profiles require signing in
   there. Sites still control access. Never imply visiting this website reads
   cookies, connects a browser, or executes a command.
@@ -553,6 +555,36 @@ Benchmarks are evidence, not decoration.
 
 Keep changes in the owning layer. Do not solve a component-specific problem with
 global CSS unless it is a reusable system rule.
+
+## Documentation at /docs
+
+Keep the same header, theme, type, and structural rails as the product page.
+Use a sticky section index on desktop and a native "On this page" disclosure on
+mobile. Setup and tasks come before the exhaustive agent reference. Body copy
+is 18px or larger; controls, code, captions, and navigation are at least 16px.
+Commands must be selectable, copyable, and able to wrap on a 320px screen.
+
+Use short, single-line titles without clipping text or shrinking mobile type.
+Section headings and navigation share the same labels. Lead each section with
+a task name, one purpose sentence, a diagram where useful, and the main command.
+Use simple technical English: "read a page", "choose a browser", "extract data".
+Keep extra flags, setup steps, and errors in one named native disclosure per
+section. Avoid repeated callout boxes or extra rows that interrupt this flow.
+The complete Markdown guide and command reference remain available for agents.
+
+docs/docs-diagrams.tsx uses existing brand icons and live HTML text for the
+agent/browser flow, signed-in reading, shared search fields, extraction, page
+actions, and disconnection. Connections must stack cleanly on small screens.
+Do not replace these with fixed-size screenshots or hide the primary flow.
+
+The canonical walkthrough and seven screenshots live in ../docs/. Group them
+in one "Screenshots" disclosure at the end, with full-size links. Show dates, synthetic-data
+labels, permission boundaries, and the release status. Never use raw private
+account screenshots. Do not claim that diagrams are live browser sessions.
+
+The build syncs approved screenshots and Markdown into public/docs-assets/.
+Keep those generated copies out of Git. Run pnpm test:docs after pnpm build,
+then verify mobile/desktop in both themes and check copy/download behavior.
 
 ## Prohibited patterns
 

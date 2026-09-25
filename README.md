@@ -10,28 +10,55 @@
   <img alt="Recorded arm64 build: 1.06 MB" src="https://img.shields.io/badge/recorded%20arm64%20build-1.06%20MB-168f94?style=flat-square&amp;logo=rust&amp;logoColor=white">
   <img alt="Recorded median warm startup: 4.61 ms" src="https://img.shields.io/badge/recorded%20warm%20startup-4.61%20ms-168f94?style=flat-square">
   <a href="https://github.com/Kevin-Liu-01/Local-Search/blob/main/LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-555?style=flat-square"></a>
-  <a href="https://lsearch.dev"><img alt="Documentation" src="https://img.shields.io/badge/docs-local--search-555?style=flat-square"></a>
+  <a href="https://www.lsearch.dev/docs"><img alt="Documentation" src="https://img.shields.io/badge/docs-local--search-555?style=flat-square"></a>
 </p>
 
 # local-search
 
-A local browser API for agents.
+A local browser API for agents. Your agent calls a command. Your browser does
+the work. Useful data comes back.
 
-One CLI lets an agent search Google, read Reddit and docs, extract page data,
-interact with sites, and use your existing Chrome logins—with Chrome's approval.
+One CLI lets an agent search the web, read pages, extract records, interact with
+sites, and use your existing Chrome logins with Chrome's approval.
 Or choose a separate persistent profile for agent work.
 `local-search` is the bridge: the agent calls a command, your browser does the
 work, and compact JSON or readable text comes back.
 
 ```sh
 lsearch connect --existing  # approve in Chrome; setup below
-lsearch "open source browser automation rust"
+lsearch "open source browser automation rust" --limit 3 --json
+lsearch read https://www.linkedin.com/feed/ --format json
 ```
 
 This is not a new search engine, hosted browser, or network tunnel. The primary
 CLI, `lsearch`, controls Chrome/Chromium on your machine. You choose the sites,
 search engine, browser profile, and local state; the agent gets one stable
 interface instead of a separate API integration for every site.
+
+**Start with the [illustrated agent guide](https://github.com/Kevin-Liu-01/Local-Search/blob/main/docs/agent-guide.md).** It shows
+browser setup, signed-in LinkedIn/GitHub/Reddit checks, search, extraction,
+interaction, requests, and disconnect with readable screenshots.
+
+![Verified signed-in access checks for LinkedIn, GitHub, and Reddit. Private content omitted.](https://raw.githubusercontent.com/Kevin-Liu-01/Local-Search/main/docs/images/03-signed-in-sites.png)
+
+The guide's persistent existing-browser connection is in the current working
+tree and is not yet a published package release. Use a checkout build to test
+it. The [evidence record](https://github.com/Kevin-Liu-01/Local-Search/blob/main/docs/verification.md) distinguishes local verification
+from published availability.
+
+## Give it to your agent
+
+Give Claude Code, Codex, Cursor, OpenClaw, or another shell-capable agent
+[SKILL.md](SKILL.md), then ask for the task you actually want done:
+
+> Use lsearch with the browser I choose. Read this page using my approved
+> session and summarize it with source links. Use compact JSON. Don't post,
+> message anyone, or change account settings. Ask before reconnecting or
+> switching profiles.
+
+You choose the browser and approve access. The agent handles commands, checks
+results, and returns only what the task needs. Browser approval grants broad
+control; the calling agent must still respect the scope of your request.
 
 ## What You Get
 
@@ -40,11 +67,13 @@ interface instead of a separate API integration for every site.
 - Readable page extraction for Reddit, documentation, and other websites.
 - Your existing Chrome sessions, with Chrome approval. No cookie export.
 - An explicit choice of everyday Chrome or a separate persistent profile.
-- A remembered browser choice and an honest error when it disconnects—no fallback.
+- A remembered browser choice and an explicit error when it disconnects.
+- One approved existing-Chrome connection reused across commands on macOS/Linux.
+- `lsearch disconnect` to end access without closing Chrome or signing you out.
 - Optional result-page content extraction with `--with-content`.
 - Local `read`, `extract`, `map`, `request`, screenshot, MHTML, HTML, and HAR-like
   capture commands.
-- A managed Chrome profile that avoids repeated debugging prompts.
+- A separate persistent profile when you want agent logins kept apart.
 - `lsearch cleanup` so agents do not leave browser instances or stale profile
   markers behind.
 - Compatibility binaries: `local-search` and `local-browser`.
@@ -119,10 +148,23 @@ Choose the browser your agent is allowed to use. With **Chrome 144+**, open
 lsearch connect --existing
 ```
 
-Approve Chrome's connection prompt. `lsearch` uses that browser's sessions in
-place: no cookie copying, no second login. Chrome may ask again for subsequent
-CLI connections. The initial connection allows at least 60 seconds for approval;
-use `--timeout 60000` on later commands if you need more time.
+Approve Chrome's connection prompt once. On macOS and Linux, a small local helper
+keeps that approved connection open for subsequent commands. `lsearch` uses your
+logins in place: no cookie copying, no second login, no prompt per search.
+The initial connection allows at least 60 seconds for approval.
+
+Access stays active between commands until you disconnect or the connection ends:
+
+```sh
+lsearch disconnect
+```
+
+This ends local-search access without closing Chrome, signing you out, or deleting
+cookies. After a browser restart or lost connection, run
+`lsearch connect --existing` and approve again. Searches never reconnect automatically. Existing
+selections created by older versions need this one-time reconnect after upgrading.
+Windows users can use the separate managed profile; the persistent existing-browser
+helper currently requires macOS or Linux.
 
 Prefer to keep your everyday browser separate? Choose:
 
@@ -138,29 +180,30 @@ This starts a separate persistent Chrome profile. On macOS it lives at:
 
 Sign in there once if you need authenticated access. Your choice is saved for
 later commands. A disconnected browser returns `browser_disconnected`; it never
-silently opens a different profile. Reopen the selected Chrome or explicitly
+silently opens a different profile. Reconnect existing Chrome with
+`lsearch connect --existing`, or explicitly
 restart the managed profile with `lsearch launch`. It reuses the saved profile,
 port, and executable unless you explicitly override them.
 
 With either mode:
 
 ```sh
-lsearch "latest rust cdp browser automation"
-lsearch search "site:docs.rs tokio Runtime" --limit 5 --pretty
-lsearch search "best browser search APIs for agents" --with-content --limit 3 --pretty
-lsearch read https://example.com
-lsearch extract "a[href]" --field title=text --field url=href --pretty
-lsearch map https://example.com --depth 1 --limit 25 --pretty
+lsearch "latest rust cdp browser automation" --limit 3 --json
+lsearch search "site:docs.rs tokio Runtime" --limit 5 --json
+lsearch search "browser search for agents" --with-content --limit 3 --content-chars 1200 --json
+lsearch read https://example.com --format json
+lsearch extract "a[href]" --field title=text --field url=href --limit 10
+lsearch map https://example.com --depth 1 --limit 10
 lsearch cleanup --pretty
 ```
 
 Agent-style flow:
 
 ```sh
-lsearch search "agent broom github" --limit 1 --pretty
-lsearch search "example domain" --limit 1 --with-content --content-chars 240 --pretty
-lsearch map https://example.com --depth 1 --limit 10 --pretty
-lsearch cleanup --kill --pretty
+lsearch search "example domain" --limit 1 --with-content --content-chars 240 --json
+lsearch map https://example.com --depth 1 --limit 10
+# When the user asks to end browser access:
+lsearch disconnect
 ```
 
 ## Switching Search Engines vs Browsers

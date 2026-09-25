@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>local-search: an agent-first visual guide</title>
+  <style>
+    @font-face{font-family:Manrope;src:url('/__guide-font.woff2') format('woff2');font-weight:200 800;font-display:swap}
+    :root{--paper:#f5f5f2;--ink:#151515;--muted:#525b55;--line:#cdd5cf;--soft:#c9f1ef;--teal:#0d6f74;--terminal:#14201c;--code:#e5f0e9}
+    *{box-sizing:border-box}body{margin:0;background:#e6e9e3;color:var(--ink);font-family:Manrope,Arial,sans-serif;font-size:22px;line-height:1.55}
+    .screen{width:min(1440px,100%);min-height:960px;margin:24px auto;background:var(--paper);padding:44px 56px 34px;display:flex;flex-direction:column;gap:26px;border:1px solid var(--line);position:relative}
+    .screen[hidden]{display:none}.top{display:flex;justify-content:space-between;align-items:center;gap:24px;font-size:20px}.brand{display:flex;gap:12px;align-items:center;font-weight:700}.brand svg{width:48px;height:34px;color:var(--teal)}.top p{margin:0;color:var(--muted)}
+    h1,h2,h3,p{margin:0}h1,h2{font-size:62px;font-weight:600;letter-spacing:-2.7px;line-height:1.1;max-width:1250px}h3{font-size:30px;letter-spacing:-.8px;line-height:1.3}.accent{color:var(--teal)}.intro{font-size:25px;color:var(--muted);margin-top:16px;max-width:1100px}.body{flex:1;display:flex;flex-direction:column;justify-content:center;gap:28px}
+    .two{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:stretch}.three{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}.box{border:1px solid var(--line);background:#fff;padding:30px}.soft{background:var(--soft)}.box p{margin-top:14px;color:var(--muted)}.line{height:1px;background:var(--line);margin:12px 0}.note{font-size:20px;color:var(--muted)}
+    .logo{width:44px;height:44px;object-fit:contain;flex-shrink:0}.large-logo{width:64px;height:64px}.logos{display:flex;align-items:center;gap:24px;flex-wrap:wrap}.named{display:flex;align-items:center;gap:12px}.stack{display:flex;flex-direction:column;gap:18px}.agents{display:flex;flex-wrap:wrap;gap:24px}.agents .named{font-size:19px}.agents .logo{width:30px;height:30px}
+    .terminal{background:var(--terminal);color:var(--code);border-radius:13px;overflow:hidden;border:1px solid #34453c;min-width:0}.bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 24px;border-bottom:1px solid #34453c;font-size:18px;color:#becfc5}.dots{display:flex;gap:7px}.dots i{display:block;width:10px;height:10px;border-radius:50%;background:#99afa1}.dots i:first-child{background:#df7461}.dots i:nth-child(2){background:#e5b663}.dots i:last-child{background:#7cab79}.terminal-content{padding:28px 30px;display:flex;flex-direction:column;gap:20px}.terminal p{color:#bbcec3}.command{font-size:25px;line-height:1.6;overflow-wrap:anywhere;white-space:pre-wrap}.command b{color:#80dedb;font-weight:600}.flag{color:#a9d3f6}.str{color:#e6d79f}code,pre{font-family:inherit}pre{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;font-size:23px;line-height:1.6}.key{color:#80dedb}.value{color:#e6d79f}.ok{color:#93d9bc}.output{border-top:1px solid #34453c;padding-top:18px;font-size:22px}
+    .badge{display:inline-flex;align-items:center;gap:8px;color:var(--teal);font-size:19px;padding:7px 13px;border:1px solid #8ac4bd;background:#eaf8f2;border-radius:6px;width:max-content;max-width:100%}.status{font-size:22px;font-weight:600;color:var(--teal);margin-top:24px}.footer{display:flex;justify-content:space-between;gap:24px;border-top:1px solid var(--line);padding-top:20px;font-size:18px;color:var(--muted)}.footer span:last-child{text-align:right}.label{font-size:20px;font-weight:600}
+    .flow{display:grid;grid-template-columns:1fr 70px 1fr 70px 1.25fr;align-items:center}.flow>.box{min-height:235px;display:flex;flex-direction:column;justify-content:center;gap:18px}.wire{border-top:2px dashed #6baca8}.flow .box p{margin:0}.flow .logos{gap:18px}.pillrow{display:flex;gap:14px;flex-wrap:wrap}.pillrow span{padding:10px 18px;border:1px solid var(--line);font-size:22px;background:#fff}.center{text-align:center}.callout{padding:22px 28px;border-left:3px solid var(--teal);background:#e4efea;color:var(--teal);font-size:24px}
+    .result{padding:22px 0;border-bottom:1px solid var(--line)}.result:last-child{border:0}.result strong{display:block;font-size:25px;color:var(--teal)}.result p{margin-top:8px}.mini-browser{border:1px solid var(--line);background:#fff;border-radius:12px;overflow:hidden}.mini-browser .bar{background:#e7ede8;color:var(--muted);border-color:var(--line)}.mini-content{padding:24px 28px}.task{border-bottom:1px solid var(--line);padding:22px 0}.task:last-child{border:0}.task a{color:var(--teal);font-size:21px}.task h3{font-size:28px}.sequence{display:grid;gap:18px}.sequence>div{display:flex;align-items:center;gap:18px}.dot{border:1px solid #82b5b0;color:var(--teal);border-radius:50%;width:34px;height:34px;display:grid;place-items:center;flex-shrink:0;font-size:20px}.error-row{padding:19px 0;border-bottom:1px solid var(--line)}.error-row code{color:var(--teal);font-weight:600;font-size:23px}.error-row p{margin-top:8px;font-size:21px}.error-row:last-child{border:0}.summary{display:flex;gap:22px;align-items:center}.summary .logo{width:48px;height:48px}.evidence{font-size:20px;color:var(--muted);margin-top:24px}.readout{font-size:27px;font-weight:600;line-height:1.35}
+    .two>*,.three>*{min-width:0}.error-row code{overflow-wrap:anywhere}.bar{flex-wrap:wrap}.bar>.dots{flex-shrink:0}.box .command b{color:var(--teal)}.box p.status{color:var(--teal)}.brand{white-space:nowrap}
+    @media(max-width:800px){.top{flex-wrap:wrap}.top p{flex:1;min-width:180px}}
+    body.capture{background:var(--paper)}body.capture .screen{margin:0;border:0;width:1440px;height:1080px}
+    @media(max-width:800px){.screen{margin:0;min-height:0;padding:28px 22px;gap:26px}.top{align-items:flex-start;font-size:17px}.top p{text-align:right;font-size:16px}.brand{font-size:19px}.brand svg{width:37px}h1,h2{font-size:39px;letter-spacing:-1.5px}h3{font-size:26px}.intro{font-size:21px}.two,.three{grid-template-columns:1fr}.flow{grid-template-columns:1fr}.flow>.box{min-height:0}.wire{width:0;height:30px;border-top:0;border-left:2px dashed #6baca8;margin:auto}.body{gap:24px}.box{padding:24px}.command{font-size:21px}pre{font-size:20px}.terminal-content{padding:24px 20px}.footer{flex-direction:column;font-size:17px;gap:10px}.footer span:last-child{text-align:left}.agents{gap:17px}.logos{gap:18px}.callout{font-size:21px;padding:20px}.readout{font-size:25px}.pillrow span{font-size:19px}.badge{font-size:18px}.bar{font-size:17px;padding:15px 18px}}
+  </style>
+</head>
+<body>
+<template id="brand"><span class="brand"><svg aria-hidden="true" viewBox="0 0 64 44"><path fill="currentColor" fill-rule="evenodd" d="M4 1h54l-2 7 7 5-4 9 4 7-7 14H5l2-7-6-5 4-9-4-7L4 1Zm7 33h6l11-24h-6L11 34Zm19-24h6v19h4v5H30V10Zm13 0h14v6h-8v3h8v15H43v-6h8v-3h-8V10Z"/></svg>local-search</span></template>
+
+<section class="screen" id="01-agent-browser">
+  <header class="top"><span data-brand></span><p>Agent-first guide · local source preview</p></header>
+  <div><h1>Your agent. Your browser.<br><span class="accent">Your existing logins.</span></h1><p class="intro">One local interface to search, read, extract, and work with sites.</p></div>
+  <div class="body">
+    <div class="flow">
+      <div class="box"><h3>Your agent</h3><p>Calls a command.</p><div class="logos"><img class="logo" src="../site/public/brand/claude.svg" alt="Claude"><img class="logo" src="../site/public/brand/codex.svg" alt="Codex"><img class="logo" src="../site/public/brand/cursor-mono.svg" alt="Cursor"><img class="logo" src="../site/public/brand/openclaw.svg" alt="OpenClaw"></div></div>
+      <div class="wire" aria-hidden="true"></div>
+      <div class="box soft"><h3>lsearch</h3><p>A small Rust CLI.<br>Compact JSON back.</p><code>search · read · extract</code></div>
+      <div class="wire" aria-hidden="true"></div>
+      <div class="box"><div class="named"><img class="logo" src="../site/public/brand/chrome.svg" alt=""><h3>Your browser</h3></div><p>Uses the profile you approve.</p><div class="logos"><img class="logo" src="../site/public/brand/linkedin.svg" alt="LinkedIn"><img class="logo" src="../site/public/brand/github-mono.svg" alt="GitHub"><img class="logo" src="../site/public/brand/reddit.svg" alt="Reddit"><img class="logo" src="../site/public/brand/google.svg" alt="Google"></div></div>
+    </div>
+    <div class="terminal"><div class="bar"><span class="dots"><i></i><i></i><i></i></span><span>Your agent's command</span><span>Read a signed-in page</span></div><div class="terminal-content"><code class="command"><b>$</b> lsearch read https://www.linkedin.com/feed/ <span class="flag">--format json</span></code><p>Use the browser session you already approved. Return only what the task needs.</p></div></div>
+    <div class="pillrow"><span>Search</span><span>Read</span><span>Extract</span><span>Interact</span><span>Request</span><span>Capture</span></div>
+  </div>
+  <footer class="footer"><span>Illustrated workflow. Sites still control access.</span><span>lsearch.dev · Open source</span></footer>
+</section>
+
+<section class="screen" id="02-browser-choice">
+  <header class="top"><span data-brand></span><p>Choose the browser your agent can use</p></header>
+  <div><h2>Use your logins.<br><span class="accent">Or keep agent work separate.</span></h2><p class="intro">Make one explicit choice. The agent remembers it.</p></div>
+  <div class="body">
+    <div class="two">
+      <div class="box soft stack"><div class="named"><img class="large-logo" src="../site/public/brand/chrome.svg" alt="Chrome"><h3>Existing Chrome</h3></div><p>Use the sites you're already signed into.</p><div class="sequence"><div><span class="dot">1</span><span>Enable remote debugging in Chrome.</span></div><div><span class="dot">2</span><span>Run the command and approve Chrome.</span></div><div><span class="dot">3</span><span>Reuse that connection across commands.</span></div></div><div class="line"></div><code class="command">lsearch connect <span class="accent">--existing</span></code></div>
+      <div class="box stack"><h3>A separate profile</h3><p>Keep the agent's browser sessions apart from everyday browsing.</p><div class="sequence"><div><span class="dot">1</span><span>Start a dedicated local profile.</span></div><div><span class="dot">2</span><span>Sign in there yourself.</span></div><div><span class="dot">3</span><span>Keep those sessions for later tasks.</span></div></div><div class="line"></div><code class="command">lsearch connect <span class="accent">--managed</span></code></div>
+    </div>
+    <p class="callout">One approval per existing-Chrome connection, not per search.</p>
+  </div>
+  <footer class="footer"><span>Existing mode: Chrome 144+, macOS/Linux. Reconnect requires approval.</span><span>Setup illustration · Unreleased build</span></footer>
+</section>
+
+<section class="screen" id="03-signed-in-sites">
+  <header class="top"><span data-brand></span><p>Recorded checks · September 25, 2026</p></header>
+  <div><h2>Already signed in?<br><span class="accent">Your agent can use that session.</span></h2><p class="intro">Three sites. One approved Chrome connection. No cookie export.</p></div>
+  <div class="body">
+    <div class="three">
+      <div class="box"><div class="summary"><img class="logo" src="../site/public/brand/linkedin.svg" alt=""><h3>LinkedIn</h3></div><p class="readout">Signed-in feed</p><p class="status">✓ Opened and read</p><div class="evidence">Feed navigation present.<br>No login form or challenge.</div></div>
+      <div class="box"><div class="summary"><img class="logo" src="../site/public/brand/github-mono.svg" alt=""><h3>GitHub</h3></div><p class="readout">Profile settings</p><p class="status">✓ Opened while signed in</p><div class="evidence">The same URL without a session redirected to login.</div></div>
+      <div class="box"><div class="summary"><img class="logo" src="../site/public/brand/reddit.svg" alt=""><h3>Reddit</h3></div><p class="readout">Account settings</p><p class="status">✓ Opened and read</p><div class="evidence">Account settings loaded.<br>No login redirect.</div></div>
+    </div>
+    <div class="terminal"><div class="bar"><span class="dots"><i></i><i></i><i></i></span><span>Same command. Different site.</span><span>Agent output: JSON</span></div><div class="terminal-content"><code class="command"><b>$</b> lsearch read https://www.linkedin.com/feed/ <span class="flag">--format json</span>
+<b>$</b> lsearch read https://github.com/settings/profile <span class="flag">--format json</span>
+<b>$</b> lsearch read https://www.reddit.com/settings/ <span class="flag">--format json</span></code></div></div>
+    <p class="note">Access checks only. No posting, messaging, or account changes. Private content omitted.</p>
+  </div>
+  <footer class="footer"><span>Test summary, not account screenshots. Results vary by site and account.</span><span>Local source build · Release pending</span></footer>
+</section>
+
+<section class="screen" id="04-search">
+  <header class="top"><span data-brand></span><p>Search results an agent can use</p></header>
+  <div><h2>Four search engines.<br><span class="accent">One result format.</span></h2><p class="intro">Titles, links, and snippets instead of a whole search page.</p></div>
+  <div class="body">
+    <div class="logos"><span class="named"><img class="logo" src="../site/public/brand/google.svg" alt="">Google</span><span class="named"><img class="logo" src="../site/public/brand/bing.svg" alt="">Bing</span><span class="named"><img class="logo" src="../site/public/brand/brave.svg" alt="">Brave</span><span class="named"><img class="logo" src="../site/public/brand/duckduckgo.svg" alt="">DuckDuckGo</span></div>
+    <div class="terminal"><div class="bar"><span class="dots"><i></i><i></i><i></i></span><span>Bound the result count. Ask for JSON.</span><span>lsearch</span></div><div class="terminal-content"><code class="command"><b>$</b> lsearch <span class="str">"rust browser automation libraries"</span>
+  <span class="flag">--engine duckduckgo --limit 3 --json</span></code><div class="output"><p>One result, shortened from the recorded trace:</p><pre>{
+  <span class="key">"rank"</span>: 1,
+  <span class="key">"title"</span>: <span class="value">"browser_automation: Rust web dev library // Lib.rs"</span>,
+  <span class="key">"domain"</span>: <span class="value">"lib.rs"</span>,
+  <span class="key">"url"</span>: <span class="value">"https://lib.rs/crates/browser_automation"</span>,
+  <span class="key">"snippet"</span>: <span class="value">"A modular, Rust-based browser automation library…"</span>
+}</pre></div></div></div>
+    <p class="note">Need the pages too? Add <code>--with-content --content-chars 1200</code>.</p>
+  </div>
+  <footer class="footer"><span>Recorded DuckDuckGo result · July 21, 2026 · Not a live search.</span><span>Compact by default</span></footer>
+</section>
+
+<section class="screen" id="05-extract">
+  <header class="top"><span data-brand></span><p>Return the fields your task needs</p></header>
+  <div><h2>Page content in.<br><span class="accent">Useful records out.</span></h2><p class="intro">Read a whole page, or extract just the names and links.</p></div>
+  <div class="body">
+    <div class="two">
+      <div class="mini-browser"><div class="bar"><span class="named"><img class="logo" src="../site/public/brand/chrome.svg" alt="Chrome">Local browser</span><span>Synthetic fixture</span></div><div class="mini-content"><h3>Agent task board</h3><div class="task"><h3>Read the docs</h3><a href="fixtures/tasks.html#docs">Open documentation</a></div><div class="task"><h3>Compare results</h3><a href="fixtures/tasks.html#results">Open results</a></div><p class="note">Two article cards. No real account data.</p></div></div>
+      <div class="terminal"><div class="bar"><span class="dots"><i></i><i></i><i></i></span><span>Selected fields</span><span>JSON</span></div><div class="terminal-content"><pre>[
+  {
+    <span class="key">"title"</span>: <span class="value">"Read the docs"</span>,
+    <span class="key">"url"</span>: <span class="value">"…/tasks.html#docs"</span>
+  },
+  {
+    <span class="key">"title"</span>: <span class="value">"Compare results"</span>,
+    <span class="key">"url"</span>: <span class="value">"…/tasks.html#results"</span>
+  }
+]</pre></div></div>
+    </div>
+    <div class="box soft"><code class="command">lsearch extract <b>"article"</b> --field title="h2=&gt;text" --field url="a=&gt;href" --limit 10</code></div>
+    <p class="note">Use <code>read</code> for page text. Use <code>map</code> to discover same-origin links.</p>
+  </div>
+  <footer class="footer"><span>Synthetic example. URLs shortened. Selectors depend on the actual page.</span><span>Read · Extract · Map</span></footer>
+</section>
+
+<section class="screen" id="06-work-with-pages">
+  <header class="top"><span data-brand></span><p>A browser interface beyond search</p></header>
+  <div><h2>Inspect. Act. Verify.<br><span class="accent">Keep the agent in a clear loop.</span></h2><p class="intro">Use high-level commands. Ask before actions the user hasn't authorized.</p></div>
+  <div class="body">
+    <div class="two">
+      <div class="terminal"><div class="bar"><span class="dots"><i></i><i></i><i></i></span><span>Example interaction</span><span>lsearch</span></div><div class="terminal-content"><code class="command"><b>$</b> lsearch snapshot <span class="flag">--limit 40</span></code><p>Find the input's current ref.</p><code class="command"><b>$</b> lsearch fill @e3 <span class="str">"browser automation"</span></code><p>@e3 is illustrative. Use your own snapshot.</p><code class="command"><b>$</b> lsearch snapshot <span class="flag">--limit 40</span></code><p class="ok">Verify the change before continuing.</p></div></div>
+      <div class="stack"><div class="box"><h3>Make a browser request</h3><p>Fetch from a known, authorized endpoint using that origin's browser state.</p><div class="line"></div><code class="command">lsearch request<br>https://example.com/api/items</code><p class="note">Illustrative URL. Server permissions still apply.</p></div><div class="box"><h3>Capture what matters</h3><p>Save a screenshot when the task needs visual proof.</p><div class="line"></div><code class="command">lsearch screenshot<br>artifacts/page.png</code></div></div>
+    </div>
+    <p class="note">Also: click, scroll, wait, tabs, PDF, HTML, MHTML, and network-event recording.</p>
+  </div>
+  <footer class="footer"><span>Workflow illustration. Private pages and captures need private handling.</span><span>Observe before acting</span></footer>
+</section>
+
+<section class="screen" id="07-control">
+  <header class="top"><span data-brand></span><p>You control browser access</p></header>
+  <div><h2>Approve the connection.<br><span class="accent">End it when you're done.</span></h2><p class="intro">Browser approval grants broad access. Only connect agents you trust.</p></div>
+  <div class="body">
+    <div class="two">
+      <div class="terminal"><div class="bar"><span class="dots"><i></i><i></i><i></i></span><span>End local-search access</span><span>Chrome stays open</span></div><div class="terminal-content"><code class="command"><b>$</b> lsearch disconnect</code><pre>{
+  <span class="key">"ok"</span>: true,
+  <span class="key">"disconnected"</span>: true,
+  <span class="key">"browserClosed"</span>: false
+}</pre><div class="output"><p>Your browser stays open.<br>Your logins stay saved.<br>local-search stops using the connection.</p></div></div></div>
+      <div class="box"><div class="error-row"><code>browser_approval_timeout</code><p>Initial approval or verification didn't finish.</p></div><div class="error-row"><code>browser_disconnected</code><p>The selected browser connection ended.</p></div><div class="error-row"><code>browser_busy</code><p>Another command is using the connection.</p></div></div>
+    </div>
+    <p class="callout">No silent reconnect. No surprise profile switch. Ask before reconnecting.</p>
+    <p class="note">Cookies stay in Chrome. Returned page content goes to the calling agent.</p>
+  </div>
+  <footer class="footer"><span>Current source behavior. Reconnection requires Chrome approval again.</span><span>Permission stays explicit</span></footer>
+</section>
+<script>
+  document.querySelectorAll('[data-brand]').forEach(node => node.append(document.querySelector('#brand').content.cloneNode(true)));
+  const frame = new URLSearchParams(location.search).get('frame');
+  if (frame) {
+    if (!document.getElementById(frame)?.classList.contains('screen')) throw new Error('Unknown guide frame');
+    document.body.classList.add('capture');
+    document.querySelectorAll('.screen').forEach(section => { section.hidden = section.id !== frame; });
+  }
+</script>
+</body>
+</html>
