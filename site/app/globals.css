@@ -45,7 +45,7 @@ svg { flex-shrink: 0; }
 .site-header nav a { display: inline-flex; align-items: center; min-height: 44px; font-size: 16px; font-weight: 600; color: var(--muted); text-decoration: none; }
 .site-header nav a:hover { color: var(--accent-deep); }
 .header-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; margin-left: auto; }
-.header-docs { display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; padding-inline: 8px; font-size: 16px; font-weight: 650; text-decoration: none; }
+.header-docs { display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; font-size: 16px; font-weight: 650; text-decoration: none; }
 .header-docs:hover, .header-docs[aria-current="page"] { color: var(--accent-deep); text-decoration: underline; text-underline-offset: 7px; }
 .nav-cta { min-height: 48px; padding: 10px 16px; display: inline-flex; align-items: center; gap: 8px; color: var(--inverse); border: 1px solid var(--ink); border-radius: 6px; background: var(--ink); font-size: 16px; font-weight: 650; text-decoration: none; }
 .nav-cta--crates { color: var(--ink); border-color: var(--line); background: transparent; }
@@ -242,10 +242,11 @@ svg { flex-shrink: 0; }
   .header-actions .nav-cta > svg:last-child { display: none; }
 }
 @media (max-width: 1100px) {
-  .site-header nav { display: none; }
+  .site-header nav { margin-left: auto; }
+  .site-header nav a:not(.header-docs) { display: none; }
+  .header-actions { margin-left: 0; }
 }
 @media (max-width: 900px) {
-  .site-header nav { display: none; }
   .hero-stage { grid-template-columns: minmax(0,1fr); }
   .hero { padding: 56px var(--gutter) 0; }
   .hero h1 { font-size: clamp(40px, 6.5vw, 60px); }
@@ -301,13 +302,15 @@ svg { flex-shrink: 0; }
   .site-footer { padding: 28px 22px; }
   .site-footer > div { gap: 12px 20px; }
 }
+@media (max-width: 440px) {
+  .hero-actions { grid-template-columns: 1fr; }
+}
 @media (max-width: 360px) {
   :root { --gutter: 16px; }
   .site-header { padding-inline: 10px; }
   .brand { font-size: 17px; gap: 6px; }
   .brand-logo { width: 30px; }
   .hero-actions > * { padding-inline: 8px; gap: 5px; }
-  .hero-actions .primary-button .brand-asset-icon { display: none; }
 }
 button:active, .primary-button:active, .nav-cta:active { filter: brightness(.94); }
 @media (prefers-reduced-motion: reduce) {

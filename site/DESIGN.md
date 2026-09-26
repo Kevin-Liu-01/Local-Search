@@ -171,13 +171,14 @@ The semantic tokens in `app/globals.css` are the source of truth:
 - The side rails begin at the header and continue through every section and the
   footer. Sections align to the same frame.
 - The sticky desktop header contains the `/ls` mark and local-search wordmark,
-  centered anchor navigation, and GitHub followed by crates.io at the right.
+  navigation ordered Demo, Benchmarks, FAQ, Docs, and GitHub followed by
+  crates.io at the right.
   GitHub is the high-contrast action; crates.io uses its collected package icon
   and a quiet outlined treatment. Keep both destinations on mobile.
 - Keep the header compact, evenly padded, and aligned to the rails. The header
   border and first spacer border must never double up.
-- Hide the center navigation on narrow screens; retain the brand and primary
-  repository action.
+- On narrow screens hide the homepage anchor links but retain Docs, the brand,
+  theme toggle, and repository actions.
 - All anchors require visible keyboard focus and a target offset that clears the
   sticky header.
 
@@ -191,7 +192,8 @@ The hero is one integrated composition inside the rails:
 - Supporting copy names the actions: search, read pages, and use signed-in sites
   through the user's browser. Keep approval explicit. The paired demo shows
   the mechanism and the compact data returned to the agent.
-- Hero actions appear in this order: View on GitHub, Copy Agent Prompt. The
+- Hero actions appear in this order: Documentation (with the document icon,
+  linking to /docs), Copy Agent Prompt. GitHub remains in the header. The
   crates.io link lives beside GitHub in the top-right header instead.
 - Copy Agent Prompt copies a useful instruction and confirms “Copied!” in place;
   a screen-reader status adds the instruction to paste it into an agent.
@@ -415,7 +417,8 @@ Benchmarks are evidence, not decoration.
 - At mobile widths:
   - use a single 68px header row: wordmark and two accessible, 44px icon links;
   - retain the short hero explanation, a stronger headline, and side-by-side
-    GitHub / Copy Agent Prompt actions; shorten labels, never reduce type to fit;
+    Documentation / Copy Agent Prompt actions; stack them on narrow phones
+    instead of shrinking the text or hiding the docs icon;
   - put the full-width Cargo/npm selector above its copyable command, keeping
     command words together where possible and wrapping long URLs safely;
   - keep the complete isometric hero in normal flow with bottom breathing room;

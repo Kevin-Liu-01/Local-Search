@@ -14,6 +14,12 @@ assert.match(html, /"@type":"TechArticle"/);
 assert.doesNotMatch(html, /"@type":"FAQPage"/);
 assert.match(homepage, /"@type":"FAQPage"/);
 assert.match(homepage, /href="\/docs"/);
+assert.match(homepage, /class="hero-actions"><a class="primary-button" href="\/docs"><svg[\s\S]*?<span>Documentation<\/span><\/a>/);
+for (const page of [homepage, html]) {
+  const navigation = page.match(/<nav aria-label="Main navigation">([\s\S]*?)<\/nav>/)?.[1];
+  assert(navigation, "Main navigation must be server-rendered");
+  assert.deepEqual([...navigation.matchAll(/<a\b[^>]*>([^<]+)<\/a>/g)].map(match => match[1]), ["Demo", "Benchmarks", "FAQ", "Docs"]);
+}
 assert.match(sitemap, /<loc>https?:\/\/[^<]+\/docs<\/loc>/);
 assert.match(html, /awaiting release/);
 assert.match(html, /does not enforce per-action approval/);

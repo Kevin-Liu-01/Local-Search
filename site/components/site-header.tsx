@@ -15,9 +15,9 @@ export function SiteHeader({ docs = false }: { docs?: boolean }) {
         <a href={`${home}#demo`}>Demo</a>
         <a href={`${home}#benchmarks`}>Benchmarks</a>
         <a href={`${home}#faq`}>FAQ</a>
+        <Link className="header-docs" href="/docs" aria-current={docs ? "page" : undefined}>Docs</Link>
       </nav>
       <div className="header-actions">
-        <Link className="header-docs" href="/docs" aria-current={docs ? "page" : undefined}>Docs</Link>
         <ThemeToggle />
         <a className="nav-cta" href={REPOSITORY_URL} target="_blank" rel="noreferrer" aria-label="View local-search on GitHub" title="GitHub">
           <GithubBrandIcon size={20} /><span className="nav-cta__label">GitHub</span><ArrowUpRightIcon size={16} />

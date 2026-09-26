@@ -1,4 +1,5 @@
 import { AgentCopyButton } from "@/components/agent-copy-button";
+import Link from "next/link";
 import { BenchmarkComparison } from "@/components/benchmark-comparison";
 import { LocalSearchLogo } from "@/components/brand-logo";
 import { BrowserConnection } from "@/components/browser-connection";
@@ -13,7 +14,7 @@ import {
   ArrowUpRightIcon,
   ChevronRightIcon,
   ChromiumBrandIcon,
-  GithubBrandIcon,
+  DocumentIcon,
   JsonSchemaBrandIcon,
   RustOfficialIcon,
 } from "@/components/icons";
@@ -33,9 +34,9 @@ export default function Home() {
               <h1 id="hero-title">A local browser API<br /><span>for your agents.</span></h1>
               <p className="hero-copy">Let your agent search, read pages, and use signed-in sites through your browser. You approve access.</p>
               <div className="hero-actions">
-                <a className="primary-button" href="https://github.com/Kevin-Liu-01/local-search" target="_blank" rel="noreferrer" aria-label="View on GitHub">
-                  <GithubBrandIcon size={20} /><span><span className="desktop-label">View on </span>GitHub</span>
-                </a>
+                <Link className="primary-button" href="/docs">
+                  <DocumentIcon size={20} /><span>Documentation</span>
+                </Link>
                 <AgentCopyButton />
               </div>
               <InstallCommand />
