@@ -9,11 +9,10 @@ This guide is for Claude Code, Codex, Cursor, OpenClaw, and other agents that
 can run shell commands. You choose the browser and approve access. The agent
 handles the commands within your requested task.
 
-**Build status:** the persistent existing-Chrome connection described here is
-in the current working tree. It has been tested locally, but is not yet a
-published npm or crates.io release. From this checkout, install it with
-`cargo install --path . --locked --force`. A GitHub install only includes code
-that has been pushed. Published packages can lag behind this guide.
+**Version:** use local-search 0.2.0 or newer. npm bridge 0.2.0 installs the same
+native crate. Persistent existing-Chrome sessions require macOS or Linux;
+use a separate profile on Windows. After upgrading an older existing-browser
+setup, run `lsearch connect --existing` once and approve again.
 
 ## Start here
 

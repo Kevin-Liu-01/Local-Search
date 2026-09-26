@@ -34,10 +34,10 @@ cargo install --git https://github.com/Kevin-Liu-01/Local-Search
 
 ## Recommended setup
 
-Current release boundary: persistent existing-browser sessions are a local
-working-tree feature awaiting publication. npm/crates.io can lag the source.
-Inspect installed help and build provenance before promising that behavior.
-From the checkout, use cargo install --path . --locked --force.
+Persistent existing-browser sessions require local-search 0.2.0 or newer on
+macOS/Linux. npm bridge 0.2.0 installs the same native crate. Inspect lsearch
+--version before setup; upgrading an older existing-browser setup requires
+one explicit reconnect.
 
 Ask the user to choose their existing Chrome or a separate persistent profile:
 
@@ -142,6 +142,12 @@ Benchmark results describe the recorded build and environment, not a universal p
 
 ## Native size and startup audit
 
+Version 0.2.0 was measured from a fresh registry install on September 25, 2026,
+using Rust 1.98.1 on arm64 macOS. The lsearch executable is 1,255,776 bytes
+(1.26 MB); the compressed crate is 80,937 bytes (79.0 KiB). Startup and search
+performance were not remeasured for 0.2.0. Release evidence:
+https://github.com/Kevin-Liu-01/Local-Search/blob/main/docs/releases/0.2.0.md
+
 A separate release audit was recorded on July 27, 2026 using Rust 1.97.1 on arm64 macOS (`aarch64-apple-darwin`).
 
 - Primary `lsearch` executable: 1,055,072 bytes (1.06 MB), down from 4,623,984 bytes before optimization, or 77.2% smaller.
@@ -159,8 +165,8 @@ local-search has no hosted service. It controls the explicitly chosen local brow
 
 - Name: local-search
 - Command: lsearch
-- Cargo package version: 0.1.4
-- npm package version: 0.1.5
+- Cargo package version: 0.2.0
+- npm package version: 0.2.0
 - Programming language: Rust
 - License: MIT
 - Author: Kevin Liu

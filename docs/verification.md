@@ -3,8 +3,10 @@
 ## Signed-in checks: September 25, 2026
 
 Tested the current local source build on macOS, using existing Chrome and the
-persistent approved helper. The binary still reports `0.1.4`; this evidence is
-for the working tree, **not a claim about the published 0.1.4 package**.
+persistent approved helper. That test binary reported `0.1.4`; this evidence is
+for the pre-release source, **not a claim about the published 0.1.4 package**.
+The persistent-session feature targets the 0.2.0 release. These site checks
+have not been rerun against the published 0.2.0 package.
 
 | Site | Page | Observed result |
 | --- | --- | --- |
@@ -59,16 +61,22 @@ then closes its browser and server. It never connects to your everyday Chrome.
 For local inspection, `node scripts/capture-agent-guide.mjs --serve` prints a
 preview URL. Stop it with Ctrl+C when finished.
 
-## Release boundary
+## Release verification
 
-Before presenting persistent sessions as installable from npm or crates.io:
+The 0.2.0 release checklist and package-install evidence are tracked in
+[releases/0.2.0.md](releases/0.2.0.md). The signed-in checks above remain
+dated source-build evidence, separate from package installation checks.
 
-- Merge and push the tested implementation and guide.
-- Publish the native crate, then the npm wrapper pinned to that release.
-- Verify fresh installs of both distributions, not only the working-tree binary.
-- Replace the guide's unreleased notice with the exact released version.
-- Recheck the three sites with permission if claiming newly recorded results.
+### Published packages
 
-No package publication, push, or external social post was performed to create
-this documentation. Site-specific access, selectors, and account permissions
-can change. These checks do not establish universal site compatibility.
+Cargo `local-search` 0.2.0 and npm `@kevinliu01/localsearch` 0.2.0 are published.
+The native crate was published first; the npm wrapper pins it exactly. Fresh
+isolated installations of both distributions passed version, alias, and
+fail-closed output checks. The Cargo install also passed a synthetic managed
+browser read and graceful cleanup test. The guides now identify 0.2.0 as the
+minimum version for persistent existing-Chrome sessions.
+
+The three signed-in sites were not rechecked for publication. Recheck them with
+permission before claiming newly recorded results. Site-specific access,
+selectors, and account permissions can change. These checks do not establish
+universal site compatibility. No external social posts were made.

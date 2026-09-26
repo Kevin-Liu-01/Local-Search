@@ -1,6 +1,6 @@
 [package]
 name = "local-search"
-version = "0.1.4"
+version = "0.2.0"
 edition = "2024"
 autobins = false
 description = "A local browser API for agents: search, read, extract, and use Chrome sessions"

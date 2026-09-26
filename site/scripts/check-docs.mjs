@@ -21,7 +21,8 @@ for (const page of [homepage, html]) {
   assert.deepEqual([...navigation.matchAll(/<a\b[^>]*>([^<]+)<\/a>/g)].map(match => match[1]), ["Demo", "Benchmarks", "FAQ", "Docs"]);
 }
 assert.match(sitemap, /<loc>https?:\/\/[^<]+\/docs<\/loc>/);
-assert.match(html, /awaiting release/);
+assert.match(html, /Use local-search 0\.2\.0 or newer/);
+assert.doesNotMatch(html, /awaiting release/);
 assert.match(html, /does not enforce per-action approval/);
 assert.match(html, /may reach its model provider/);
 for (const diagram of ["bridge", "browser-diagram", "search-diagram", "extract-diagram", "action-flow", "disconnect-diagram"]) {

@@ -32,14 +32,15 @@
 - Browser capabilities: search, read, extract, map, interact, request, tabs, cookies, and local artifacts
 - Hosted local-search API key: not required
 - Metered local-search API bill: none
-- Recorded arm64 macOS release binary: 1,055,072 bytes (1.06 MB) on July 27, 2026
-- Recorded median warm CLI startup: 4.61 ms across 200 alternating process launches
+- Version 0.2.0 arm64 macOS binary: 1,255,776 bytes (1.26 MB), measured September 25, 2026 with Rust 1.98.1
+- Version 0.2.0 compressed crate: 80,937 bytes (79.0 KiB)
+- Historical July 27, 2026 median warm CLI startup: 4.61 ms across 200 alternating process launches; not remeasured for 0.2.0
 
 ## Install and search
 
-The persistent existing-browser helper is currently in the local working tree,
-awaiting release. Do not assume published packages include it. Check installed
-help and build provenance; a checkout build uses `cargo install --path . --locked --force`.
+Persistent existing-browser sessions require local-search 0.2.0 or newer on
+macOS/Linux. npm bridge 0.2.0 installs the same native crate. Check lsearch
+--version; upgrading an older existing-browser setup requires one explicit reconnect.
 
 ```sh
 npm install -g @kevinliu01/localsearch

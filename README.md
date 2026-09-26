@@ -7,7 +7,7 @@
 <p align="center">
   <a href="https://crates.io/crates/local-search"><img alt="crates.io" src="https://img.shields.io/crates/v/local-search?style=flat-square&amp;logo=rust&amp;logoColor=white&amp;label=crates.io&amp;color=168f94"></a>
   <a href="https://www.npmjs.com/package/@kevinliu01/localsearch"><img alt="npm" src="https://img.shields.io/npm/v/%40kevinliu01%2Flocalsearch?style=flat-square&amp;logo=npm&amp;logoColor=white&amp;label=npm&amp;color=168f94"></a>
-  <img alt="Recorded arm64 build: 1.06 MB" src="https://img.shields.io/badge/recorded%20arm64%20build-1.06%20MB-168f94?style=flat-square&amp;logo=rust&amp;logoColor=white">
+  <img alt="0.2.0 arm64 build: 1.26 MB" src="https://img.shields.io/badge/0.2.0%20arm64%20build-1.26%20MB-168f94?style=flat-square&amp;logo=rust&amp;logoColor=white">
   <img alt="Recorded median warm startup: 4.61 ms" src="https://img.shields.io/badge/recorded%20warm%20startup-4.61%20ms-168f94?style=flat-square">
   <a href="https://github.com/Kevin-Liu-01/Local-Search/blob/main/LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-555?style=flat-square"></a>
   <a href="https://www.lsearch.dev/docs"><img alt="Documentation" src="https://img.shields.io/badge/docs-local--search-555?style=flat-square"></a>
@@ -41,10 +41,11 @@ interaction, requests, and disconnect with readable screenshots.
 
 ![Verified signed-in access checks for LinkedIn, GitHub, and Reddit. Private content omitted.](https://raw.githubusercontent.com/Kevin-Liu-01/Local-Search/main/docs/images/03-signed-in-sites.png)
 
-The guide's persistent existing-browser connection is in the current working
-tree and is not yet a published package release. Use a checkout build to test
-it. The [evidence record](https://github.com/Kevin-Liu-01/Local-Search/blob/main/docs/verification.md) distinguishes local verification
-from published availability.
+Persistent existing-browser sessions require **local-search 0.2.0 or newer**
+on macOS/Linux. The npm bridge 0.2.0 installs that same native release. After
+upgrading an older existing-browser setup, run `lsearch connect --existing`
+once and approve again. See the [evidence record](https://github.com/Kevin-Liu-01/Local-Search/blob/main/docs/verification.md)
+for test provenance and release verification.
 
 ## Give it to your agent
 
@@ -279,6 +280,12 @@ Bing, or Brave Search inside a managed Chrome/Chromium profile; do not expect
 `--browser safari` to reuse your normal Safari session.
 
 ## Token Benchmarks
+
+The 0.2.0 registry install measured **1,255,776 bytes (1.26 MB)** for `lsearch`
+on arm64 macOS with Rust 1.98.1 on September 25, 2026. The compressed crate is
+80,937 bytes (79.0 KiB). See [release verification](docs/releases/0.2.0.md).
+The search and warm-startup benchmarks below describe earlier builds, not a
+new performance measurement for 0.2.0.
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/Kevin-Liu-01/Local-Search/main/site/public/social/local-search-benchmark.png" alt="local-search benchmark — less context, lower latency, and no search bill compared with hosted search providers" width="100%">

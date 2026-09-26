@@ -11,7 +11,7 @@ On macOS/Linux, existing mode keeps one approved connection open between command
 
 Ask before posting, messaging, purchasing, deleting, or changing account settings unless I explicitly authorized that action. Chrome approval is broad browser access, not per-action approval. Returned private content may enter the calling model's context. Never put it in public logs or screenshots.
 
-Persistent existing-browser sessions are currently a local source feature awaiting release. Published npm/crates.io installs may not contain it. Ask before installing or replacing my local build; do not promise that a published package matches unreleased docs.
+Persistent existing-browser sessions require local-search 0.2.0 or newer on macOS/Linux. Check lsearch --version. Ask before installing or replacing my local build; older existing-browser configurations need one explicit reconnect after upgrading.
 
 npm install -g @kevinliu01/localsearch
 # After asking me, run ONE of:

@@ -75,7 +75,7 @@ export default function Docs() {
         <Section id="quick-start">
           <p>Install the CLI, then choose the browser your agent will use.</p>
           <DocsCode label="Install with Cargo">cargo install local-search</DocsCode>
-          <p className="docs-release"><strong>Existing-Chrome sessions are awaiting release.</strong> Use the source install under “Other installs” to try them.</p>
+          <p className="docs-release"><strong>Use local-search 0.2.0 or newer.</strong> Existing-Chrome sessions work on macOS and Linux. After upgrading, reconnect once and approve in Chrome.</p>
           <More title="Other installs">
             <DocsCode label="Install with npm">npm install -g @kevinliu01/localsearch</DocsCode>
             <p>For the new connection features, run this in a checkout containing the changes:</p>

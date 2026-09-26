@@ -17,8 +17,9 @@ hosted browser, or transparent network tunnel.
 
 For a human-readable walkthrough with screenshots, see
 [the illustrated agent guide](docs/agent-guide.md). The retained existing-Chrome
-connection is currently an unreleased working-tree feature. Do not assume a
-published package includes it; check the installed help and build provenance.
+connection requires local-search 0.2.0 or newer on macOS/Linux. The npm bridge
+0.2.0 installs that native release. Check `lsearch --version` before setup;
+older existing-browser configurations require one explicit reconnect after upgrading.
 
 ## Agent-first decision loop
 
