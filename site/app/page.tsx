@@ -220,7 +220,8 @@ function HeroIsometricArtwork() {
             <polygon points="190,420 288,363 288,398 190,455" />
             <LocalSearchLogo preserveAspectRatio="none" x="0" y="0" width="72" height="20" transform="matrix(.866 -.5 0 1 207 424)" />
           </g>
-          <path className="hero-iso-agent__vents" d="m209 457 53-31m-45 36 53-31m-45 36 53-31" />
+          {/* Draw vents in the front face's local plane so each stays inside its edge. */}
+          <path className="hero-iso-agent__vents" d="M30 58H83 M30 62H83 M30 66H83" transform="matrix(1 -.574803 0 1 179 412)" />
         </HeroAgentSwitch>
 
         <g className="hero-iso-ports">

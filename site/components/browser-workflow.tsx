@@ -73,7 +73,7 @@ export function BrowserWorkflow() {
   }
 
   return (
-    <div className="search-simulation paired-demo" id="demo" ref={root} aria-label="Simulated coding agent and local browser using recorded search results">
+    <div className="search-simulation paired-demo" id="demo" ref={root} data-running={visible && foreground && !reduceMotion} aria-label="Simulated coding agent and local browser using recorded search results">
       <div className="sim-panels" id="output" data-phase={stage} data-agent={agent.id} data-instant={instant || reduceMotion}>
         <div className={`paired-agent paired-agent--${agent.id}`}>
           <div className="paired-agent-bar">
@@ -107,7 +107,7 @@ export function BrowserWorkflow() {
           <div className="paired-agent-panel" role="tabpanel" id="paired-agent-panel" aria-labelledby={`paired-tab-${agent.id}`}>
             <AgentSearchPanel key={`${agent.id}-${run}`} agent={agent.id} trace={trace} command={command} stage={stage} instant={instant || reduceMotion} />
           </div>
-          <div className="paired-agent-footer"><span><i aria-hidden="true" />{steps[stage]}</span><span>Simulation</span></div>
+          <div className="paired-agent-footer"><span><i aria-hidden="true" /><span className="paired-agent-status">{steps.map((step, index) => <span key={step} aria-hidden={stage !== index}>{step}</span>)}</span></span><span>Simulation</span></div>
         </div>
 
         <div className="sim-transfer" aria-hidden="true" />
@@ -116,7 +116,7 @@ export function BrowserWorkflow() {
           <div className="sim-browser-tabs"><Asset name="chrome" /><span>Local Chrome</span><span className="sim-tab-close" aria-hidden="true">×</span></div>
           <div className="sim-address-row"><span aria-hidden="true">←</span><div><GlobeIcon size={16} /><span>{stage >= 2 ? "duckduckgo.com/?q=" + encodeURIComponent(trace.query) : "New tab"}</span></div></div>
           <div className="sim-browser-page">
-            <div className="sim-search-field"><Asset name="duckduckgo" /><span>{stage >= 2 ? trace.query : "Search the web"}</span><SearchIcon size={18} /></div>
+            <div className="sim-search-field"><Asset name="duckduckgo" /><span className="sim-search-query"><span aria-hidden={stage < 2}>{trace.query}</span><span aria-hidden={stage >= 2}>Search the web</span></span><SearchIcon size={18} /></div>
             <div className="sim-search-nav" aria-hidden="true"><span>All</span><span>Images</span><span>Videos</span><span>News</span></div>
             <div className="sim-page-content" key={trace.id}>
               {stage < 3 ? <div className="sim-loading" aria-label={stage < 2 ? "Waiting for the agent" : "Loading search results"}><SearchIcon size={30} /><p>{stage < 2 ? "Your browser, ready to search." : "Searching DuckDuckGo…"}</p><div className="sim-loading-lines"><i /><i /><i /></div></div> : (

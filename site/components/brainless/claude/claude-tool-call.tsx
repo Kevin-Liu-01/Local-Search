@@ -27,7 +27,7 @@ export function ClaudeToolCall({
 }: {
   tool: string;
   arg?: string;
-  result: string;
+  result: React.ReactNode;
   status?: Status;
   defaultOpen?: boolean;
   className?: string;

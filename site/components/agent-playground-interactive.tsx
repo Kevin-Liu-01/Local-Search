@@ -24,12 +24,13 @@ export function AgentSearchPanel({ agent, trace, command, stage, instant }: {
   const prompt = `Search for “${trace.query}” and return three results.`;
   const Message = agent === "claude" ? ClaudeMessage : CodexMessage;
   const progress = ["Reading your request…", "Running lsearch…", "Searching in local Chrome…", "Reading the search results…"][stage];
+  const toolStatus = <span className="paired-tool-status"><span aria-hidden={complete}>Running in local Chrome…</span><span aria-hidden={!complete}>3 results · View JSON</span></span>;
 
   useEffect(() => {
     const frame = window.requestAnimationFrame(() => {
       if (!viewport.current) return;
-      if (stage === 0 || instant) viewport.current.scrollTop = 0;
-      else viewport.current.scrollTop = viewport.current.scrollHeight;
+      // Reserved result space must not pull the viewport into an empty area.
+      viewport.current.scrollTop = stage >= 4 && !instant ? viewport.current.scrollHeight : 0;
     });
     return () => window.cancelAnimationFrame(frame);
   }, [agent, stage, instant]);
@@ -53,28 +54,25 @@ export function AgentSearchPanel({ agent, trace, command, stage, instant }: {
         </>
       )}
 
-      {stage >= 1 && (
-        <div className="paired-agent-tool">
-          {agent === "claude" ? (
-            <ClaudeToolCall tool="Bash" arg={command} result={complete ? "3 results · View JSON" : "Running in local Chrome…"} status={complete ? "success" : "pending"}>
-              {complete ? traceJson(trace) : undefined}
-            </ClaudeToolCall>
-          ) : agent === "codex" ? (
-            <CodexExec command={command} result={complete ? "3 results · View JSON" : "Running in local Chrome…"} status={complete ? "ok" : "run"}>
-              {complete ? traceJson(trace) : undefined}
-            </CodexExec>
-          ) : (
-            <div className="paired-cursor-tool">
-              <div><TerminalIcon size={18} /><b>Terminal</b>{complete && <CheckIcon size={18} />}</div>
-              <pre>{command}</pre>
-              {complete ? <details><summary>3 results · View JSON <ChevronDownIcon size={18} /></summary><pre>{traceJson(trace)}</pre></details> : <p>Running in local Chrome…</p>}
-            </div>
-          )}
-        </div>
-      )}
-
-      {complete ? (
-        <div className="paired-agent-answer">
+      <div className="paired-agent-tool" style={{ visibility: stage >= 1 ? "visible" : "hidden" }} inert={stage < 1}>
+        {agent === "claude" ? (
+          <ClaudeToolCall tool="Bash" arg={command} result={toolStatus} status={complete ? "success" : "pending"}>
+            {complete ? traceJson(trace) : undefined}
+          </ClaudeToolCall>
+        ) : agent === "codex" ? (
+          <CodexExec command={command} result={toolStatus} status={complete ? "ok" : "run"}>
+            {complete ? traceJson(trace) : undefined}
+          </CodexExec>
+        ) : (
+          <div className="paired-cursor-tool">
+            <div><TerminalIcon size={18} /><b>Terminal</b><CheckIcon size={18} style={{ visibility: complete ? "visible" : "hidden" }} /></div>
+            <pre>{command}</pre>
+            <details inert={!complete}><summary>{toolStatus}<ChevronDownIcon size={18} style={{ visibility: complete ? "visible" : "hidden" }} /></summary><pre>{traceJson(trace)}</pre></details>
+          </div>
+        )}
+      </div>
+      <div className="paired-agent-outcome">
+        <div className="paired-agent-answer" style={{ visibility: complete ? "visible" : "hidden" }} inert={!complete}>
           <p><CheckIcon size={18} />Found three results.</p>
           <ol>
             {trace.results.map((result) => (
@@ -82,7 +80,8 @@ export function AgentSearchPanel({ agent, trace, command, stage, instant }: {
             ))}
           </ol>
         </div>
-      ) : <p className="paired-agent-progress"><span aria-hidden="true" />{progress}</p>}
+        {!complete && <p className="paired-agent-progress"><span aria-hidden="true" />{progress}</p>}
+      </div>
     </div>
   );
 }

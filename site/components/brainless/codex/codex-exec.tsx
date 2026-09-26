@@ -22,7 +22,7 @@ export function CodexExec({
   children,
 }: {
   command: string;
-  result?: string;
+  result?: React.ReactNode;
   status?: Status;
   defaultOpen?: boolean;
   className?: string;

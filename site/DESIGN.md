@@ -264,14 +264,20 @@ heading “Your agent asks. Your browser answers.” Do not restore a separate
 - Desktop panes align at 660px high and scroll internally. At 800px and below,
   join the agent directly above the browser: a 540px agent pane (560px on phones)
   and a 560px browser pane. Never grow the page as output arrives.
+- Reserve scrollbar gutters, command/result slots, and the longest footer label.
+  Header and footer chrome must not shrink as content changes. Agent transitions
+  fade without vertical movement. Selected tabs use a filled background, with
+  no underline or border below the tab bar.
 - Supporting text, commands, browser chrome, and provenance stay at least 16px.
   Keep tabs comfortably tappable. Use the correct collected
   agent logos, including high-contrast Codex and Cursor marks on dark chrome.
 - The simulated search completes in 1.1 seconds: command at 180ms, navigation at
   380ms, browser results at 750ms, and agent results at 1100ms. The cycle advances
   at 6 seconds, keeping most of the time for reading. These are presentation
-  timings, not performance claims. A short dashed connection joins the windows;
-  do not restore the circular arrow button between them.
+  timings, not performance claims. A short dashed connection joins the windows,
+  without endpoint dots. Move its clipped dash track with a linear transform;
+  stop it offscreen, in hidden tabs, and for reduced motion. Do not restore the
+  circular arrow button between them.
 - Autoplay holds the finished result before advancing to the next agent and keeps
   looping. Scrolling, touch, focus, result links, and tool disclosures must never
   stop playback. Suspend timers only offscreen or in a hidden tab; resume
