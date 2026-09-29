@@ -12,5 +12,17 @@ __pycache__/
 !site/public/brand/*.png
 !site/public/social/local-search-benchmark.png
 !site/public/social/local-search-isometric.png
+# Authored launch artwork only. Keep arbitrary browser captures ignored.
+!site/public/social/2026-09/hero.png
+!site/public/social/2026-09/search.png
+!site/public/social/2026-09/results.png
+!site/public/social/2026-09/read.png
+!site/public/social/2026-09/choice.png
+!site/public/social/2026-09/connect.png
+!site/public/social/2026-09/disconnect.png
+!site/public/social/2026-09/outro.png
+!site/public/social/2026-09/benchmark.png
+!site/public/social/2026-09/hero-portrait.png
+!site/public/social/2026-09/benchmark-portrait.png
 *.pdf
 site/public/docs-assets/

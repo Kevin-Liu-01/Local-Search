@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://lsearch.dev">
-    <img src="https://raw.githubusercontent.com/Kevin-Liu-01/Local-Search/main/site/public/social/local-search-demo.gif?v=2026-08-04-colored-engines" alt="local-search running structured Google, Bing, DuckDuckGo, and Brave searches through a local browser" width="100%">
+    <img src="https://raw.githubusercontent.com/Kevin-Liu-01/Local-Search/main/site/public/social/2026-09/agent-browser.gif?v=2026-09-clean-browser" alt="Illustrated local-search workflow: an agent calls a CLI command, local Chrome searches, compact results return, and an approved existing session can read signed-in pages" width="100%">
   </a>
 </p>
 
@@ -15,25 +15,29 @@
 
 # local-search
 
-A local browser API for agents. Your agent calls a command. Your browser does
-the work. Useful data comes back.
+A local browser API for agents. Your agent calls a command. Chrome does the work
+on your machine. Useful data comes back.
 
 One CLI lets an agent search the web, read pages, extract records, interact with
 sites, and use your existing Chrome logins with Chrome's approval.
-Or choose a separate persistent profile for agent work.
-`local-search` is the bridge: the agent calls a command, your browser does the
-work, and compact JSON or readable text comes back.
+Or choose a separate persistent profile for agent work. Results come back as
+compact JSON or readable text.
 
 ```sh
 lsearch connect --existing  # approve in Chrome; setup below
-lsearch "open source browser automation rust" --limit 3 --json
+lsearch "open source browser automation rust" --engine google --limit 3 --json
 lsearch read https://www.linkedin.com/feed/ --format json
 ```
 
-This is not a new search engine, hosted browser, or network tunnel. The primary
-CLI, `lsearch`, controls Chrome/Chromium on your machine. You choose the sites,
-search engine, browser profile, and local state; the agent gets one stable
-interface instead of a separate API integration for every site.
+`lsearch` connects your agent to a browser profile you choose. Search public
+pages, read a discussion, or use a session you already signed into. Websites
+still control access. Chrome approval grants broad browser control, so use
+trusted agents and give them a clear task.
+
+The animation is an illustrated workflow, not a timed live recording. Its public
+search results were recorded July 21, 2026; private page content is omitted.
+[View the still guide](https://raw.githubusercontent.com/Kevin-Liu-01/Local-Search/main/site/public/social/2026-09/hero.png)
+or [download the video](https://raw.githubusercontent.com/Kevin-Liu-01/Local-Search/main/site/public/social/2026-09/agent-browser.mp4).
 
 **Start with the [illustrated agent guide](https://github.com/Kevin-Liu-01/Local-Search/blob/main/docs/agent-guide.md).** It shows
 browser setup, signed-in LinkedIn/GitHub/Reddit checks, search, extraction,
@@ -279,7 +283,30 @@ profile state this project depends on. In practice: use Google, DuckDuckGo,
 Bing, or Brave Search inside a managed Chrome/Chromium profile; do not expect
 `--browser safari` to reuse your normal Safari session.
 
-## Token Benchmarks
+## Core redesign preview
+
+The next core redesign is **unreleased**. Cargo and npm still install 0.2.0.
+It tightens page readiness, fixes stale-page reads and false blocked-page
+detection, and cleans up CDP target sessions.
+
+![Development benchmark: Bing median uncached search 219.6 to 175.7 ms, cached search 23.9 to 16.5 ms. Uncached p95 worsened from 294.1 to 328.2 ms.](https://raw.githubusercontent.com/Kevin-Liu-01/Local-Search/main/site/public/social/2026-09/benchmark.png)
+
+On September 25, 2026 (Pacific), an alternating A/B run compared 0.2.0 with the
+development build on arm64 macOS. One Bing query, three results, 20 measured
+samples per build and mode. Uncached means `--no-cache` with a warm browser and
+OS. Cached samples reused a primed query.
+
+Median uncached search fell **20.0%** and median cached search fell **31.1%**.
+Uncached p95 got **11.6% slower**. These figures describe this workload, not a
+general speed guarantee. Some local reads also regressed. Google, Brave, and
+DuckDuckGo returned verification pages; the hosted-provider comparison was not
+rerun because its API keys were unavailable.
+
+[Full results and limitations](docs/core-redesign.md) ·
+[Raw Bing samples](benchmarks/results/local-ab-2026-09-25-bing-expanded.json) ·
+[Media and post drafts](docs/launch/README.md)
+
+## Earlier benchmarks
 
 The 0.2.0 registry install measured **1,255,776 bytes (1.26 MB)** for `lsearch`
 on arm64 macOS with Rust 1.98.1 on September 25, 2026. The compressed crate is
@@ -435,6 +462,10 @@ lsearch screenshot artifacts/page.png --full-page
 lsearch mhtml artifacts/page.mhtml
 lsearch record https://browse.sh/ --har artifacts/browse.har --mhtml artifacts/browse.mhtml
 ```
+
+In the unreleased development build, recording keeps the newest 4,096 events
+or 8 MiB of serialized events. It is a
+bounded HAR-like capture, not a complete network audit or response-body archive.
 
 Browser primitives for debugging workflows:
 

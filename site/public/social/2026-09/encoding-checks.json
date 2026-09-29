@@ -1,0 +1,16 @@
+[
+  {
+    "name": "agent-browser",
+    "frames": 160,
+    "seconds": 16.0,
+    "gif_bytes": 2033401,
+    "mp4_bytes": 593631
+  },
+  {
+    "name": "browser-choice",
+    "frames": 120,
+    "seconds": 12.0,
+    "gif_bytes": 1357327,
+    "mp4_bytes": 326484
+  }
+]
