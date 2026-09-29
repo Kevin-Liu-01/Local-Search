@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-09-26T01:19:24.736054+00:00",
+  "binary_sha256": "ab8c341f74bfe54dfaff4f4f2e56c39cbc1841b473a2db6e08dec5499403f856",
+  "scope": "Synthetic localhost pages and an empty owned Chrome profile. No approval UI or signed-in-site test.",
+  "checks": [
+    {
+      "name": "connect_isolated_endpoint",
+      "ok": true,
+      "elapsed_ms": 274.378
+    },
+    {
+      "name": "delayed_navigation_never_reads_old_document",
+      "ok": true,
+      "elapsed_ms": 1086.088
+    },
+    {
+      "name": "promise_evaluation",
+      "ok": true,
+      "elapsed_ms": 8.448
+    },
+    {
+      "name": "delayed_dom_wait",
+      "ok": true,
+      "elapsed_ms": 1121.818
+    },
+    {
+      "name": "reload_waits_for_new_document",
+      "ok": true,
+      "elapsed_ms": 94.234
+    },
+    {
+      "name": "cross_and_same_document_history",
+      "ok": true,
+      "elapsed_ms": 865.562
+    },
+    {
+      "name": "javascript_errors_propagate",
+      "ok": true,
+      "elapsed_ms": 15.072
+    },
+    {
+      "name": "missing_selector_has_bounded_timeout",
+      "ok": true,
+      "elapsed_ms": 264.582
+    },
+    {
+      "name": "cached_content_is_distinct_bounded_and_cleans_tab",
+      "ok": true,
+      "elapsed_ms": 448.226
+    },
+    {
+      "name": "connect_persistent_helper",
+      "ok": true,
+      "elapsed_ms": 24.641
+    },
+    {
+      "name": "helper_reused_across_commands",
+      "ok": true,
+      "elapsed_ms": 1220.53
+    },
+    {
+      "name": "helper_cached_content_and_target_cleanup",
+      "ok": true,
+      "elapsed_ms": 376.957
+    },
+    {
+      "name": "disconnect_preserves_browser_and_prevents_fallback",
+      "ok": true,
+      "elapsed_ms": 17.974
+    }
+  ],
+  "browser_version": "Chrome/154.0.8037.57",
+  "cleanup_ok": true,
+  "ok": true
+}

@@ -156,17 +156,29 @@ pub fn rendered_html() -> &'static str {
     "document.documentElement.outerHTML"
 }
 
-pub fn search_ready(query: &str, result_selector: &str, requested_results: usize) -> String {
+pub fn search_ready(query: &str, requested_results: usize) -> String {
     format!(
         r#"(() => {{
-const pageText = `${{document.title}}\n${{document.body?.innerText || ''}}`;
+const search = {};
 const onQuery = new URL(location.href).searchParams.get('q') === {};
-const resultsReady = document.querySelectorAll({}).length >= {};
-const challenged = /captcha|unusual traffic|verify(?:ing)? (?:you are|you're) (?:a human|not a bot)|not a robot|bots use|bot detection|solve the challenge|following challenge|select all squares|drag the slider|one last step/i.test(pageText);
-return challenged || (onQuery && resultsReady);
+if (search.blocked) return true;
+if (!onQuery) return false;
+const count = search.results.length;
+if (count >= {}) return true;
+if (count === 0 && !/did not match any documents|no results found|there are no results for|couldn't find any results|no results for/i.test(document.body?.innerText || '')) return false;
+// A completed, settled page may legitimately contain fewer results or none.
+// Keep this state document-local, so navigation cannot reuse an old count.
+const key = Symbol.for('lsearch.search.readiness');
+const now = performance.now();
+const previous = globalThis[key];
+if (!previous || previous.url !== location.href || previous.count !== count || document.readyState !== 'complete') {{
+  globalThis[key] = {{ url: location.href, count, since: now }};
+  return false;
+}}
+return now - previous.since >= 250;
 }})()"#,
+        search_results(),
         string(query),
-        string(result_selector),
         requested_results
     )
 }
@@ -181,25 +193,23 @@ const normalizeSearchUrl = (href) => {
   try {
     const parsed = new URL(url);
     const uddg = parsed.searchParams.get('uddg');
-    if (/duckduckgo\.com$/i.test(parsed.hostname) && uddg) return new URL(uddg).href;
+    if (/(^|\.)duckduckgo\.com$/i.test(parsed.hostname) && uddg) return new URL(uddg).href;
     const bingTarget = parsed.searchParams.get('u');
-    if (/bing\.com$/i.test(parsed.hostname) && /\/ck\/a/i.test(parsed.pathname) && bingTarget?.startsWith('a1')) {
+    if (/(^|\.)bing\.com$/i.test(parsed.hostname) && /\/ck\/a/i.test(parsed.pathname) && bingTarget?.startsWith('a1')) {
       const encoded = bingTarget.slice(2).replace(/-/g, '+').replace(/_/g, '/');
-      const decoded = atob(encoded.padEnd(Math.ceil(encoded.length / 4) * 4, '='));
+      const decoded = new TextDecoder().decode(Uint8Array.from(atob(encoded.padEnd(Math.ceil(encoded.length / 4) * 4, '=')), c => c.charCodeAt(0)));
       return new URL(decoded).href;
     }
   } catch {}
   return url;
 };
-const pageText = `${document.title}\n${document.body?.innerText || ''}`;
-const blocked = /captcha|unusual traffic|verify(?:ing)? (?:you are|you're) (?:a human|not a bot)|not a robot|bots use|bot detection|solve the challenge|following challenge|select all squares|drag the slider|one last step/i.test(pageText);
-if (blocked) return { url: location.href, title: document.title, results: [], blocked: true };
-const isGoogleSearch = /google\..*\/search/i.test(location.href);
-const isBingSearch = /bing\.com\/search/i.test(location.href);
-const isBraveSearch = /search\.brave\.com\/search/i.test(location.href);
-const isDuckDuckGoSearch = /duckduckgo\.com\/html/i.test(location.href);
+const current = new URL(location.href);
+const isGoogleSearch = /(^|\.)google\.[a-z.]+$/i.test(current.hostname) && current.pathname === '/search';
+const isBingSearch = /(^|\.)bing\.com$/i.test(current.hostname) && current.pathname === '/search';
+const isBraveSearch = current.hostname === 'search.brave.com' && current.pathname === '/search';
+const isDuckDuckGoSearch = /(^|\.)duckduckgo\.com$/i.test(current.hostname) && current.pathname.startsWith('/html');
 const resultLinks = isGoogleSearch
-  ? Array.from(document.querySelectorAll('a[href]')).filter((a) => a.querySelector('h3'))
+  ? Array.from(document.querySelectorAll('a h3')).map(h => h.closest('a'))
   : isBingSearch
     ? document.querySelectorAll('li.b_algo h2 a')
     : isBraveSearch
@@ -211,7 +221,9 @@ const candidates = Array.from(resultLinks).map((a) => {
   const url = normalizeSearchUrl(a.href);
   const title = clean(a.querySelector('h3, .title')?.innerText || a.innerText || a.textContent);
   if (!url || !title || title.length < 3) return null;
-  if (/google\..*\/search|bing\.com\/(?:search|copilotsearch)|search\.brave\.com\/search|duckduckgo\.com\/(?:html)?\/?(?:\?|$)|javascript:|#/.test(url)) return null;
+  const destination = new URL(url);
+  if (!['http:', 'https:'].includes(destination.protocol)) return null;
+  if (destination.hostname === current.hostname && /^\/(?:search|copilotsearch|html)?\/?$/.test(destination.pathname)) return null;
   const container = a.closest('.snippet[data-type="web"], .result, li.b_algo, div.MjjYud, article') || a.parentElement;
   const snippetNode = container?.querySelector('.VwiC3b, [data-sncf], .b_caption p, .b_snippet, .content, .snippet-description, .result__snippet');
   const snippet = clean(snippetNode?.innerText || container?.innerText || '').replace(title, '').slice(0, 500);
@@ -224,7 +236,13 @@ for (const item of candidates) {
   seen.add(item.url);
   results.push({ rank: results.length + 1, ...item });
 }
-return { url: location.href, title: document.title, results, blocked: false };
+// Result titles and query text can legitimately discuss CAPTCHAs. A usable
+// result page takes precedence; only inspect challenge text when no results exist.
+const challengeForm = document.querySelector('form[action*="/sorry/"], #captcha-form, #challenge-form, #anomaly-modal, .anomaly-modal, iframe[src*="recaptcha"], iframe[src*="hcaptcha"]');
+const pageText = results.length ? '' : (document.body?.innerText || '');
+const challengeText = /our systems have detected unusual traffic|verify(?:ing)? (?:you are|you're) (?:a human|not a bot)|solve the challenge|following challenge|select all squares|drag the slider|one last step/i.test(pageText);
+const blocked = results.length === 0 && Boolean(challengeForm || challengeText || current.pathname.startsWith('/sorry/'));
+return { url: location.href, title: document.title, results, blocked };
 })()"#
 }
 
@@ -344,7 +362,7 @@ mod tests {
         assert!(script.contains("following challenge"));
         assert!(script.contains("drag the slider"));
         assert!(script.contains("one last step"));
-        assert!(script.contains("search\\.brave\\.com\\/search"));
+        assert!(script.contains("current.hostname === 'search.brave.com'"));
         assert!(script.contains(".snippet[data-type=\"web\"] a.l1"));
         assert!(script.contains("li.b_algo h2 a"));
         assert!(script.contains(".result__a"));
@@ -353,7 +371,7 @@ mod tests {
 
     #[test]
     fn search_ready_waits_for_results_or_an_engine_challenge() {
-        let script = search_ready("rust browser", "li.b_algo h2 a", 3);
+        let script = search_ready("rust browser", 3);
 
         assert!(script.contains("rust browser"));
         assert!(script.contains("li.b_algo h2 a"));

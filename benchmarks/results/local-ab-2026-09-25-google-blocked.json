@@ -1,0 +1,1393 @@
+{
+  "schema_version": 1,
+  "run_note": "Exploratory intermediate build. Google blocked both binaries. No valid search timing comparison. Candidate source continued changing during this run; binary SHA identifies the actual intermediate build, not the ending checkout source hash.",
+  "recorded_at": "2026-09-26T01:13:24.607070+00:00",
+  "environment": {
+    "os": "Darwin",
+    "os_release": "25.4.0",
+    "machine": "arm64",
+    "python": "3.13.14"
+  },
+  "source_context": {
+    "checkout_head": "9994f3d2ba0f3681d457c7ba5713f43b02368b32",
+    "checkout_dirty": true,
+    "checkout_rust_source_sha256": "db5f2b28d4795fdb8506e1bb2df934ea5a3f9d6a668f9c86be8b6f31dcd1949f",
+    "note": "Binary hashes identify the measured builds; HEAD alone does not describe uncommitted candidates."
+  },
+  "binaries": {
+    "baseline": {
+      "sha256": "fe05dcf48c28d84515302d9111d124b2bf59cec1465f7d289c92a50f870fb36e",
+      "bytes": 1255776
+    },
+    "candidate": {
+      "sha256": "d6ffbb4251cdf8131ed7cd71ab9c3fc9c75f441aec3fbf606cb8ba92d21db022",
+      "bytes": 1272432
+    }
+  },
+  "method": {
+    "samples": 10,
+    "warmups": 2,
+    "order": "alternating A/B then B/A",
+    "tokenizer": "o200k_base",
+    "browser": "isolated headless managed profile per binary",
+    "local_fixture": "synthetic localhost HTML, not live web performance",
+    "search_engine": "google",
+    "search_query": "rust async cancellation",
+    "cold_definition": "--no-cache; browser and OS are warm",
+    "cached_definition": "same query/depth primed once, TTL 86400s; cache JSON presence and unchanged metadata checked; no browser/network cache flush",
+    "timing": "wall time including a new CLI process; warmups excluded; linear p95 interpolation",
+    "token_scope": "stdout only; not a hosted-provider normalized-token comparison"
+  },
+  "setup": {
+    "baseline": {
+      "elapsed_ms": 1190.351,
+      "stdout_bytes": 362,
+      "ok": true,
+      "browser_version": "Chrome/154.0.8037.57",
+      "protocol_version": "1.3"
+    },
+    "candidate": {
+      "elapsed_ms": 1635.3,
+      "stdout_bytes": 363,
+      "ok": true,
+      "browser_version": "Chrome/154.0.8037.57",
+      "protocol_version": "1.3"
+    },
+    "baseline_cache_prime": {
+      "elapsed_ms": 1130.569,
+      "stdout_bytes": 455,
+      "ok": false,
+      "error": "blocked_or_missing_blocked_flag"
+    },
+    "candidate_cache_prime": {
+      "elapsed_ms": 865.026,
+      "stdout_bytes": 0,
+      "ok": false,
+      "error": "process_exit_1"
+    }
+  },
+  "cleanup": {
+    "baseline": {
+      "elapsed_ms": 403.873,
+      "stdout_bytes": 538,
+      "ok": true
+    },
+    "candidate": {
+      "elapsed_ms": 409.255,
+      "stdout_bytes": 541,
+      "ok": true
+    }
+  },
+  "summary": {
+    "cli_version": {
+      "baseline": {
+        "samples": 10,
+        "successes": 10,
+        "failures": 0,
+        "latency_ms": {
+          "min": 14.61,
+          "median": 21.716500000000003,
+          "p95": 33.563,
+          "max": 36.354
+        },
+        "median_stdout_bytes": 14.0,
+        "median_response_tokens": 9.0
+      },
+      "candidate": {
+        "samples": 10,
+        "successes": 10,
+        "failures": 0,
+        "latency_ms": {
+          "min": 13.81,
+          "median": 20.175,
+          "p95": 30.003,
+          "max": 34.85
+        },
+        "median_stdout_bytes": 14.0,
+        "median_response_tokens": 9.0
+      }
+    },
+    "local_eval": {
+      "baseline": {
+        "samples": 10,
+        "successes": 10,
+        "failures": 0,
+        "latency_ms": {
+          "min": 10.613,
+          "median": 17.5735,
+          "p95": 21.899,
+          "max": 22.418
+        },
+        "median_stdout_bytes": 23.0,
+        "median_response_tokens": 9.0
+      },
+      "candidate": {
+        "samples": 10,
+        "successes": 10,
+        "failures": 0,
+        "latency_ms": {
+          "min": 11.479,
+          "median": 16.755,
+          "p95": 24.261,
+          "max": 27.441
+        },
+        "median_stdout_bytes": 23.0,
+        "median_response_tokens": 9.0
+      }
+    },
+    "local_read": {
+      "baseline": {
+        "samples": 10,
+        "successes": 10,
+        "failures": 0,
+        "latency_ms": {
+          "min": 47.727,
+          "median": 79.929,
+          "p95": 155.685,
+          "max": 187.677
+        },
+        "median_stdout_bytes": 327.0,
+        "median_response_tokens": 92.0
+      },
+      "candidate": {
+        "samples": 10,
+        "successes": 10,
+        "failures": 0,
+        "latency_ms": {
+          "min": 29.819,
+          "median": 95.37700000000001,
+          "p95": 174.042,
+          "max": 214.243
+        },
+        "median_stdout_bytes": 327.0,
+        "median_response_tokens": 92.0
+      }
+    },
+    "search_cold": {
+      "baseline": {
+        "samples": 10,
+        "successes": 0,
+        "failures": 10
+      },
+      "candidate": {
+        "samples": 10,
+        "successes": 0,
+        "failures": 10
+      }
+    },
+    "search_cached": {
+      "baseline": {
+        "samples": 10,
+        "successes": 0,
+        "failures": 10
+      },
+      "candidate": {
+        "samples": 10,
+        "successes": 0,
+        "failures": 10
+      }
+    }
+  },
+  "rows": [
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": -2,
+      "warmup": true,
+      "elapsed_ms": 36.694,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": -2,
+      "warmup": true,
+      "elapsed_ms": 25.684,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": -1,
+      "warmup": true,
+      "elapsed_ms": 34.52,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": -1,
+      "warmup": true,
+      "elapsed_ms": 25.323,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 0,
+      "warmup": false,
+      "elapsed_ms": 23.642,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 0,
+      "warmup": false,
+      "elapsed_ms": 14.231,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 1,
+      "warmup": false,
+      "elapsed_ms": 20.285,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 1,
+      "warmup": false,
+      "elapsed_ms": 14.61,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 2,
+      "warmup": false,
+      "elapsed_ms": 30.152,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 2,
+      "warmup": false,
+      "elapsed_ms": 20.065,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 3,
+      "warmup": false,
+      "elapsed_ms": 14.372,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 3,
+      "warmup": false,
+      "elapsed_ms": 15.124,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 4,
+      "warmup": false,
+      "elapsed_ms": 21.734,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 4,
+      "warmup": false,
+      "elapsed_ms": 24.08,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 5,
+      "warmup": false,
+      "elapsed_ms": 34.85,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 5,
+      "warmup": false,
+      "elapsed_ms": 21.805,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 6,
+      "warmup": false,
+      "elapsed_ms": 17.168,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 6,
+      "warmup": false,
+      "elapsed_ms": 22.043,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 7,
+      "warmup": false,
+      "elapsed_ms": 13.81,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 7,
+      "warmup": false,
+      "elapsed_ms": 21.699,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 8,
+      "warmup": false,
+      "elapsed_ms": 14.7,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 8,
+      "warmup": false,
+      "elapsed_ms": 15.437,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 9,
+      "warmup": false,
+      "elapsed_ms": 22.486,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 9,
+      "warmup": false,
+      "elapsed_ms": 36.354,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": -2,
+      "warmup": true,
+      "elapsed_ms": 170.599,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": -2,
+      "warmup": true,
+      "elapsed_ms": 78.253,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": -1,
+      "warmup": true,
+      "elapsed_ms": 50.816,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": -1,
+      "warmup": true,
+      "elapsed_ms": 33.786,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 0,
+      "warmup": false,
+      "elapsed_ms": 22.418,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 0,
+      "warmup": false,
+      "elapsed_ms": 20.375,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 1,
+      "warmup": false,
+      "elapsed_ms": 17.675,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 1,
+      "warmup": false,
+      "elapsed_ms": 19.473,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 2,
+      "warmup": false,
+      "elapsed_ms": 21.264,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 2,
+      "warmup": false,
+      "elapsed_ms": 15.58,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 3,
+      "warmup": false,
+      "elapsed_ms": 27.441,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 3,
+      "warmup": false,
+      "elapsed_ms": 15.674,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 4,
+      "warmup": false,
+      "elapsed_ms": 19.537,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 4,
+      "warmup": false,
+      "elapsed_ms": 16.866,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 5,
+      "warmup": false,
+      "elapsed_ms": 17.314,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 5,
+      "warmup": false,
+      "elapsed_ms": 12.543,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 6,
+      "warmup": false,
+      "elapsed_ms": 12.661,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 6,
+      "warmup": false,
+      "elapsed_ms": 11.689,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 7,
+      "warmup": false,
+      "elapsed_ms": 11.479,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 7,
+      "warmup": false,
+      "elapsed_ms": 12.161,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 8,
+      "warmup": false,
+      "elapsed_ms": 19.632,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 8,
+      "warmup": false,
+      "elapsed_ms": 16.644,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 9,
+      "warmup": false,
+      "elapsed_ms": 12.772,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 9,
+      "warmup": false,
+      "elapsed_ms": 10.613,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": -2,
+      "warmup": true,
+      "elapsed_ms": 34.294,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": -2,
+      "warmup": true,
+      "elapsed_ms": 173.499,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": -1,
+      "warmup": true,
+      "elapsed_ms": 128.903,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": -1,
+      "warmup": true,
+      "elapsed_ms": 93.146,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 0,
+      "warmup": false,
+      "elapsed_ms": 107.375,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 0,
+      "warmup": false,
+      "elapsed_ms": 102.45,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 1,
+      "warmup": false,
+      "elapsed_ms": 97.141,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 1,
+      "warmup": false,
+      "elapsed_ms": 62.542,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 2,
+      "warmup": false,
+      "elapsed_ms": 99.808,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 2,
+      "warmup": false,
+      "elapsed_ms": 122.159,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 3,
+      "warmup": false,
+      "elapsed_ms": 93.613,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 3,
+      "warmup": false,
+      "elapsed_ms": 116.584,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 4,
+      "warmup": false,
+      "elapsed_ms": 187.677,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 4,
+      "warmup": false,
+      "elapsed_ms": 214.243,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 5,
+      "warmup": false,
+      "elapsed_ms": 124.907,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 5,
+      "warmup": false,
+      "elapsed_ms": 97.316,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 6,
+      "warmup": false,
+      "elapsed_ms": 61.012,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 6,
+      "warmup": false,
+      "elapsed_ms": 42.231,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 7,
+      "warmup": false,
+      "elapsed_ms": 83.804,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 7,
+      "warmup": false,
+      "elapsed_ms": 47.727,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 8,
+      "warmup": false,
+      "elapsed_ms": 52.342,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 8,
+      "warmup": false,
+      "elapsed_ms": 57.414,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 9,
+      "warmup": false,
+      "elapsed_ms": 29.819,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 9,
+      "warmup": false,
+      "elapsed_ms": 57.688,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "search_cold",
+      "sample": -2,
+      "warmup": true,
+      "elapsed_ms": 980.958,
+      "stdout_bytes": 455,
+      "ok": false,
+      "error": "blocked_or_missing_blocked_flag"
+    },
+    {
+      "binary": "candidate",
+      "scenario": "search_cold",
+      "sample": -2,
+      "warmup": true,
+      "elapsed_ms": 1057.468,
+      "stdout_bytes": 455,
+      "ok": false,
+      "error": "blocked_or_missing_blocked_flag"
+    },
+    {
+      "binary": "candidate",
+      "scenario": "search_cold",
+      "sample": -1,
+      "warmup": true,
+      "elapsed_ms": 901.019,
+      "stdout_bytes": 455,
+      "ok": false,
+      "error": "blocked_or_missing_blocked_flag"
+    },
+    {
+      "binary": "baseline",
+      "scenario": "search_cold",
+      "sample": -1,
+      "warmup": true,
+      "elapsed_ms": 1048.958,
+      "stdout_bytes": 455,
+      "ok": false,
+      "error": "blocked_or_missing_blocked_flag"
+    },
+    {
+      "binary": "baseline",
+      "scenario": "search_cold",
+      "sample": 0,
+      "warmup": false,
+      "elapsed_ms": 910.182,
+      "stdout_bytes": 455,
+      "ok": false,
+      "error": "blocked_or_missing_blocked_flag"
+    },
+    {
+      "binary": "candidate",
+      "scenario": "search_cold",
+      "sample": 0,
+      "warmup": false,
+      "elapsed_ms": 913.924,
+      "stdout_bytes": 455,
+      "ok": false,
+      "error": "blocked_or_missing_blocked_flag"
+    },
+    {
+      "binary": "candidate",
+      "scenario": "search_cold",
+      "sample": 1,
+      "warmup": false,
+      "elapsed_ms": 937.503,
+      "stdout_bytes": 455,
+      "ok": false,
+      "error": "blocked_or_missing_blocked_flag"
+    },
+    {
+      "binary": "baseline",
+      "scenario": "search_cold",
+      "sample": 1,
+      "warmup": false,
+      "elapsed_ms": 1027.048,
+      "stdout_bytes": 455,
+      "ok": false,
+      "error": "blocked_or_missing_blocked_flag"
+    },
+    {
+      "binary": "baseline",
+      "scenario": "search_cold",
+      "sample": 2,
+      "warmup": false,
+      "elapsed_ms": 1054.274,
+      "stdout_bytes": 455,
+      "ok": false,
+      "error": "blocked_or_missing_blocked_flag"
+    },
+    {
+      "binary": "candidate",
+      "scenario": "search_cold",
+      "sample": 2,
+      "warmup": false,
+      "elapsed_ms": 1192.768,
+      "stdout_bytes": 455,
+      "ok": false,
+      "error": "blocked_or_missing_blocked_flag"
+    },
+    {
+      "binary": "candidate",
+      "scenario": "search_cold",
+      "sample": 3,
+      "warmup": false,
+      "elapsed_ms": 1079.188,
+      "stdout_bytes": 455,
+      "ok": false,
+      "error": "blocked_or_missing_blocked_flag"
+    },
+    {
+      "binary": "baseline",
+      "scenario": "search_cold",
+      "sample": 3,
+      "warmup": false,
+      "elapsed_ms": 933.592,
+      "stdout_bytes": 455,
+      "ok": false,
+      "error": "blocked_or_missing_blocked_flag"
+    },
+    {
+      "binary": "baseline",
+      "scenario": "search_cold",
+      "sample": 4,
+      "warmup": false,
+      "elapsed_ms": 813.123,
+      "stdout_bytes": 455,
+      "ok": false,
+      "error": "blocked_or_missing_blocked_flag"
+    },
+    {
+      "binary": "candidate",
+      "scenario": "search_cold",
+      "sample": 4,
+      "warmup": false,
+      "elapsed_ms": 815.409,
+      "stdout_bytes": 455,
+      "ok": false,
+      "error": "blocked_or_missing_blocked_flag"
+    },
+    {
+      "binary": "candidate",
+      "scenario": "search_cold",
+      "sample": 5,
+      "warmup": false,
+      "elapsed_ms": 1070.345,
+      "stdout_bytes": 455,
+      "ok": false,
+      "error": "blocked_or_missing_blocked_flag"
+    },
+    {
+      "binary": "baseline",
+      "scenario": "search_cold",
+      "sample": 5,
+      "warmup": false,
+      "elapsed_ms": 1035.384,
+      "stdout_bytes": 455,
+      "ok": false,
+      "error": "blocked_or_missing_blocked_flag"
+    },
+    {
+      "binary": "baseline",
+      "scenario": "search_cold",
+      "sample": 6,
+      "warmup": false,
+      "elapsed_ms": 929.142,
+      "stdout_bytes": 455,
+      "ok": false,
+      "error": "blocked_or_missing_blocked_flag"
+    },
+    {
+      "binary": "candidate",
+      "scenario": "search_cold",
+      "sample": 6,
+      "warmup": false,
+      "elapsed_ms": 854.639,
+      "stdout_bytes": 0,
+      "ok": false,
+      "error": "process_exit_1"
+    },
+    {
+      "binary": "candidate",
+      "scenario": "search_cold",
+      "sample": 7,
+      "warmup": false,
+      "elapsed_ms": 1242.301,
+      "stdout_bytes": 455,
+      "ok": false,
+      "error": "blocked_or_missing_blocked_flag"
+    },
+    {
+      "binary": "baseline",
+      "scenario": "search_cold",
+      "sample": 7,
+      "warmup": false,
+      "elapsed_ms": 869.524,
+      "stdout_bytes": 453,
+      "ok": false,
+      "error": "blocked_or_missing_blocked_flag"
+    },
+    {
+      "binary": "baseline",
+      "scenario": "search_cold",
+      "sample": 8,
+      "warmup": false,
+      "elapsed_ms": 1218.776,
+      "stdout_bytes": 455,
+      "ok": false,
+      "error": "blocked_or_missing_blocked_flag"
+    },
+    {
+      "binary": "candidate",
+      "scenario": "search_cold",
+      "sample": 8,
+      "warmup": false,
+      "elapsed_ms": 1031.838,
+      "stdout_bytes": 0,
+      "ok": false,
+      "error": "process_exit_1"
+    },
+    {
+      "binary": "candidate",
+      "scenario": "search_cold",
+      "sample": 9,
+      "warmup": false,
+      "elapsed_ms": 1056.67,
+      "stdout_bytes": 453,
+      "ok": false,
+      "error": "blocked_or_missing_blocked_flag"
+    },
+    {
+      "binary": "baseline",
+      "scenario": "search_cold",
+      "sample": 9,
+      "warmup": false,
+      "elapsed_ms": 1149.947,
+      "stdout_bytes": 455,
+      "ok": false,
+      "error": "blocked_or_missing_blocked_flag"
+    },
+    {
+      "binary": "baseline",
+      "scenario": "search_cached",
+      "sample": -2,
+      "warmup": true,
+      "ok": false,
+      "error": "cache_prime_failed",
+      "elapsed_ms": 0,
+      "stdout_bytes": 0
+    },
+    {
+      "binary": "candidate",
+      "scenario": "search_cached",
+      "sample": -2,
+      "warmup": true,
+      "ok": false,
+      "error": "cache_prime_failed",
+      "elapsed_ms": 0,
+      "stdout_bytes": 0
+    },
+    {
+      "binary": "candidate",
+      "scenario": "search_cached",
+      "sample": -1,
+      "warmup": true,
+      "ok": false,
+      "error": "cache_prime_failed",
+      "elapsed_ms": 0,
+      "stdout_bytes": 0
+    },
+    {
+      "binary": "baseline",
+      "scenario": "search_cached",
+      "sample": -1,
+      "warmup": true,
+      "ok": false,
+      "error": "cache_prime_failed",
+      "elapsed_ms": 0,
+      "stdout_bytes": 0
+    },
+    {
+      "binary": "baseline",
+      "scenario": "search_cached",
+      "sample": 0,
+      "warmup": false,
+      "ok": false,
+      "error": "cache_prime_failed",
+      "elapsed_ms": 0,
+      "stdout_bytes": 0
+    },
+    {
+      "binary": "candidate",
+      "scenario": "search_cached",
+      "sample": 0,
+      "warmup": false,
+      "ok": false,
+      "error": "cache_prime_failed",
+      "elapsed_ms": 0,
+      "stdout_bytes": 0
+    },
+    {
+      "binary": "candidate",
+      "scenario": "search_cached",
+      "sample": 1,
+      "warmup": false,
+      "ok": false,
+      "error": "cache_prime_failed",
+      "elapsed_ms": 0,
+      "stdout_bytes": 0
+    },
+    {
+      "binary": "baseline",
+      "scenario": "search_cached",
+      "sample": 1,
+      "warmup": false,
+      "ok": false,
+      "error": "cache_prime_failed",
+      "elapsed_ms": 0,
+      "stdout_bytes": 0
+    },
+    {
+      "binary": "baseline",
+      "scenario": "search_cached",
+      "sample": 2,
+      "warmup": false,
+      "ok": false,
+      "error": "cache_prime_failed",
+      "elapsed_ms": 0,
+      "stdout_bytes": 0
+    },
+    {
+      "binary": "candidate",
+      "scenario": "search_cached",
+      "sample": 2,
+      "warmup": false,
+      "ok": false,
+      "error": "cache_prime_failed",
+      "elapsed_ms": 0,
+      "stdout_bytes": 0
+    },
+    {
+      "binary": "candidate",
+      "scenario": "search_cached",
+      "sample": 3,
+      "warmup": false,
+      "ok": false,
+      "error": "cache_prime_failed",
+      "elapsed_ms": 0,
+      "stdout_bytes": 0
+    },
+    {
+      "binary": "baseline",
+      "scenario": "search_cached",
+      "sample": 3,
+      "warmup": false,
+      "ok": false,
+      "error": "cache_prime_failed",
+      "elapsed_ms": 0,
+      "stdout_bytes": 0
+    },
+    {
+      "binary": "baseline",
+      "scenario": "search_cached",
+      "sample": 4,
+      "warmup": false,
+      "ok": false,
+      "error": "cache_prime_failed",
+      "elapsed_ms": 0,
+      "stdout_bytes": 0
+    },
+    {
+      "binary": "candidate",
+      "scenario": "search_cached",
+      "sample": 4,
+      "warmup": false,
+      "ok": false,
+      "error": "cache_prime_failed",
+      "elapsed_ms": 0,
+      "stdout_bytes": 0
+    },
+    {
+      "binary": "candidate",
+      "scenario": "search_cached",
+      "sample": 5,
+      "warmup": false,
+      "ok": false,
+      "error": "cache_prime_failed",
+      "elapsed_ms": 0,
+      "stdout_bytes": 0
+    },
+    {
+      "binary": "baseline",
+      "scenario": "search_cached",
+      "sample": 5,
+      "warmup": false,
+      "ok": false,
+      "error": "cache_prime_failed",
+      "elapsed_ms": 0,
+      "stdout_bytes": 0
+    },
+    {
+      "binary": "baseline",
+      "scenario": "search_cached",
+      "sample": 6,
+      "warmup": false,
+      "ok": false,
+      "error": "cache_prime_failed",
+      "elapsed_ms": 0,
+      "stdout_bytes": 0
+    },
+    {
+      "binary": "candidate",
+      "scenario": "search_cached",
+      "sample": 6,
+      "warmup": false,
+      "ok": false,
+      "error": "cache_prime_failed",
+      "elapsed_ms": 0,
+      "stdout_bytes": 0
+    },
+    {
+      "binary": "candidate",
+      "scenario": "search_cached",
+      "sample": 7,
+      "warmup": false,
+      "ok": false,
+      "error": "cache_prime_failed",
+      "elapsed_ms": 0,
+      "stdout_bytes": 0
+    },
+    {
+      "binary": "baseline",
+      "scenario": "search_cached",
+      "sample": 7,
+      "warmup": false,
+      "ok": false,
+      "error": "cache_prime_failed",
+      "elapsed_ms": 0,
+      "stdout_bytes": 0
+    },
+    {
+      "binary": "baseline",
+      "scenario": "search_cached",
+      "sample": 8,
+      "warmup": false,
+      "ok": false,
+      "error": "cache_prime_failed",
+      "elapsed_ms": 0,
+      "stdout_bytes": 0
+    },
+    {
+      "binary": "candidate",
+      "scenario": "search_cached",
+      "sample": 8,
+      "warmup": false,
+      "ok": false,
+      "error": "cache_prime_failed",
+      "elapsed_ms": 0,
+      "stdout_bytes": 0
+    },
+    {
+      "binary": "candidate",
+      "scenario": "search_cached",
+      "sample": 9,
+      "warmup": false,
+      "ok": false,
+      "error": "cache_prime_failed",
+      "elapsed_ms": 0,
+      "stdout_bytes": 0
+    },
+    {
+      "binary": "baseline",
+      "scenario": "search_cached",
+      "sample": 9,
+      "warmup": false,
+      "ok": false,
+      "error": "cache_prime_failed",
+      "elapsed_ms": 0,
+      "stdout_bytes": 0
+    }
+  ]
+}

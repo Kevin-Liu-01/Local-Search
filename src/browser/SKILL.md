@@ -12,9 +12,13 @@ Browser transport and runtime scripts for local signed-in browser control.
 - `discovery.rs` finds a browser-level CDP websocket from `--cdp`, saved config,
   `DevToolsActivePort`, or common localhost ports.
 - `cdp.rs` is a minimal browser-level CDP client using flattened target sessions.
+  It uses absolute deadlines, loader-aware navigation, browser-side readiness
+  promises, and bounded event retention (newest 4,096 events / 8 MiB).
 - `session.rs` owns the existing-Chrome helper lifecycle and private Unix sockets.
   Keep one approved upstream transport, serialize CLI leases, remap IDs, detach
   page sessions on client exit, and discard late responses to old leases.
+  Release abandoned pending IDs too. Late attach replies must detach unowned
+  sessions without retaining an unbounded list of canceled requests.
 - `scripts.rs` stores JavaScript snippets evaluated in the page for snapshots,
   interactions, extraction, readable content, and in-browser fetch.
 

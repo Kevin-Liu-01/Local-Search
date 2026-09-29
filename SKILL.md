@@ -267,6 +267,11 @@ Changing `--limit` can therefore reuse a previously cached deeper result set.
 Set `LOCAL_SEARCH_CACHE_DIR` to isolate or relocate the cache.
 Even cache hits verify the selected browser connection. A different browser
 or a restarted session cannot reuse another session's search cache.
+Unblocked cache hits without page content or an explicit target verify the live
+browser without attaching to a tab. Search waits for the requested result count
+or a completed page whose result count has settled; the engine may return fewer.
+An empty result page needs an explicit no-results message. Unrecognized loading
+pages time out rather than being reported as successful empty searches.
 
 Use fresh search when recency matters. Use `--with-content` to read result pages
 in temporary background tabs that close automatically:
@@ -539,6 +544,9 @@ lsearch record https://example.com \
 `--duration` is milliseconds and defaults to `2000`. The HAR is an
 agent-readable HAR-shaped envelope of raw CDP Network events; it is not full
 browser-export HAR parity and does not include captured response bodies.
+Event retention is bounded to the newest 4,096 events or 8 MiB of serialized
+events, whichever limit is reached first. Busy pages can discard older events;
+use short captures and do not treat the file as a complete network audit.
 
 Treat screenshots, PDFs, HTML, MHTML, HAR, and recorded console/network data as
 potentially sensitive. Keep them out of commits unless explicitly sanitized and

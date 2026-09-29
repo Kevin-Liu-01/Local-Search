@@ -8,6 +8,7 @@ Install the tokenizer with `python3 -m pip install tiktoken` before running.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import statistics
@@ -15,18 +16,18 @@ import subprocess
 import sys
 import tempfile
 import time
+from datetime import date
 import urllib.error
 import urllib.parse
 import urllib.request
 from pathlib import Path
 from typing import Any
 
-import tiktoken
-
-
 ROOT = Path(__file__).resolve().parents[1]
 LSEARCH = ROOT / "target" / "release" / "lsearch"
-ENCODING = tiktoken.get_encoding("o200k_base")
+ENCODING = None
+ENGINE = "google"
+LSEARCH_ENV = None
 QUERIES = [
     "rust async cancellation",
     "chrome devtools protocol remote debugging",
@@ -75,6 +76,8 @@ PRICING = {
 
 
 def token_count(value: str) -> int:
+    if ENCODING is None:
+        raise RuntimeError("tokenizer_unavailable")
     return len(ENCODING.encode(value))
 
 
@@ -117,15 +120,15 @@ def http_json(
             elapsed_ms = round((time.perf_counter() - started) * 1000, 1)
             return json.loads(raw), raw, dict(response.headers.items()), elapsed_ms
     except urllib.error.HTTPError as error:
-        response_body = error.read().decode("utf-8", errors="replace")
-        raise RuntimeError(f"HTTP {error.code}: {response_body[:500]}") from error
+        raise RuntimeError(f"http_status_{error.code}") from error
 
 
 def run_lsearch(query: str, limit: int) -> tuple[dict[str, Any], str, float]:
     started = time.perf_counter()
     result = subprocess.run(
-        [str(LSEARCH), "search", query, "--limit", str(limit)],
+        [str(LSEARCH), "search", query, "--engine", ENGINE, "--limit", str(limit), "--no-cache", "--json"],
         cwd=ROOT,
+        env=LSEARCH_ENV,
         capture_output=True,
         text=True,
         timeout=90,
@@ -133,7 +136,7 @@ def run_lsearch(query: str, limit: int) -> tuple[dict[str, Any], str, float]:
     )
     elapsed_ms = round((time.perf_counter() - started) * 1000, 1)
     if result.returncode != 0:
-        raise RuntimeError(result.stderr.strip() or f"lsearch exited {result.returncode}")
+        raise RuntimeError(f"lsearch_exit_{result.returncode}")
     return json.loads(result.stdout), result.stdout, elapsed_ms
 
 
@@ -199,20 +202,48 @@ def run_hosted(
 
 
 def provider_results(provider: str, payload: dict[str, Any]) -> list[dict[str, Any]]:
+    if not isinstance(payload, dict) or payload.get("error") or payload.get("success") is False:
+        raise RuntimeError("provider_error_envelope")
     if provider == "lsearch":
-        return payload.get("search", {}).get("results", [])
-    if provider == "exa":
-        return payload.get("results", [])
-    if provider == "brave":
-        return payload.get("web", {}).get("results", [])
-    if provider == "tavily":
-        return payload.get("results", [])
-    if provider == "firecrawl":
-        return payload.get("data", {}).get("web", [])
-    return []
+        search = payload.get("search")
+        if payload.get("ok") is not True or not isinstance(search, dict):
+            raise RuntimeError("malformed_search_envelope")
+        if search.get("blocked") is not False:
+            raise RuntimeError("blocked_or_missing_blocked_flag")
+        results = search.get("results")
+    elif provider in {"exa", "tavily"}:
+        results = payload.get("results")
+    elif provider == "brave":
+        results = payload.get("web", {}).get("results")
+    elif provider == "firecrawl":
+        results = payload.get("data", {}).get("web")
+    else:
+        raise RuntimeError("unknown_provider")
+    if not isinstance(results, list) or not results:
+        raise RuntimeError("empty_or_malformed_results")
+    for item in results:
+        if (not isinstance(item, dict) or not isinstance(item.get("title"), str)
+                or not item["title"] or not isinstance(item.get("url"), str)
+                or not item["url"].startswith(("https://", "http://"))):
+            raise RuntimeError("malformed_result")
+    return results
 
 
-def normalize(provider: str, results: list[dict[str, Any]]) -> list[dict[str, Any]]:
+def sanitized_error(error: Exception) -> str:
+    # Never serialize exception messages from network libraries or raw responses.
+    if isinstance(error, RuntimeError):
+        message = str(error)
+        allowed = {"provider_error_envelope", "malformed_search_envelope",
+                   "blocked_or_missing_blocked_flag", "unknown_provider",
+                   "empty_or_malformed_results", "malformed_result", "malformed_snippet"}
+        numeric_code = any(message.startswith(prefix) and message[len(prefix):].lstrip("-").isdigit()
+                           for prefix in ("http_status_", "lsearch_exit_"))
+        if message in allowed or numeric_code:
+            return message
+    return type(error).__name__
+
+
+def normalize(provider: str, results: list[dict[str, Any]], snippet_chars: int | None = None) -> list[dict[str, Any]]:
     normalized = []
     for rank, item in enumerate(results, 1):
         if provider == "exa":
@@ -225,6 +256,10 @@ def normalize(provider: str, results: list[dict[str, Any]]) -> list[dict[str, An
             snippet = item.get("description") or ""
         else:
             snippet = item.get("snippet") or ""
+        if not isinstance(snippet, str):
+            raise RuntimeError("malformed_snippet")
+        if snippet_chars is not None:
+            snippet = snippet[:snippet_chars]
         normalized.append(
             {
                 "rank": rank,
@@ -243,7 +278,7 @@ def usage(provider: str, payload: dict[str, Any], headers: dict[str, str]) -> An
         return {
             key: value
             for key, value in headers.items()
-            if key.lower().startswith("x-ratelimit") or key.lower().startswith("x-request")
+            if key.lower().startswith("x-ratelimit")
         }
     if provider == "tavily":
         return payload.get("usage")
@@ -269,7 +304,8 @@ def estimated_cost(provider: str, limit: int) -> dict[str, float]:
 def summarize(rows: list[dict[str, Any]]) -> dict[str, Any]:
     successful = [row for row in rows if row["ok"]]
     if not successful:
-        return {"runs": len(rows), "successful": 0}
+        return {"runs": len(rows), "successful": 0,
+                "estimated_attempt_cost_total": sum_costs(rows)}
 
     def stats(key: str) -> dict[str, float]:
         values = [float(row[key]) for row in successful]
@@ -292,7 +328,9 @@ def summarize(rows: list[dict[str, Any]]) -> dict[str, Any]:
         "normalized_total_tokens": stats("normalized_total_tokens"),
         "normalized_tokens_per_result": stats("normalized_tokens_per_result"),
         "latency_ms": stats("latency_ms"),
-        "estimated_cost_total": sum_costs(successful),
+        "equal_budget_total_tokens": stats("equal_budget_total_tokens"),
+        "equal_budget_tokens_per_result": stats("equal_budget_tokens_per_result"),
+        "estimated_attempt_cost_total": sum_costs(rows),
     }
 
 
@@ -305,6 +343,7 @@ def sum_costs(rows: list[dict[str, Any]]) -> dict[str, float]:
 
 
 def main() -> int:
+    global LSEARCH, ENGINE, LSEARCH_ENV, ENCODING
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--providers",
@@ -313,6 +352,12 @@ def main() -> int:
     )
     parser.add_argument("--max-queries", type=int, default=len(QUERIES))
     parser.add_argument("--include-rows", action="store_true")
+    parser.add_argument("--binary", type=Path, default=LSEARCH)
+    parser.add_argument("--engine", choices=["google", "bing", "brave", "duckduckgo"], default="google")
+    parser.add_argument("--config-dir", type=Path, help="explicit isolated, already-connected local-search config")
+    parser.add_argument("--output", type=Path, help="save sanitized JSON report here")
+    parser.add_argument("--date", type=date.fromisoformat, default=date.today(), help="recording date, YYYY-MM-DD")
+    parser.add_argument("--snippet-chars", type=int, default=120, help="equal maximum snippet budget for comparison")
     parser.add_argument(
         "--env-file",
         type=Path,
@@ -320,6 +365,17 @@ def main() -> int:
         help="ignored local KEY=value file",
     )
     args = parser.parse_args()
+    try:
+        import tiktoken
+    except ImportError:
+        parser.error("install tiktoken in your benchmark environment before running")
+    ENCODING = tiktoken.get_encoding("o200k_base")
+    LSEARCH = args.binary.resolve()
+    ENGINE = args.engine
+    if not 1 <= args.max_queries <= len(QUERIES):
+        parser.error("max-queries must be between 1 and 12")
+    if not 0 <= args.snippet_chars <= 120:
+        parser.error("snippet-chars must be between 0 and the native lsearch budget of 120")
     load_env_file(args.env_file)
 
     requested = [item.strip() for item in args.providers.split(",") if item.strip()]
@@ -328,6 +384,8 @@ def main() -> int:
         raise SystemExit(f"unknown providers: {', '.join(unknown)}")
     if "lsearch" in requested and not LSEARCH.exists():
         raise SystemExit("build first: cargo build --release")
+    if "lsearch" in requested and args.config_dir is None:
+        parser.error("lsearch requires --config-dir pointing to an explicitly prepared isolated profile")
 
     missing = {
         provider: list(KEY_ENV[provider])
@@ -338,13 +396,15 @@ def main() -> int:
     cache_dir = None
     if "lsearch" in active:
         cache_dir = tempfile.TemporaryDirectory(prefix="lsearch-benchmark-")
-        os.environ["LOCAL_SEARCH_CACHE_DIR"] = cache_dir.name
+        LSEARCH_ENV = {key: value for key, value in os.environ.items()
+                       if not key.startswith(("LOCAL_SEARCH_", "LOCAL_BROWSER_"))}
+        LSEARCH_ENV.update(LOCAL_SEARCH_CONFIG_DIR=str(args.config_dir.resolve()),
+                           LOCAL_SEARCH_CACHE_DIR=cache_dir.name, NO_COLOR="1")
     rows: list[dict[str, Any]] = []
     for provider in active:
         for limit in (3, 10):
             for query in QUERIES[: args.max_queries]:
                 request_shape: dict[str, Any] = {
-                    "provider": provider,
                     "query": query,
                     "limit": limit,
                 }
@@ -352,16 +412,20 @@ def main() -> int:
                     if provider == "lsearch":
                         payload, raw, elapsed = run_lsearch(query, limit)
                         headers: dict[str, str] = {}
+                        request_shape["engine"] = ENGINE
                     else:
                         key = api_key(provider)
                         assert key is not None
                         payload, raw, headers, elapsed, options = run_hosted(
                             provider, query, limit, key
                         )
-                        request_shape["options"] = options
+                        request_shape = options
                     results = provider_results(provider, payload)
                     normalized = normalize(provider, results)
+                    equal_budget = normalize(provider, results, args.snippet_chars)
                     request_tokens = token_count(compact_json(request_shape))
+                    common_request_tokens = token_count(compact_json({"query": query, "limit": limit}))
+                    equal_total = common_request_tokens + token_count(compact_json(equal_budget))
                     row = {
                         "provider": provider,
                         "query": query,
@@ -390,6 +454,9 @@ def main() -> int:
                         )
                         if results
                         else 0.0,
+                        "common_request_tokens": common_request_tokens,
+                        "equal_budget_total_tokens": equal_total,
+                        "equal_budget_tokens_per_result": round(equal_total / len(results), 2),
                         "latency_ms": elapsed,
                         "usage": usage(provider, payload, headers),
                         "estimated_cost": estimated_cost(provider, limit),
@@ -400,7 +467,7 @@ def main() -> int:
                         "query": query,
                         "limit": limit,
                         "ok": False,
-                        "error": str(error),
+                        "error": sanitized_error(error),
                         "estimated_cost": estimated_cost(provider, limit),
                     }
                 rows.append(row)
@@ -412,11 +479,19 @@ def main() -> int:
 
     output: dict[str, Any] = {
         "method": {
-            "date": "2026-07-21",
+            "date": args.date.isoformat(),
+            "binary_sha256": hashlib.sha256(LSEARCH.read_bytes()).hexdigest() if "lsearch" in active else None,
+            "engine": ENGINE if "lsearch" in active else None,
+            "local_cache": "disabled for every request with --no-cache; not mixed cold/cache latency",
+            "provider_order": "sequential; not randomized; provider/order/network effects remain",
             "encoding": "o200k_base",
             "queries": QUERIES[: args.max_queries],
             "limits": [3, 10],
             "token_scope": "serialized request shape plus raw or normalized JSON response",
+            "native_tokens": "actual provider request object once plus native snippets/highlights; different content budgets",
+            "equal_budget_tokens": "common {query,limit} request once plus normalized results with each snippet truncated to the same maximum",
+            "equal_snippet_chars": args.snippet_chars,
+            "equal_budget_caveat": "Equal maximum length does not equalize relevance, source ranking, or actual content length.",
             "content": {
                 "lsearch": "search snippets",
                 "exa": "highlights",
@@ -428,6 +503,8 @@ def main() -> int:
         "active_providers": active,
         "missing_credentials": missing,
         "pricing": {provider: PRICING[provider] for provider in requested},
+        "pricing_date": "2026-07-21",
+        "pricing_note": "Historical estimates, not verified current prices or an actual invoice. Failed requests may incur charges.",
         "summary": {
             provider: summarize([row for row in rows if row["provider"] == provider])
             for provider in active
@@ -437,6 +514,9 @@ def main() -> int:
     if args.include_rows:
         output["rows"] = rows
     print(json.dumps(output, indent=2))
+    if args.output:
+        args.output.parent.mkdir(parents=True, exist_ok=True)
+        args.output.write_text(json.dumps(output, indent=2) + "\n")
     if cache_dir is not None:
         cache_dir.cleanup()
     return 0 if not output["failures"] and not missing else 2

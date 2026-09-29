@@ -1,0 +1,5675 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-09-26T01:20:07.742410+00:00",
+  "started_at": "2026-09-26T01:19:56.934502+00:00",
+  "environment": {
+    "os": "Darwin",
+    "os_release": "25.4.0",
+    "machine": "arm64",
+    "python": "3.13.14"
+  },
+  "source_context": {
+    "checkout_head": "9994f3d2ba0f3681d457c7ba5713f43b02368b32",
+    "checkout_dirty": true,
+    "checkout_rust_source_sha256": "ba7e14811387cae963b2c5d578e647298eb91c91c078f21180f288e90337888b",
+    "checkout_rust_source_sha256_end": "ba7e14811387cae963b2c5d578e647298eb91c91c078f21180f288e90337888b",
+    "changed_during_run": false,
+    "note": "Binary hashes identify the measured builds; HEAD alone does not describe uncommitted candidates."
+  },
+  "binaries": {
+    "baseline": {
+      "sha256": "fe05dcf48c28d84515302d9111d124b2bf59cec1465f7d289c92a50f870fb36e",
+      "bytes": 1255776
+    },
+    "candidate": {
+      "sha256": "ab8c341f74bfe54dfaff4f4f2e56c39cbc1841b473a2db6e08dec5499403f856",
+      "bytes": 1272432
+    }
+  },
+  "binaries_end": {
+    "baseline": {
+      "sha256": "fe05dcf48c28d84515302d9111d124b2bf59cec1465f7d289c92a50f870fb36e",
+      "bytes": 1255776
+    },
+    "candidate": {
+      "sha256": "ab8c341f74bfe54dfaff4f4f2e56c39cbc1841b473a2db6e08dec5499403f856",
+      "bytes": 1272432
+    }
+  },
+  "method": {
+    "samples": 60,
+    "warmups": 5,
+    "order": "alternating A/B then B/A",
+    "tokenizer": "o200k_base",
+    "browser": "isolated headless managed profile per binary",
+    "local_fixture": "synthetic localhost HTML, not live web performance",
+    "synthetic_cache_hit": "manually seeded three-result fixture in a live-browser-scoped cache; verifies connected browser but performs no live search; not a search quality/latency claim",
+    "blocked_policy": "first blocked public search stops further network attempts and cache priming for that binary; remaining planned samples are skipped, not failed attempts",
+    "search_engine": null,
+    "search_query": null,
+    "cold_definition": "--no-cache; browser and OS are warm",
+    "cached_definition": "same query/depth primed once, TTL 86400s; cache JSON presence and unchanged metadata checked; no browser/network cache flush",
+    "timing": "wall time including a new CLI process; warmups excluded; linear p95 interpolation",
+    "token_scope": "stdout only; not a hosted-provider normalized-token comparison"
+  },
+  "setup": {
+    "baseline": {
+      "elapsed_ms": 678.129,
+      "stdout_bytes": 361,
+      "ok": true,
+      "browser_version": "Chrome/154.0.8037.57",
+      "protocol_version": "1.3"
+    },
+    "candidate": {
+      "elapsed_ms": 524.133,
+      "stdout_bytes": 362,
+      "ok": true,
+      "browser_version": "Chrome/154.0.8037.57",
+      "protocol_version": "1.3"
+    }
+  },
+  "cleanup": {
+    "baseline": {
+      "elapsed_ms": 348.969,
+      "stdout_bytes": 537,
+      "ok": true
+    },
+    "candidate": {
+      "elapsed_ms": 239.91,
+      "stdout_bytes": 540,
+      "ok": true
+    }
+  },
+  "warmup_summary": {
+    "cli_version": {
+      "baseline": {
+        "samples": 5,
+        "successes": 5,
+        "attempted": 5,
+        "skipped": 0,
+        "failures": 0,
+        "latency_ms": {
+          "min": 6.692,
+          "median": 8.846,
+          "p95": 11.288,
+          "max": 11.8
+        },
+        "median_stdout_bytes": 14,
+        "median_response_tokens": 9
+      },
+      "candidate": {
+        "samples": 5,
+        "successes": 5,
+        "attempted": 5,
+        "skipped": 0,
+        "failures": 0,
+        "latency_ms": {
+          "min": 6.358,
+          "median": 7.143,
+          "p95": 14.91,
+          "max": 16.49
+        },
+        "median_stdout_bytes": 14,
+        "median_response_tokens": 9
+      }
+    },
+    "local_eval": {
+      "baseline": {
+        "samples": 5,
+        "successes": 5,
+        "attempted": 5,
+        "skipped": 0,
+        "failures": 0,
+        "latency_ms": {
+          "min": 8.969,
+          "median": 9.774,
+          "p95": 154.455,
+          "max": 185.651
+        },
+        "median_stdout_bytes": 23,
+        "median_response_tokens": 9
+      },
+      "candidate": {
+        "samples": 5,
+        "successes": 5,
+        "attempted": 5,
+        "skipped": 0,
+        "failures": 0,
+        "latency_ms": {
+          "min": 9.429,
+          "median": 13.786,
+          "p95": 45.03,
+          "max": 48.36
+        },
+        "median_stdout_bytes": 23,
+        "median_response_tokens": 9
+      }
+    },
+    "local_read": {
+      "baseline": {
+        "samples": 5,
+        "successes": 5,
+        "attempted": 5,
+        "skipped": 0,
+        "failures": 0,
+        "latency_ms": {
+          "min": 21.7,
+          "median": 32.222,
+          "p95": 35.993,
+          "max": 36.844
+        },
+        "median_stdout_bytes": 327,
+        "median_response_tokens": 92
+      },
+      "candidate": {
+        "samples": 5,
+        "successes": 5,
+        "attempted": 5,
+        "skipped": 0,
+        "failures": 0,
+        "latency_ms": {
+          "min": 22.181,
+          "median": 27.943,
+          "p95": 31.883,
+          "max": 32.284
+        },
+        "median_stdout_bytes": 327,
+        "median_response_tokens": 92
+      }
+    },
+    "synthetic_cache_hit": {
+      "baseline": {
+        "samples": 5,
+        "successes": 5,
+        "attempted": 5,
+        "skipped": 0,
+        "failures": 0,
+        "latency_ms": {
+          "min": 9.716,
+          "median": 10.336,
+          "p95": 11.021,
+          "max": 11.178
+        },
+        "median_stdout_bytes": 636,
+        "median_response_tokens": 139
+      },
+      "candidate": {
+        "samples": 5,
+        "successes": 5,
+        "attempted": 5,
+        "skipped": 0,
+        "failures": 0,
+        "latency_ms": {
+          "min": 6.837,
+          "median": 8.524,
+          "p95": 10.261,
+          "max": 10.614
+        },
+        "median_stdout_bytes": 636,
+        "median_response_tokens": 139
+      }
+    }
+  },
+  "summary": {
+    "cli_version": {
+      "baseline": {
+        "samples": 60,
+        "successes": 60,
+        "attempted": 60,
+        "skipped": 0,
+        "failures": 0,
+        "latency_ms": {
+          "min": 5.063,
+          "median": 6.6395,
+          "p95": 11.14,
+          "max": 16.614
+        },
+        "median_stdout_bytes": 14.0,
+        "median_response_tokens": 9.0
+      },
+      "candidate": {
+        "samples": 60,
+        "successes": 60,
+        "attempted": 60,
+        "skipped": 0,
+        "failures": 0,
+        "latency_ms": {
+          "min": 5.25,
+          "median": 6.4510000000000005,
+          "p95": 10.969,
+          "max": 13.894
+        },
+        "median_stdout_bytes": 14.0,
+        "median_response_tokens": 9.0
+      }
+    },
+    "local_eval": {
+      "baseline": {
+        "samples": 60,
+        "successes": 60,
+        "attempted": 60,
+        "skipped": 0,
+        "failures": 0,
+        "latency_ms": {
+          "min": 8.854,
+          "median": 13.488499999999998,
+          "p95": 30.245,
+          "max": 33.924
+        },
+        "median_stdout_bytes": 23.0,
+        "median_response_tokens": 9.0
+      },
+      "candidate": {
+        "samples": 60,
+        "successes": 60,
+        "attempted": 60,
+        "skipped": 0,
+        "failures": 0,
+        "latency_ms": {
+          "min": 8.63,
+          "median": 12.8185,
+          "p95": 31.871,
+          "max": 61.053
+        },
+        "median_stdout_bytes": 23.0,
+        "median_response_tokens": 9.0
+      }
+    },
+    "local_read": {
+      "baseline": {
+        "samples": 60,
+        "successes": 60,
+        "attempted": 60,
+        "skipped": 0,
+        "failures": 0,
+        "latency_ms": {
+          "min": 17.918,
+          "median": 23.423000000000002,
+          "p95": 39.603,
+          "max": 49.6
+        },
+        "median_stdout_bytes": 327.0,
+        "median_response_tokens": 92.0
+      },
+      "candidate": {
+        "samples": 60,
+        "successes": 60,
+        "attempted": 60,
+        "skipped": 0,
+        "failures": 0,
+        "latency_ms": {
+          "min": 17.018,
+          "median": 24.0015,
+          "p95": 37.393,
+          "max": 93.467
+        },
+        "median_stdout_bytes": 327.0,
+        "median_response_tokens": 92.0
+      }
+    },
+    "synthetic_cache_hit": {
+      "baseline": {
+        "samples": 60,
+        "successes": 60,
+        "attempted": 60,
+        "skipped": 0,
+        "failures": 0,
+        "latency_ms": {
+          "min": 8.36,
+          "median": 10.181000000000001,
+          "p95": 14.492,
+          "max": 17.661
+        },
+        "median_stdout_bytes": 636.0,
+        "median_response_tokens": 139.0
+      },
+      "candidate": {
+        "samples": 60,
+        "successes": 60,
+        "attempted": 60,
+        "skipped": 0,
+        "failures": 0,
+        "latency_ms": {
+          "min": 6.849,
+          "median": 8.690999999999999,
+          "p95": 12.09,
+          "max": 20.625
+        },
+        "median_stdout_bytes": 636.0,
+        "median_response_tokens": 139.0
+      }
+    }
+  },
+  "rows": [
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": -5,
+      "warmup": true,
+      "elapsed_ms": 8.846,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": -5,
+      "warmup": true,
+      "elapsed_ms": 6.646,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": -4,
+      "warmup": true,
+      "elapsed_ms": 7.143,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": -4,
+      "warmup": true,
+      "elapsed_ms": 6.692,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": -3,
+      "warmup": true,
+      "elapsed_ms": 9.239,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": -3,
+      "warmup": true,
+      "elapsed_ms": 6.358,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": -2,
+      "warmup": true,
+      "elapsed_ms": 16.49,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": -2,
+      "warmup": true,
+      "elapsed_ms": 11.8,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": -1,
+      "warmup": true,
+      "elapsed_ms": 6.911,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": -1,
+      "warmup": true,
+      "elapsed_ms": 8.588,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 0,
+      "warmup": false,
+      "elapsed_ms": 6.093,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 0,
+      "warmup": false,
+      "elapsed_ms": 6.433,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 1,
+      "warmup": false,
+      "elapsed_ms": 6.754,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 1,
+      "warmup": false,
+      "elapsed_ms": 5.878,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 2,
+      "warmup": false,
+      "elapsed_ms": 6.201,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 2,
+      "warmup": false,
+      "elapsed_ms": 5.063,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 3,
+      "warmup": false,
+      "elapsed_ms": 6.05,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 3,
+      "warmup": false,
+      "elapsed_ms": 7.472,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 4,
+      "warmup": false,
+      "elapsed_ms": 5.33,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 4,
+      "warmup": false,
+      "elapsed_ms": 7.787,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 5,
+      "warmup": false,
+      "elapsed_ms": 6.282,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 5,
+      "warmup": false,
+      "elapsed_ms": 6.091,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 6,
+      "warmup": false,
+      "elapsed_ms": 7.378,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 6,
+      "warmup": false,
+      "elapsed_ms": 5.756,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 7,
+      "warmup": false,
+      "elapsed_ms": 7.833,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 7,
+      "warmup": false,
+      "elapsed_ms": 6.679,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 8,
+      "warmup": false,
+      "elapsed_ms": 6.465,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 8,
+      "warmup": false,
+      "elapsed_ms": 7.108,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 9,
+      "warmup": false,
+      "elapsed_ms": 6.226,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 9,
+      "warmup": false,
+      "elapsed_ms": 7.172,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 10,
+      "warmup": false,
+      "elapsed_ms": 6.171,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 10,
+      "warmup": false,
+      "elapsed_ms": 5.927,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 11,
+      "warmup": false,
+      "elapsed_ms": 6.249,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 11,
+      "warmup": false,
+      "elapsed_ms": 5.786,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 12,
+      "warmup": false,
+      "elapsed_ms": 7.824,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 12,
+      "warmup": false,
+      "elapsed_ms": 6.724,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 13,
+      "warmup": false,
+      "elapsed_ms": 11.109,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 13,
+      "warmup": false,
+      "elapsed_ms": 7.426,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 14,
+      "warmup": false,
+      "elapsed_ms": 6.788,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 14,
+      "warmup": false,
+      "elapsed_ms": 6.008,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 15,
+      "warmup": false,
+      "elapsed_ms": 8.957,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 15,
+      "warmup": false,
+      "elapsed_ms": 6.223,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 16,
+      "warmup": false,
+      "elapsed_ms": 9.593,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 16,
+      "warmup": false,
+      "elapsed_ms": 9.122,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 17,
+      "warmup": false,
+      "elapsed_ms": 6.347,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 17,
+      "warmup": false,
+      "elapsed_ms": 5.765,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 18,
+      "warmup": false,
+      "elapsed_ms": 5.943,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 18,
+      "warmup": false,
+      "elapsed_ms": 7.148,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 19,
+      "warmup": false,
+      "elapsed_ms": 5.541,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 19,
+      "warmup": false,
+      "elapsed_ms": 5.804,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 20,
+      "warmup": false,
+      "elapsed_ms": 6.19,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 20,
+      "warmup": false,
+      "elapsed_ms": 6.011,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 21,
+      "warmup": false,
+      "elapsed_ms": 5.939,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 21,
+      "warmup": false,
+      "elapsed_ms": 6.209,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 22,
+      "warmup": false,
+      "elapsed_ms": 5.511,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 22,
+      "warmup": false,
+      "elapsed_ms": 6.606,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 23,
+      "warmup": false,
+      "elapsed_ms": 5.411,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 23,
+      "warmup": false,
+      "elapsed_ms": 5.622,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 24,
+      "warmup": false,
+      "elapsed_ms": 5.62,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 24,
+      "warmup": false,
+      "elapsed_ms": 6.11,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 25,
+      "warmup": false,
+      "elapsed_ms": 5.982,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 25,
+      "warmup": false,
+      "elapsed_ms": 5.861,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 26,
+      "warmup": false,
+      "elapsed_ms": 5.25,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 26,
+      "warmup": false,
+      "elapsed_ms": 5.892,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 27,
+      "warmup": false,
+      "elapsed_ms": 6.593,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 27,
+      "warmup": false,
+      "elapsed_ms": 5.928,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 28,
+      "warmup": false,
+      "elapsed_ms": 6.096,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 28,
+      "warmup": false,
+      "elapsed_ms": 6.21,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 29,
+      "warmup": false,
+      "elapsed_ms": 7.356,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 29,
+      "warmup": false,
+      "elapsed_ms": 5.965,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 30,
+      "warmup": false,
+      "elapsed_ms": 12.737,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 30,
+      "warmup": false,
+      "elapsed_ms": 10.456,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 31,
+      "warmup": false,
+      "elapsed_ms": 16.614,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 31,
+      "warmup": false,
+      "elapsed_ms": 13.492,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 32,
+      "warmup": false,
+      "elapsed_ms": 10.604,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 32,
+      "warmup": false,
+      "elapsed_ms": 6.582,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 33,
+      "warmup": false,
+      "elapsed_ms": 5.821,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 33,
+      "warmup": false,
+      "elapsed_ms": 7.057,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 34,
+      "warmup": false,
+      "elapsed_ms": 6.438,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 34,
+      "warmup": false,
+      "elapsed_ms": 6.646,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 35,
+      "warmup": false,
+      "elapsed_ms": 6.081,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 35,
+      "warmup": false,
+      "elapsed_ms": 6.464,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 36,
+      "warmup": false,
+      "elapsed_ms": 5.814,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 36,
+      "warmup": false,
+      "elapsed_ms": 5.689,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 37,
+      "warmup": false,
+      "elapsed_ms": 9.776,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 37,
+      "warmup": false,
+      "elapsed_ms": 6.302,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 38,
+      "warmup": false,
+      "elapsed_ms": 6.566,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 38,
+      "warmup": false,
+      "elapsed_ms": 5.609,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 39,
+      "warmup": false,
+      "elapsed_ms": 5.912,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 39,
+      "warmup": false,
+      "elapsed_ms": 6.339,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 40,
+      "warmup": false,
+      "elapsed_ms": 6.389,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 40,
+      "warmup": false,
+      "elapsed_ms": 12.2,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 41,
+      "warmup": false,
+      "elapsed_ms": 6.454,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 41,
+      "warmup": false,
+      "elapsed_ms": 7.262,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 42,
+      "warmup": false,
+      "elapsed_ms": 5.94,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 42,
+      "warmup": false,
+      "elapsed_ms": 8.361,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 43,
+      "warmup": false,
+      "elapsed_ms": 6.871,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 43,
+      "warmup": false,
+      "elapsed_ms": 8.547,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 44,
+      "warmup": false,
+      "elapsed_ms": 7.571,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 44,
+      "warmup": false,
+      "elapsed_ms": 8.319,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 45,
+      "warmup": false,
+      "elapsed_ms": 6.715,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 45,
+      "warmup": false,
+      "elapsed_ms": 6.76,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 46,
+      "warmup": false,
+      "elapsed_ms": 8.508,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 46,
+      "warmup": false,
+      "elapsed_ms": 9.157,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 47,
+      "warmup": false,
+      "elapsed_ms": 7.393,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 47,
+      "warmup": false,
+      "elapsed_ms": 7.58,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 48,
+      "warmup": false,
+      "elapsed_ms": 6.987,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 48,
+      "warmup": false,
+      "elapsed_ms": 6.633,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 49,
+      "warmup": false,
+      "elapsed_ms": 7.965,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 49,
+      "warmup": false,
+      "elapsed_ms": 6.623,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 50,
+      "warmup": false,
+      "elapsed_ms": 6.723,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 50,
+      "warmup": false,
+      "elapsed_ms": 6.875,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 51,
+      "warmup": false,
+      "elapsed_ms": 7.535,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 51,
+      "warmup": false,
+      "elapsed_ms": 6.415,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 52,
+      "warmup": false,
+      "elapsed_ms": 7.624,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 52,
+      "warmup": false,
+      "elapsed_ms": 6.583,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 53,
+      "warmup": false,
+      "elapsed_ms": 6.627,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 53,
+      "warmup": false,
+      "elapsed_ms": 6.318,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 54,
+      "warmup": false,
+      "elapsed_ms": 6.319,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 54,
+      "warmup": false,
+      "elapsed_ms": 7.572,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 55,
+      "warmup": false,
+      "elapsed_ms": 11.734,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 55,
+      "warmup": false,
+      "elapsed_ms": 10.876,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 56,
+      "warmup": false,
+      "elapsed_ms": 13.894,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 56,
+      "warmup": false,
+      "elapsed_ms": 7.414,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 57,
+      "warmup": false,
+      "elapsed_ms": 8.259,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 57,
+      "warmup": false,
+      "elapsed_ms": 6.886,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 58,
+      "warmup": false,
+      "elapsed_ms": 8.506,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 58,
+      "warmup": false,
+      "elapsed_ms": 6.867,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "cli_version",
+      "sample": 59,
+      "warmup": false,
+      "elapsed_ms": 7.574,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "cli_version",
+      "sample": 59,
+      "warmup": false,
+      "elapsed_ms": 7.114,
+      "stdout_bytes": 14,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": -5,
+      "warmup": true,
+      "elapsed_ms": 29.669,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": -5,
+      "warmup": true,
+      "elapsed_ms": 31.71,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": -4,
+      "warmup": true,
+      "elapsed_ms": 48.36,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": -4,
+      "warmup": true,
+      "elapsed_ms": 185.651,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": -3,
+      "warmup": true,
+      "elapsed_ms": 9.774,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": -3,
+      "warmup": true,
+      "elapsed_ms": 12.772,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": -2,
+      "warmup": true,
+      "elapsed_ms": 13.786,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": -2,
+      "warmup": true,
+      "elapsed_ms": 9.03,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": -1,
+      "warmup": true,
+      "elapsed_ms": 8.969,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": -1,
+      "warmup": true,
+      "elapsed_ms": 9.429,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 0,
+      "warmup": false,
+      "elapsed_ms": 9.69,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 0,
+      "warmup": false,
+      "elapsed_ms": 11.46,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 1,
+      "warmup": false,
+      "elapsed_ms": 21.53,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 1,
+      "warmup": false,
+      "elapsed_ms": 9.393,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 2,
+      "warmup": false,
+      "elapsed_ms": 10.603,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 2,
+      "warmup": false,
+      "elapsed_ms": 9.562,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 3,
+      "warmup": false,
+      "elapsed_ms": 13.831,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 3,
+      "warmup": false,
+      "elapsed_ms": 13.644,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 4,
+      "warmup": false,
+      "elapsed_ms": 58.591,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 4,
+      "warmup": false,
+      "elapsed_ms": 19.57,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 5,
+      "warmup": false,
+      "elapsed_ms": 33.052,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 5,
+      "warmup": false,
+      "elapsed_ms": 15.748,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 6,
+      "warmup": false,
+      "elapsed_ms": 12.883,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 6,
+      "warmup": false,
+      "elapsed_ms": 21.819,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 7,
+      "warmup": false,
+      "elapsed_ms": 13.702,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 7,
+      "warmup": false,
+      "elapsed_ms": 19.825,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 8,
+      "warmup": false,
+      "elapsed_ms": 14.68,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 8,
+      "warmup": false,
+      "elapsed_ms": 32.913,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 9,
+      "warmup": false,
+      "elapsed_ms": 8.854,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 9,
+      "warmup": false,
+      "elapsed_ms": 12.499,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 10,
+      "warmup": false,
+      "elapsed_ms": 10.531,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 10,
+      "warmup": false,
+      "elapsed_ms": 9.26,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 11,
+      "warmup": false,
+      "elapsed_ms": 13.262,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 11,
+      "warmup": false,
+      "elapsed_ms": 20.575,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 12,
+      "warmup": false,
+      "elapsed_ms": 21.528,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 12,
+      "warmup": false,
+      "elapsed_ms": 10.424,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 13,
+      "warmup": false,
+      "elapsed_ms": 9.925,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 13,
+      "warmup": false,
+      "elapsed_ms": 10.19,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 14,
+      "warmup": false,
+      "elapsed_ms": 8.63,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 14,
+      "warmup": false,
+      "elapsed_ms": 10.159,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 15,
+      "warmup": false,
+      "elapsed_ms": 10.555,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 15,
+      "warmup": false,
+      "elapsed_ms": 10.011,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 16,
+      "warmup": false,
+      "elapsed_ms": 11.27,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 16,
+      "warmup": false,
+      "elapsed_ms": 11.518,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 17,
+      "warmup": false,
+      "elapsed_ms": 30.105,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 17,
+      "warmup": false,
+      "elapsed_ms": 15.304,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 18,
+      "warmup": false,
+      "elapsed_ms": 19.978,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 18,
+      "warmup": false,
+      "elapsed_ms": 13.894,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 19,
+      "warmup": false,
+      "elapsed_ms": 13.559,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 19,
+      "warmup": false,
+      "elapsed_ms": 12.565,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 20,
+      "warmup": false,
+      "elapsed_ms": 11.98,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 20,
+      "warmup": false,
+      "elapsed_ms": 23.393,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 21,
+      "warmup": false,
+      "elapsed_ms": 20.816,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 21,
+      "warmup": false,
+      "elapsed_ms": 20.824,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 22,
+      "warmup": false,
+      "elapsed_ms": 15.665,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 22,
+      "warmup": false,
+      "elapsed_ms": 12.834,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 23,
+      "warmup": false,
+      "elapsed_ms": 10.491,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 23,
+      "warmup": false,
+      "elapsed_ms": 16.645,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 24,
+      "warmup": false,
+      "elapsed_ms": 12.552,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 24,
+      "warmup": false,
+      "elapsed_ms": 33.924,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 25,
+      "warmup": false,
+      "elapsed_ms": 17.272,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 25,
+      "warmup": false,
+      "elapsed_ms": 11.777,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 26,
+      "warmup": false,
+      "elapsed_ms": 14.813,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 26,
+      "warmup": false,
+      "elapsed_ms": 11.973,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 27,
+      "warmup": false,
+      "elapsed_ms": 12.468,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 27,
+      "warmup": false,
+      "elapsed_ms": 61.053,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 28,
+      "warmup": false,
+      "elapsed_ms": 11.906,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 28,
+      "warmup": false,
+      "elapsed_ms": 11.62,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 29,
+      "warmup": false,
+      "elapsed_ms": 13.418,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 29,
+      "warmup": false,
+      "elapsed_ms": 12.754,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 30,
+      "warmup": false,
+      "elapsed_ms": 9.168,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 30,
+      "warmup": false,
+      "elapsed_ms": 23.809,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 31,
+      "warmup": false,
+      "elapsed_ms": 17.225,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 31,
+      "warmup": false,
+      "elapsed_ms": 11.319,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 32,
+      "warmup": false,
+      "elapsed_ms": 21.918,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 32,
+      "warmup": false,
+      "elapsed_ms": 16.617,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 33,
+      "warmup": false,
+      "elapsed_ms": 18.766,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 33,
+      "warmup": false,
+      "elapsed_ms": 31.732,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 34,
+      "warmup": false,
+      "elapsed_ms": 14.023,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 34,
+      "warmup": false,
+      "elapsed_ms": 16.366,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 35,
+      "warmup": false,
+      "elapsed_ms": 12.708,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 35,
+      "warmup": false,
+      "elapsed_ms": 18.304,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 36,
+      "warmup": false,
+      "elapsed_ms": 10.84,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 36,
+      "warmup": false,
+      "elapsed_ms": 12.992,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 37,
+      "warmup": false,
+      "elapsed_ms": 12.495,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 37,
+      "warmup": false,
+      "elapsed_ms": 15.011,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 38,
+      "warmup": false,
+      "elapsed_ms": 14.881,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 38,
+      "warmup": false,
+      "elapsed_ms": 10.05,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 39,
+      "warmup": false,
+      "elapsed_ms": 12.189,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 39,
+      "warmup": false,
+      "elapsed_ms": 16.552,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 40,
+      "warmup": false,
+      "elapsed_ms": 11.155,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 40,
+      "warmup": false,
+      "elapsed_ms": 19.27,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 41,
+      "warmup": false,
+      "elapsed_ms": 28.671,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 41,
+      "warmup": false,
+      "elapsed_ms": 11.538,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 42,
+      "warmup": false,
+      "elapsed_ms": 13.332,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 42,
+      "warmup": false,
+      "elapsed_ms": 17.369,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 43,
+      "warmup": false,
+      "elapsed_ms": 26.93,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 43,
+      "warmup": false,
+      "elapsed_ms": 13.101,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 44,
+      "warmup": false,
+      "elapsed_ms": 12.46,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 44,
+      "warmup": false,
+      "elapsed_ms": 11.674,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 45,
+      "warmup": false,
+      "elapsed_ms": 10.248,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 45,
+      "warmup": false,
+      "elapsed_ms": 9.056,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 46,
+      "warmup": false,
+      "elapsed_ms": 9.197,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 46,
+      "warmup": false,
+      "elapsed_ms": 15.573,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 47,
+      "warmup": false,
+      "elapsed_ms": 10.265,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 47,
+      "warmup": false,
+      "elapsed_ms": 27.495,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 48,
+      "warmup": false,
+      "elapsed_ms": 12.036,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 48,
+      "warmup": false,
+      "elapsed_ms": 12.432,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 49,
+      "warmup": false,
+      "elapsed_ms": 11.142,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 49,
+      "warmup": false,
+      "elapsed_ms": 12.207,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 50,
+      "warmup": false,
+      "elapsed_ms": 12.12,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 50,
+      "warmup": false,
+      "elapsed_ms": 14.032,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 51,
+      "warmup": false,
+      "elapsed_ms": 21.978,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 51,
+      "warmup": false,
+      "elapsed_ms": 18.909,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 52,
+      "warmup": false,
+      "elapsed_ms": 13.088,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 52,
+      "warmup": false,
+      "elapsed_ms": 12.947,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 53,
+      "warmup": false,
+      "elapsed_ms": 12.881,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 53,
+      "warmup": false,
+      "elapsed_ms": 12.32,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 54,
+      "warmup": false,
+      "elapsed_ms": 10.916,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 54,
+      "warmup": false,
+      "elapsed_ms": 12.904,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 55,
+      "warmup": false,
+      "elapsed_ms": 17.872,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 55,
+      "warmup": false,
+      "elapsed_ms": 10.074,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 56,
+      "warmup": false,
+      "elapsed_ms": 12.123,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 56,
+      "warmup": false,
+      "elapsed_ms": 13.014,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 57,
+      "warmup": false,
+      "elapsed_ms": 16.523,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 57,
+      "warmup": false,
+      "elapsed_ms": 14.201,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 58,
+      "warmup": false,
+      "elapsed_ms": 13.944,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 58,
+      "warmup": false,
+      "elapsed_ms": 17.072,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_eval",
+      "sample": 59,
+      "warmup": false,
+      "elapsed_ms": 14.08,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_eval",
+      "sample": 59,
+      "warmup": false,
+      "elapsed_ms": 34.507,
+      "stdout_bytes": 23,
+      "ok": true,
+      "response_tokens": 9
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": -5,
+      "warmup": true,
+      "elapsed_ms": 32.587,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": -5,
+      "warmup": true,
+      "elapsed_ms": 32.284,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": -4,
+      "warmup": true,
+      "elapsed_ms": 30.278,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": -4,
+      "warmup": true,
+      "elapsed_ms": 36.844,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": -3,
+      "warmup": true,
+      "elapsed_ms": 32.222,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": -3,
+      "warmup": true,
+      "elapsed_ms": 27.943,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": -2,
+      "warmup": true,
+      "elapsed_ms": 22.181,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": -2,
+      "warmup": true,
+      "elapsed_ms": 21.7,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": -1,
+      "warmup": true,
+      "elapsed_ms": 27.909,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": -1,
+      "warmup": true,
+      "elapsed_ms": 25.634,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 0,
+      "warmup": false,
+      "elapsed_ms": 20.342,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 0,
+      "warmup": false,
+      "elapsed_ms": 21.303,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 1,
+      "warmup": false,
+      "elapsed_ms": 21.37,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 1,
+      "warmup": false,
+      "elapsed_ms": 28.491,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 2,
+      "warmup": false,
+      "elapsed_ms": 20.389,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 2,
+      "warmup": false,
+      "elapsed_ms": 21.595,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 3,
+      "warmup": false,
+      "elapsed_ms": 25.134,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 3,
+      "warmup": false,
+      "elapsed_ms": 19.144,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 4,
+      "warmup": false,
+      "elapsed_ms": 24.217,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 4,
+      "warmup": false,
+      "elapsed_ms": 29.235,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 5,
+      "warmup": false,
+      "elapsed_ms": 17.918,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 5,
+      "warmup": false,
+      "elapsed_ms": 20.665,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 6,
+      "warmup": false,
+      "elapsed_ms": 21.891,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 6,
+      "warmup": false,
+      "elapsed_ms": 24.032,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 7,
+      "warmup": false,
+      "elapsed_ms": 20.661,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 7,
+      "warmup": false,
+      "elapsed_ms": 23.792,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 8,
+      "warmup": false,
+      "elapsed_ms": 22.201,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 8,
+      "warmup": false,
+      "elapsed_ms": 21.098,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 9,
+      "warmup": false,
+      "elapsed_ms": 19.499,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 9,
+      "warmup": false,
+      "elapsed_ms": 26.798,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 10,
+      "warmup": false,
+      "elapsed_ms": 24.49,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 10,
+      "warmup": false,
+      "elapsed_ms": 21.841,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 11,
+      "warmup": false,
+      "elapsed_ms": 22.16,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 11,
+      "warmup": false,
+      "elapsed_ms": 21.579,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 12,
+      "warmup": false,
+      "elapsed_ms": 27.357,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 12,
+      "warmup": false,
+      "elapsed_ms": 21.746,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 13,
+      "warmup": false,
+      "elapsed_ms": 26.587,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 13,
+      "warmup": false,
+      "elapsed_ms": 23.333,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 14,
+      "warmup": false,
+      "elapsed_ms": 24.087,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 14,
+      "warmup": false,
+      "elapsed_ms": 24.569,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 15,
+      "warmup": false,
+      "elapsed_ms": 40.029,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 15,
+      "warmup": false,
+      "elapsed_ms": 18.492,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 16,
+      "warmup": false,
+      "elapsed_ms": 24.741,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 16,
+      "warmup": false,
+      "elapsed_ms": 22.941,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 17,
+      "warmup": false,
+      "elapsed_ms": 25.828,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 17,
+      "warmup": false,
+      "elapsed_ms": 33.53,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 18,
+      "warmup": false,
+      "elapsed_ms": 25.701,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 18,
+      "warmup": false,
+      "elapsed_ms": 25.198,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 19,
+      "warmup": false,
+      "elapsed_ms": 21.54,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 19,
+      "warmup": false,
+      "elapsed_ms": 20.248,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 20,
+      "warmup": false,
+      "elapsed_ms": 24.873,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 20,
+      "warmup": false,
+      "elapsed_ms": 31.855,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 21,
+      "warmup": false,
+      "elapsed_ms": 32.214,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 21,
+      "warmup": false,
+      "elapsed_ms": 24.01,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 22,
+      "warmup": false,
+      "elapsed_ms": 39.01,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 22,
+      "warmup": false,
+      "elapsed_ms": 39.963,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 23,
+      "warmup": false,
+      "elapsed_ms": 49.6,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 23,
+      "warmup": false,
+      "elapsed_ms": 29.422,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 24,
+      "warmup": false,
+      "elapsed_ms": 37.308,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 24,
+      "warmup": false,
+      "elapsed_ms": 39.584,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 25,
+      "warmup": false,
+      "elapsed_ms": 33.663,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 25,
+      "warmup": false,
+      "elapsed_ms": 47.246,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 26,
+      "warmup": false,
+      "elapsed_ms": 93.467,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 26,
+      "warmup": false,
+      "elapsed_ms": 29.173,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 27,
+      "warmup": false,
+      "elapsed_ms": 22.561,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 27,
+      "warmup": false,
+      "elapsed_ms": 25.262,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 28,
+      "warmup": false,
+      "elapsed_ms": 24.19,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 28,
+      "warmup": false,
+      "elapsed_ms": 23.092,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 29,
+      "warmup": false,
+      "elapsed_ms": 39.306,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 29,
+      "warmup": false,
+      "elapsed_ms": 30.355,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 30,
+      "warmup": false,
+      "elapsed_ms": 23.396,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 30,
+      "warmup": false,
+      "elapsed_ms": 24.595,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 31,
+      "warmup": false,
+      "elapsed_ms": 22.997,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 31,
+      "warmup": false,
+      "elapsed_ms": 20.509,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 32,
+      "warmup": false,
+      "elapsed_ms": 21.466,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 32,
+      "warmup": false,
+      "elapsed_ms": 20.813,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 33,
+      "warmup": false,
+      "elapsed_ms": 25.33,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 33,
+      "warmup": false,
+      "elapsed_ms": 20.939,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 34,
+      "warmup": false,
+      "elapsed_ms": 23.25,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 34,
+      "warmup": false,
+      "elapsed_ms": 20.989,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 35,
+      "warmup": false,
+      "elapsed_ms": 20.811,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 35,
+      "warmup": false,
+      "elapsed_ms": 24.139,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 36,
+      "warmup": false,
+      "elapsed_ms": 24.749,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 36,
+      "warmup": false,
+      "elapsed_ms": 23.132,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 37,
+      "warmup": false,
+      "elapsed_ms": 26.894,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 37,
+      "warmup": false,
+      "elapsed_ms": 17.899,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 38,
+      "warmup": false,
+      "elapsed_ms": 26.795,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 38,
+      "warmup": false,
+      "elapsed_ms": 22.818,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 39,
+      "warmup": false,
+      "elapsed_ms": 21.686,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 39,
+      "warmup": false,
+      "elapsed_ms": 20.034,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 40,
+      "warmup": false,
+      "elapsed_ms": 22.171,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 40,
+      "warmup": false,
+      "elapsed_ms": 23.765,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 41,
+      "warmup": false,
+      "elapsed_ms": 18.189,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 41,
+      "warmup": false,
+      "elapsed_ms": 19.948,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 42,
+      "warmup": false,
+      "elapsed_ms": 20.643,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 42,
+      "warmup": false,
+      "elapsed_ms": 23.543,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 43,
+      "warmup": false,
+      "elapsed_ms": 20.732,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 43,
+      "warmup": false,
+      "elapsed_ms": 22.011,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 44,
+      "warmup": false,
+      "elapsed_ms": 17.018,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 44,
+      "warmup": false,
+      "elapsed_ms": 28.796,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 45,
+      "warmup": false,
+      "elapsed_ms": 18.762,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 45,
+      "warmup": false,
+      "elapsed_ms": 18.731,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 46,
+      "warmup": false,
+      "elapsed_ms": 25.256,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 46,
+      "warmup": false,
+      "elapsed_ms": 23.407,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 47,
+      "warmup": false,
+      "elapsed_ms": 26.592,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 47,
+      "warmup": false,
+      "elapsed_ms": 23.993,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 48,
+      "warmup": false,
+      "elapsed_ms": 22.323,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 48,
+      "warmup": false,
+      "elapsed_ms": 25.846,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 49,
+      "warmup": false,
+      "elapsed_ms": 23.439,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 49,
+      "warmup": false,
+      "elapsed_ms": 20.06,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 50,
+      "warmup": false,
+      "elapsed_ms": 22.608,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 50,
+      "warmup": false,
+      "elapsed_ms": 24.431,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 51,
+      "warmup": false,
+      "elapsed_ms": 24.999,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 51,
+      "warmup": false,
+      "elapsed_ms": 25.081,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 52,
+      "warmup": false,
+      "elapsed_ms": 24.393,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 52,
+      "warmup": false,
+      "elapsed_ms": 22.489,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 53,
+      "warmup": false,
+      "elapsed_ms": 17.934,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 53,
+      "warmup": false,
+      "elapsed_ms": 25.621,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 54,
+      "warmup": false,
+      "elapsed_ms": 24.159,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 54,
+      "warmup": false,
+      "elapsed_ms": 22.908,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 55,
+      "warmup": false,
+      "elapsed_ms": 25.344,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 55,
+      "warmup": false,
+      "elapsed_ms": 26.372,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 56,
+      "warmup": false,
+      "elapsed_ms": 23.294,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 56,
+      "warmup": false,
+      "elapsed_ms": 21.239,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 57,
+      "warmup": false,
+      "elapsed_ms": 19.2,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 57,
+      "warmup": false,
+      "elapsed_ms": 17.89,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 58,
+      "warmup": false,
+      "elapsed_ms": 24.649,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 58,
+      "warmup": false,
+      "elapsed_ms": 30.136,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "local_read",
+      "sample": 59,
+      "warmup": false,
+      "elapsed_ms": 28.426,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "candidate",
+      "scenario": "local_read",
+      "sample": 59,
+      "warmup": false,
+      "elapsed_ms": 26.183,
+      "stdout_bytes": 327,
+      "ok": true,
+      "response_tokens": 92
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": -5,
+      "warmup": true,
+      "elapsed_ms": 10.06,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": -5,
+      "warmup": true,
+      "elapsed_ms": 8.524,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": -4,
+      "warmup": true,
+      "elapsed_ms": 10.614,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": -4,
+      "warmup": true,
+      "elapsed_ms": 11.178,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": -3,
+      "warmup": true,
+      "elapsed_ms": 10.391,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": -3,
+      "warmup": true,
+      "elapsed_ms": 8.848,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": -2,
+      "warmup": true,
+      "elapsed_ms": 7.559,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": -2,
+      "warmup": true,
+      "elapsed_ms": 10.336,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": -1,
+      "warmup": true,
+      "elapsed_ms": 9.716,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": -1,
+      "warmup": true,
+      "elapsed_ms": 6.837,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": 0,
+      "warmup": false,
+      "elapsed_ms": 9.299,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": 0,
+      "warmup": false,
+      "elapsed_ms": 11.708,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": 1,
+      "warmup": false,
+      "elapsed_ms": 10.006,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": 1,
+      "warmup": false,
+      "elapsed_ms": 8.511,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": 2,
+      "warmup": false,
+      "elapsed_ms": 10.941,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": 2,
+      "warmup": false,
+      "elapsed_ms": 8.776,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": 3,
+      "warmup": false,
+      "elapsed_ms": 12.037,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": 3,
+      "warmup": false,
+      "elapsed_ms": 11.304,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": 4,
+      "warmup": false,
+      "elapsed_ms": 7.429,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": 4,
+      "warmup": false,
+      "elapsed_ms": 10.054,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": 5,
+      "warmup": false,
+      "elapsed_ms": 8.8,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": 5,
+      "warmup": false,
+      "elapsed_ms": 9.381,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": 6,
+      "warmup": false,
+      "elapsed_ms": 7.426,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": 6,
+      "warmup": false,
+      "elapsed_ms": 10.52,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": 7,
+      "warmup": false,
+      "elapsed_ms": 10.898,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": 7,
+      "warmup": false,
+      "elapsed_ms": 8.367,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": 8,
+      "warmup": false,
+      "elapsed_ms": 9.655,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": 8,
+      "warmup": false,
+      "elapsed_ms": 9.321,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": 9,
+      "warmup": false,
+      "elapsed_ms": 8.779,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": 9,
+      "warmup": false,
+      "elapsed_ms": 9.951,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": 10,
+      "warmup": false,
+      "elapsed_ms": 20.625,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": 10,
+      "warmup": false,
+      "elapsed_ms": 12.6,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": 11,
+      "warmup": false,
+      "elapsed_ms": 10.707,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": 11,
+      "warmup": false,
+      "elapsed_ms": 8.112,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": 12,
+      "warmup": false,
+      "elapsed_ms": 8.66,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": 12,
+      "warmup": false,
+      "elapsed_ms": 8.444,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": 13,
+      "warmup": false,
+      "elapsed_ms": 12.444,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": 13,
+      "warmup": false,
+      "elapsed_ms": 9.515,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": 14,
+      "warmup": false,
+      "elapsed_ms": 8.293,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": 14,
+      "warmup": false,
+      "elapsed_ms": 9.717,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": 15,
+      "warmup": false,
+      "elapsed_ms": 8.36,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": 15,
+      "warmup": false,
+      "elapsed_ms": 7.586,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": 16,
+      "warmup": false,
+      "elapsed_ms": 8.233,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": 16,
+      "warmup": false,
+      "elapsed_ms": 9.072,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": 17,
+      "warmup": false,
+      "elapsed_ms": 8.749,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": 17,
+      "warmup": false,
+      "elapsed_ms": 6.849,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": 18,
+      "warmup": false,
+      "elapsed_ms": 7.852,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": 18,
+      "warmup": false,
+      "elapsed_ms": 9.513,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": 19,
+      "warmup": false,
+      "elapsed_ms": 9.926,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": 19,
+      "warmup": false,
+      "elapsed_ms": 7.799,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": 20,
+      "warmup": false,
+      "elapsed_ms": 7.391,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": 20,
+      "warmup": false,
+      "elapsed_ms": 8.76,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": 21,
+      "warmup": false,
+      "elapsed_ms": 8.781,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": 21,
+      "warmup": false,
+      "elapsed_ms": 10.366,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": 22,
+      "warmup": false,
+      "elapsed_ms": 7.684,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": 22,
+      "warmup": false,
+      "elapsed_ms": 10.357,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": 23,
+      "warmup": false,
+      "elapsed_ms": 10.539,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": 23,
+      "warmup": false,
+      "elapsed_ms": 7.813,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": 24,
+      "warmup": false,
+      "elapsed_ms": 8.665,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": 24,
+      "warmup": false,
+      "elapsed_ms": 12.758,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": 25,
+      "warmup": false,
+      "elapsed_ms": 9.47,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": 25,
+      "warmup": false,
+      "elapsed_ms": 9.086,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": 26,
+      "warmup": false,
+      "elapsed_ms": 7.33,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": 26,
+      "warmup": false,
+      "elapsed_ms": 10.471,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": 27,
+      "warmup": false,
+      "elapsed_ms": 9.705,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": 27,
+      "warmup": false,
+      "elapsed_ms": 7.555,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": 28,
+      "warmup": false,
+      "elapsed_ms": 9.484,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": 28,
+      "warmup": false,
+      "elapsed_ms": 9.047,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": 29,
+      "warmup": false,
+      "elapsed_ms": 14.487,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": 29,
+      "warmup": false,
+      "elapsed_ms": 9.172,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": 30,
+      "warmup": false,
+      "elapsed_ms": 11.752,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": 30,
+      "warmup": false,
+      "elapsed_ms": 10.234,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": 31,
+      "warmup": false,
+      "elapsed_ms": 10.99,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": 31,
+      "warmup": false,
+      "elapsed_ms": 8.927,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": 32,
+      "warmup": false,
+      "elapsed_ms": 7.916,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": 32,
+      "warmup": false,
+      "elapsed_ms": 12.025,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": 33,
+      "warmup": false,
+      "elapsed_ms": 14.582,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": 33,
+      "warmup": false,
+      "elapsed_ms": 11.0,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": 34,
+      "warmup": false,
+      "elapsed_ms": 8.615,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": 34,
+      "warmup": false,
+      "elapsed_ms": 10.796,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": 35,
+      "warmup": false,
+      "elapsed_ms": 11.686,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": 35,
+      "warmup": false,
+      "elapsed_ms": 7.527,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": 36,
+      "warmup": false,
+      "elapsed_ms": 8.679,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": 36,
+      "warmup": false,
+      "elapsed_ms": 8.806,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": 37,
+      "warmup": false,
+      "elapsed_ms": 10.182,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": 37,
+      "warmup": false,
+      "elapsed_ms": 12.294,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": 38,
+      "warmup": false,
+      "elapsed_ms": 12.386,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": 38,
+      "warmup": false,
+      "elapsed_ms": 9.711,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": 39,
+      "warmup": false,
+      "elapsed_ms": 9.507,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": 39,
+      "warmup": false,
+      "elapsed_ms": 8.248,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": 40,
+      "warmup": false,
+      "elapsed_ms": 8.292,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": 40,
+      "warmup": false,
+      "elapsed_ms": 10.353,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": 41,
+      "warmup": false,
+      "elapsed_ms": 10.297,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": 41,
+      "warmup": false,
+      "elapsed_ms": 9.098,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": 42,
+      "warmup": false,
+      "elapsed_ms": 9.565,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": 42,
+      "warmup": false,
+      "elapsed_ms": 10.684,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": 43,
+      "warmup": false,
+      "elapsed_ms": 10.12,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": 43,
+      "warmup": false,
+      "elapsed_ms": 10.413,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": 44,
+      "warmup": false,
+      "elapsed_ms": 8.597,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": 44,
+      "warmup": false,
+      "elapsed_ms": 9.254,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": 45,
+      "warmup": false,
+      "elapsed_ms": 10.2,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": 45,
+      "warmup": false,
+      "elapsed_ms": 7.475,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": 46,
+      "warmup": false,
+      "elapsed_ms": 8.248,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": 46,
+      "warmup": false,
+      "elapsed_ms": 16.968,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": 47,
+      "warmup": false,
+      "elapsed_ms": 10.18,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": 47,
+      "warmup": false,
+      "elapsed_ms": 9.727,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": 48,
+      "warmup": false,
+      "elapsed_ms": 9.285,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": 48,
+      "warmup": false,
+      "elapsed_ms": 9.766,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": 49,
+      "warmup": false,
+      "elapsed_ms": 9.104,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": 49,
+      "warmup": false,
+      "elapsed_ms": 8.987,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": 50,
+      "warmup": false,
+      "elapsed_ms": 7.229,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": 50,
+      "warmup": false,
+      "elapsed_ms": 9.973,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": 51,
+      "warmup": false,
+      "elapsed_ms": 8.679,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": 51,
+      "warmup": false,
+      "elapsed_ms": 10.339,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": 52,
+      "warmup": false,
+      "elapsed_ms": 8.703,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": 52,
+      "warmup": false,
+      "elapsed_ms": 9.006,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": 53,
+      "warmup": false,
+      "elapsed_ms": 12.05,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": 53,
+      "warmup": false,
+      "elapsed_ms": 10.319,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": 54,
+      "warmup": false,
+      "elapsed_ms": 8.353,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": 54,
+      "warmup": false,
+      "elapsed_ms": 10.692,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": 55,
+      "warmup": false,
+      "elapsed_ms": 12.565,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": 55,
+      "warmup": false,
+      "elapsed_ms": 12.079,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": 56,
+      "warmup": false,
+      "elapsed_ms": 8.673,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": 56,
+      "warmup": false,
+      "elapsed_ms": 17.661,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": 57,
+      "warmup": false,
+      "elapsed_ms": 11.18,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": 57,
+      "warmup": false,
+      "elapsed_ms": 11.165,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": 58,
+      "warmup": false,
+      "elapsed_ms": 11.264,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": 58,
+      "warmup": false,
+      "elapsed_ms": 9.468,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "baseline",
+      "scenario": "synthetic_cache_hit",
+      "sample": 59,
+      "warmup": false,
+      "elapsed_ms": 13.742,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    },
+    {
+      "binary": "candidate",
+      "scenario": "synthetic_cache_hit",
+      "sample": 59,
+      "warmup": false,
+      "elapsed_ms": 9.281,
+      "stdout_bytes": 636,
+      "ok": true,
+      "response_tokens": 139,
+      "primed_cache_unchanged": true
+    }
+  ]
+}

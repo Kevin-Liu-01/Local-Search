@@ -65,6 +65,10 @@ The Cargo package is `local-search`. The preferred executable is `lsearch`.
   arguments, enums, defaults, and help text. A change here is user-facing.
 - `src/commands/mod.rs` orchestrates command behavior. Keep transport details and
   evaluated browser programs out of this layer when they belong under `browser/`.
+- `src/commands/search.rs` owns search orchestration, browser-scoped atomic cache
+  records, compact output, and optional page enrichment. Verify the live selected
+  browser before cache access; attach to a page only for misses, explicit targets,
+  or content reads. Never let cached results mask a disconnected browser.
 - `src/browser/discovery.rs` resolves explicit CDP endpoints, managed profile
   markers, saved endpoints, and supported local ports.
 - `src/browser/cdp.rs` is the minimal flattened-session Chrome DevTools Protocol
@@ -168,6 +172,9 @@ program -> normalized Rust value -> stable stdout envelope
   browser state can participate without exporting credentials.
 - `record` emits a HAR-shaped collection of CDP events; do not describe it as
   full browser HAR parity or imply that it captures response bodies.
+  Retain only the newest 4,096 events / 8 MiB of serialized events and document
+  possible eviction. Navigation readiness must follow the new main-frame loader,
+  and event traffic must never extend an operation's absolute timeout.
 - `cleanup` is a safe inspection by default. `--kill` stops managed listener
   PIDs and clears stale markers but preserves profile cookies/history. Custom
   ports use separate PID markers; `--no-persist` skips endpoint persistence, not

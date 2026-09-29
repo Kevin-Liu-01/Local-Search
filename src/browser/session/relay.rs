@@ -129,6 +129,10 @@ impl Leases {
         let Some(ended) = self.client.take() else {
             return Ok(());
         };
+        // A timed-out evaluation may never answer. Old leases must not consume
+        // the next command's bounded request budget for the helper's lifetime.
+        self.pending
+            .retain(|_, request| request.lease != ended.lease);
         let owned: Vec<_> = self
             .sessions
             .iter()
@@ -193,6 +197,17 @@ impl Leases {
         value: &mut Value,
     ) -> Result<bool> {
         let Some(request) = self.pending.remove(&id) else {
+            // CDP attach replies carry a top-level result.sessionId. An attach
+            // can finish after its lease has ended, so clean up that session
+            // without retaining an unbounded history of abandoned request IDs.
+            // Never detach a session that a current lease already owns.
+            if id >= 2
+                && id < self.next_id
+                && let Some(session) = value["result"]["sessionId"].as_str()
+                && !self.sessions.contains_key(session)
+            {
+                self.detach(browser, session).await?;
+            }
             return Ok(false);
         };
         let active = self

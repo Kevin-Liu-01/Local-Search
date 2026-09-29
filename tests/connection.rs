@@ -59,9 +59,18 @@ impl Browser {
                         let message = match next { Err(_) => continue, Ok(Some(Ok(Message::Text(text)))) => text, _ => break };
                         let call: Value = serde_json::from_str(&message).unwrap();
                         worker_calls.lock().unwrap().push(call.clone());
+                        if call["method"] == "Fixture.never" { continue; }
+                        if call["method"] == "Target.attachToTarget" && call["params"]["targetId"] == "delayed-attach" {
+                            deferred = Some(call); continue;
+                        }
                         if call["method"] == "Fixture.delay" { deferred = Some(call); continue; }
                         if let Some(previous) = deferred.take() {
-                            let late = json!({"id":previous["id"],"result":{"stale":true}});
+                            let result = if previous["method"] == "Target.attachToTarget" {
+                                json!({"sessionId":"late-session"})
+                            } else {
+                                json!({"stale":true})
+                            };
+                            let late = json!({"id":previous["id"],"result":result});
                             if socket.send(Message::Text(late.to_string().into())).await.is_err() { break; }
                         }
                         let result = match call["method"].as_str().unwrap() {
@@ -401,6 +410,16 @@ fn cached_results_cannot_hide_a_disconnected_browser() {
         .success();
     let scope = browser.endpoint.clone();
     drop(browser);
+    seed_search_cache(dir.path(), &scope);
+    cli(dir.path())
+        .args(["search", "fixture", "--limit", "1"])
+        .assert()
+        .failure()
+        .stdout(predicate::str::is_empty())
+        .stderr(predicate::str::contains("browser_disconnected"));
+}
+
+fn seed_search_cache(dir: &Path, scope: &str) {
     let mut hash = 0xcbf2_9ce4_8422_2325_u64;
     for byte in scope
         .bytes()
@@ -412,18 +431,42 @@ fn cached_results_cannot_hide_a_disconnected_browser() {
         hash ^= u64::from(byte);
         hash = hash.wrapping_mul(0x0000_0100_0000_01b3);
     }
-    let cache = dir.path().join("cache");
+    let cache = dir.join("cache");
     std::fs::create_dir(&cache).unwrap();
     std::fs::write(cache.join(format!("{hash:016x}.json")), json!({
         "scope":scope,"engine":"google","query":"fixture",
-        "search":{"results":[{"rank":1,"title":"Fixture","url":"https://example.com/","domain":"example.com","snippet":"Fixture"}]}
+        "search":{"blocked":false,"results":[{"rank":1,"title":"Fixture","url":"https://example.com/","domain":"example.com","snippet":"Fixture"}]}
     }).to_string()).unwrap();
+}
+
+#[test]
+fn live_cache_hit_verifies_browser_without_attaching_or_creating_a_tab() {
+    let dir = TempDir::new().unwrap();
+    let browser = Browser::start(true);
+    cli(dir.path())
+        .args(["connect", &browser.endpoint])
+        .assert()
+        .success();
+    seed_search_cache(dir.path(), &browser.endpoint);
+    browser.calls.lock().unwrap().clear();
     cli(dir.path())
         .args(["search", "fixture", "--limit", "1"])
         .assert()
+        .success()
+        .stdout(predicate::str::contains("Fixture"));
+    let calls = browser.calls.lock().unwrap();
+    assert_eq!(
+        calls.len(),
+        1,
+        "cache hits need only a live browser check: {calls:?}"
+    );
+    assert_eq!(calls[0]["method"], "Browser.getVersion");
+    drop(calls);
+    cli(dir.path())
+        .args(["--target", "missing", "search", "fixture", "--limit", "1"])
+        .assert()
         .failure()
-        .stdout(predicate::str::is_empty())
-        .stderr(predicate::str::contains("browser_disconnected"));
+        .stderr(predicate::str::contains("target_not_found"));
 }
 
 #[cfg(unix)]
@@ -693,4 +736,127 @@ fn late_replies_never_cross_commands_and_disconnect_interrupts_an_active_lease()
             .iter()
             .all(|call| call["method"] != "Browser.close")
     );
+}
+
+#[cfg(unix)]
+#[test]
+fn abandoned_requests_do_not_exhaust_the_approved_helpers_request_budget() {
+    let dir = TempDir::new().unwrap();
+    let profile = TempDir::new().unwrap();
+    let browser = Browser::start(true);
+    browser.write_profile(profile.path());
+    cli(dir.path())
+        .args(["connect", "--existing", "--profile"])
+        .arg(profile.path())
+        .assert()
+        .success();
+    let state = saved(dir.path());
+    let socket_path = Path::new(state["session"]["directory"].as_str().unwrap()).join("cdp");
+    tokio::runtime::Builder::new_current_thread()
+        .enable_all()
+        .build()
+        .unwrap()
+        .block_on(async {
+            tokio::time::timeout(Duration::from_secs(10), async {
+                // More than the helper's 128-request limit, across independent
+                // canceled commands. The fake browser never answers any of them.
+                for _ in 0..160 {
+                    let raw = tokio::net::UnixStream::connect(&socket_path).await.unwrap();
+                    let (mut socket, _) =
+                        tokio_tungstenite::client_async("ws://localhost/session", raw)
+                            .await
+                            .unwrap();
+                    socket
+                        .send(Message::Text(
+                            json!({"id":1,"method":"Fixture.never","params":{}})
+                                .to_string()
+                                .into(),
+                        ))
+                        .await
+                        .unwrap();
+                    socket.close(None).await.unwrap();
+                }
+            })
+            .await
+            .expect("canceled leases must release promptly");
+        });
+    cli(dir.path()).args(["tabs", "list"]).assert().success();
+    assert_eq!(browser.connections.load(Ordering::SeqCst), 1);
+    assert_eq!(
+        browser
+            .calls
+            .lock()
+            .unwrap()
+            .iter()
+            .filter(|call| call["method"] == "Fixture.never")
+            .count(),
+        160
+    );
+    cli(dir.path()).arg("disconnect").assert().success();
+}
+
+#[cfg(unix)]
+#[test]
+fn abandoned_attach_reply_is_detached_without_reaching_the_next_lease() {
+    let dir = TempDir::new().unwrap();
+    let profile = TempDir::new().unwrap();
+    let browser = Browser::start(true);
+    browser.write_profile(profile.path());
+    cli(dir.path())
+        .args(["connect", "--existing", "--profile"])
+        .arg(profile.path())
+        .assert()
+        .success();
+    let state = saved(dir.path());
+    let socket_path = Path::new(state["session"]["directory"].as_str().unwrap()).join("cdp");
+    tokio::runtime::Builder::new_current_thread()
+        .enable_all()
+        .build()
+        .unwrap()
+        .block_on(async {
+            tokio::time::timeout(Duration::from_secs(5), async {
+                let raw = tokio::net::UnixStream::connect(&socket_path).await.unwrap();
+                let (mut first, _) =
+                    tokio_tungstenite::client_async("ws://localhost/session", raw)
+                        .await
+                        .unwrap();
+                first
+                    .send(Message::Text(
+                        json!({"id":1,"method":"Target.attachToTarget","params":{"targetId":"delayed-attach","flatten":true}})
+                            .to_string()
+                            .into(),
+                    ))
+                    .await
+                    .unwrap();
+                first.close(None).await.unwrap();
+                drop(first);
+                let raw = tokio::net::UnixStream::connect(&socket_path).await.unwrap();
+                let (mut second, _) =
+                    tokio_tungstenite::client_async("ws://localhost/session", raw)
+                        .await
+                        .unwrap();
+                second
+                    .send(Message::Text(
+                        json!({"id":1,"method":"Browser.getVersion","params":{}})
+                            .to_string()
+                            .into(),
+                    ))
+                    .await
+                    .unwrap();
+                let response = second.next().await.unwrap().unwrap();
+                let value: Value = serde_json::from_str(response.to_text().unwrap()).unwrap();
+                assert_eq!(value["result"]["product"], "Chrome/144.fixture");
+                assert!(value["result"].get("sessionId").is_none());
+                second.close(None).await.unwrap();
+            })
+            .await
+            .expect("late attach cleanup must not block the next command");
+        });
+    // This round trip also ensures the preceding detach has reached Chrome.
+    cli(dir.path()).args(["tabs", "list"]).assert().success();
+    assert!(browser.calls.lock().unwrap().iter().any(|call| {
+        call["method"] == "Target.detachFromTarget" && call["params"]["sessionId"] == "late-session"
+    }));
+    assert_eq!(browser.connections.load(Ordering::SeqCst), 1);
+    cli(dir.path()).arg("disconnect").assert().success();
 }

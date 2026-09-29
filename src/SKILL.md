@@ -16,6 +16,9 @@ typed errors, browser control, and output rendering.
 - `cli.rs` is declarative command/argument structure.
 - `commands/mod.rs` is orchestration: attach browser, execute command, print
   result.
+- `commands/search.rs` owns search, browser-scoped caching, output, and content
+  enrichment. Keep cache hits behind live connection verification, but avoid
+  attaching a page unless content or an explicit target needs it.
 - `updates.rs` checks published releases independently of browser commands.
   Keep automatic notices terminal-only and startup-only, with daily caching,
   bounded HTTPS requests, and an opt-out. `update-check` is explicit JSON output;
