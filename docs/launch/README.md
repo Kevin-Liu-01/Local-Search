@@ -25,6 +25,12 @@ panels scroll through all three results. A
 three-second closing card gives one install command. No slide deck or repeated
 marketing headlines interrupts the workflow.
 
+The terminal header shows Claude, Codex, Cursor, and OpenClaw. Chrome and
+DuckDuckGo identify the illustrated browser and search; Rust identifies the
+docs page. The closing frame groups agent logos and the four supported search
+engines side by side. Monochrome Codex and Cursor marks use white on the dark
+terminal and their original black on the light ending.
+
 Timing is illustrative, not measured latency. Search uses the July 21, 2026
 `tokio-runtime` trace in `site/lib/traces.ts`. The JSON view reveals the complete
 recorded search response, formatted for readability, including all three results
@@ -106,15 +112,17 @@ No stock-image plan, per-export fee, attribution requirement beyond the bundled
 MIT/OFL notices, or account is involved. Editable source is delivered with the
 renders; no third-party artwork ownership or trademark rights are transferred.
 
-The repository's Chrome SVG was inspected as a reference, but is not embedded
-in the new exports. Its reuse permission was not established. Only the Chrome
-name is used for informational identification, with no partnership claim.
+The user's existing repository logo assets are reused at their explicit request.
+They identify the browser, supported engines, and compatible shell agents;
+they are not partnership or endorsement badges. No new stock assets were
+downloaded. See [logo asset receipt](logo-assets.md) for exact files and hashes.
 Reference: [Google brand guidance](https://about.google/brand-resource-center/guidance/)
 and [current icon guidance](https://partnermarketinghub.withgoogle.com/brands/google/branding-guidelines/how-to-show-googles-brand/#product-icons),
 checked September 29, 2026; no displayed revision date or approval account.
 Reference SVG SHA-256: `e97c9c44672f1b40ca0700751318a4aafcb6e69138575f68b0c203cb3ec55dfc`.
-No third-party brand artwork, private captures, or generated concept pixels ship
-in the revised media. The font license is bundled in `fonts/OFL.txt`.
+Third-party marks remain their owners' property. This reuse does not assert
+ownership, endorsement, or a separate trademark license. No private captures
+or generated concept pixels ship. The font license is bundled in `fonts/OFL.txt`.
 
 ## Alt text
 

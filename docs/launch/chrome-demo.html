@@ -20,6 +20,9 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:Manrope,sans-
 .window{min-width:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff;position:relative}
 .terminal{background:#151b17;border-color:#29372f;color:#f4f6f2}
 .titlebar{height:48px;background:#202b24;border-bottom:1px solid #334238;display:flex;align-items:center;justify-content:center;font-size:19px;color:#c9d2ca;position:relative}
+.agent-strip{position:absolute;right:17px;display:flex;align-items:center;gap:12px}.agent-strip img{width:25px;height:25px;object-fit:contain}.light-mark{filter:brightness(0) invert(1)}
+.tab img{width:21px;height:21px;object-fit:contain}.chrome-app{position:absolute;right:16px;top:13px;width:24px;height:24px}.newtab>img{width:76px;height:76px;object-fit:contain}
+.searchbox>img{width:29px;height:29px;object-fit:contain;flex-shrink:0}.docbar strong{display:flex;align-items:center;gap:9px}.docbar img{width:25px;height:25px}
 .traffic{display:flex;gap:7px;position:absolute;left:18px;top:20px}.traffic i{width:10px;height:10px;border-radius:50%;background:#dc7466}.traffic i:nth-child(2){background:#edbd62}.traffic i:nth-child(3){background:#78b980}
 .terminal-body{position:absolute;inset:48px 0 43px;padding:26px 24px;overflow:hidden}
 .command{font-size:24px;line-height:1.5;height:84px;overflow-wrap:anywhere;position:relative;white-space:pre-wrap;letter-spacing:-.4px;margin:0}
@@ -64,7 +67,8 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:Manrope,sans-
 .bridge path{stroke:#168b90;stroke-width:2;stroke-dasharray:5 5;fill:none}
 .bottom{position:absolute;left:44px;right:44px;bottom:25px;display:flex;justify-content:space-between;font-size:18px;color:#687165}.bottom strong{color:var(--teal);font-weight:600}
 .outro{position:absolute;inset:100px 44px 68px;background:var(--paper);display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;pointer-events:none}
-.outro .brand{font-size:50px;letter-spacing:-1.6px;gap:20px}.outro .mark{width:85px;height:60px}.outro h1{font-size:59px;line-height:1.15;font-weight:600;letter-spacing:-2.6px;text-align:center;margin:30px 0 35px}
+.outro .brand{font-size:46px;letter-spacing:-1.6px;gap:18px}.outro .mark{width:76px;height:54px}.outro h1{font-size:51px;line-height:1.15;font-weight:600;letter-spacing:-2px;text-align:center;margin:20px 0 24px}
+.logo-groups{display:flex;gap:84px;margin-bottom:26px}.logo-group{text-align:center}.logo-group p{font-size:20px;color:var(--muted);margin:0 0 14px}.logo-row{display:flex;gap:22px;align-items:center;justify-content:center}.logo-row img{width:44px;height:44px;object-fit:contain}.outro h1 span{display:inline-flex;align-items:center;gap:13px}.outro h1 img{width:45px;height:45px}
 .outro h1 span{color:var(--teal)}.install{font-size:28px;border:1px solid #b4c8bb;background:#fff;padding:16px 26px;border-radius:8px;letter-spacing:-.6px}.install span{color:var(--teal);margin-right:10px}
 [hidden]{display:none!important}
 </style>
@@ -74,13 +78,13 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:Manrope,sans-
   <header class="top"><div class="brand" id="brand"></div><div class="chapter"><b id="step-number">01</b><span id="step-name">Search the web</span></div></header>
   <div class="stage" id="stage">
     <section class="window terminal" aria-label="Agent terminal">
-      <div class="titlebar"><div class="traffic"><i></i><i></i><i></i></div>local-search</div>
+      <div class="titlebar"><div class="traffic"><i></i><i></i><i></i></div>local-search<div class="agent-strip" id="agent-strip" aria-label="Works with shell-capable agents"></div></div>
       <div class="terminal-body"><pre class="command" id="command"></pre><div class="output" id="output"><div class="output-label"><span id="output-label"></span><b id="output-count"></b></div><div id="output-body"></div></div></div>
       <div class="terminal-footer"><span class="tick" id="status-icon">✓</span><span id="status">Connected to local Chrome</span></div>
     </section>
     <svg class="bridge" viewBox="0 0 32 20" aria-hidden="true"><path id="bridge-line" d="M0 10H32"/></svg>
     <section class="window browser" aria-label="Simulated Chrome">
-      <div class="chrome-tabs"><div class="traffic"><i></i><i></i><i></i></div><div class="tab"><span id="tab-title">Chrome</span><span class="close">×</span></div><span class="plus">+</span></div>
+      <div class="chrome-tabs"><div class="traffic"><i></i><i></i><i></i></div><div class="tab"><img id="tab-logo" src="../../site/public/brand/chrome.svg" alt=""><span id="tab-title">Chrome</span><span class="close">×</span></div><span class="plus">+</span><img class="chrome-app" src="../../site/public/brand/chrome.svg" alt="Chrome"></div>
       <div class="toolbar">
         <svg class="navicon" viewBox="0 0 24 24"><path d="m12 5-7 7 7 7M5 12h15"/></svg>
         <svg class="navicon" viewBox="0 0 24 24"><path d="M19 9a7 7 0 1 0 0 7M19 3v6h-6"/></svg>
@@ -88,20 +92,20 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:Manrope,sans-
         <span style="font-size:23px;color:#657268">⋮</span><div class="loading" id="loading"></div>
       </div>
       <div class="page">
-        <div class="newtab" id="newtab"><div class="chrome-name">Chrome</div><div class="empty-search">Search or enter address</div></div>
+        <div class="newtab" id="newtab"><img src="../../site/public/brand/chrome.svg" alt=""><div class="chrome-name">Chrome</div><div class="empty-search">Search or enter address</div></div>
         <div class="search-page" id="search-page" hidden>
-          <div class="searchbox">site:docs.rs tokio Runtime<svg class="navicon" viewBox="0 0 24 24"><circle cx="10" cy="10" r="6"/><path d="m15 15 5 5"/></svg></div>
+          <div class="searchbox"><img src="../../site/public/brand/duckduckgo.svg" alt="DuckDuckGo">site:docs.rs tokio Runtime<svg class="navicon" viewBox="0 0 24 24"><circle cx="10" cy="10" r="6"/><path d="m15 15 5 5"/></svg></div>
           <div class="search-tabs"><span>All</span><span>Images</span><span>Videos</span><span>News</span></div>
           <div id="results"></div>
         </div>
         <div id="docs-page" hidden>
-          <div class="docbar"><strong>Docs.rs</strong><span>tokio / runtime</span></div>
+          <div class="docbar"><strong><img src="../../site/public/brand/rust-mono.svg" alt="Rust">Docs.rs</strong><span>tokio / runtime</span></div>
           <div class="docbody"><div class="crumb">tokio</div><h1>Module runtime</h1><p>The Tokio runtime.</p><ul><li>I/O event loop</li><li>Task scheduler</li><li>Timer</li></ul><h2>Usage</h2><div class="code">#[tokio::main]</div></div>
         </div>
       </div>
     </section>
   </div>
-  <section class="outro" id="outro"><div class="brand" id="outro-brand"></div><h1>Your agent.<br><span>Your Chrome.</span></h1><div class="install"><span>$</span>cargo install local-search</div></section>
+  <section class="outro" id="outro"><div class="brand" id="outro-brand"></div><h1>Your agent.<br><span><img src="../../site/public/brand/chrome.svg" alt="">Your Chrome.</span></h1><div class="logo-groups"><div class="logo-group"><p>Works with</p><div class="logo-row" id="agent-logos"></div></div><div class="logo-group"><p>Search with</p><div class="logo-row" id="engine-logos"></div></div></div><div class="install"><span>$</span>cargo install local-search</div></section>
   <footer class="bottom"><span id="caption">Illustrated demo</span><strong>lsearch.dev</strong></footer>
 </main>
 <script>
@@ -109,6 +113,13 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:Manrope,sans-
 const mark='<svg class="mark" viewBox="0 0 64 44" aria-hidden="true"><path fill="currentColor" fill-rule="evenodd" d="M4 1h54l-2 7 7 5-4 9 4 7-7 14H5l2-7-6-5 4-9-4-7L4 1Zm7 33h6l11-24h-6L11 34Zm19-24h6v19h4v5H30V10Zm13 0h14v6h-8v3h8v15H43v-6h8v-3h-8V10Z"/></svg>local-search';
 const $=id=>document.getElementById(id);
 $('brand').innerHTML=mark;$('outro-brand').innerHTML=mark;
+const asset=name=>'../../site/public/brand/'+name+'.svg';
+const agents=[['claude','Claude Code'],['codex','Codex'],['cursor-mono','Cursor'],['openclaw','OpenClaw']];
+const engines=[['google','Google'],['bing','Bing'],['brave','Brave'],['duckduckgo','DuckDuckGo']];
+const logoRow=(items,dark=false)=>items.map(([file,label])=>`<img src="${asset(file)}" alt="${label}"${dark&&['codex','cursor-mono'].includes(file)?' class="light-mark"':''}>`).join('');
+$('agent-strip').innerHTML=logoRow(agents,true);$('agent-logos').innerHTML=logoRow(agents);$('engine-logos').innerHTML=logoRow(engines);
+// Preload all tab states so recorded frames never capture a pending image.
+const tabIcons=['chrome','duckduckgo','rust-mono'].map(name=>{const image=new Image();image.src=asset(name);return image;});
 // July 21, 2026 public trace: site/lib/traces.ts, tokio-runtime.
 const results=[
   {rank:1,title:'tokio::runtime - Rust - Docs.rs',url:'https://docs.rs/tokio/latest/tokio/runtime/',domain:'docs.rs',snippet:'The Tokio runtime supplies an I/O driver, scheduler, and timer for asynchronous applications.'},
@@ -145,6 +156,8 @@ window.renderFrame=(t)=>{
   const docsLoaded=reading&&u>=.75;
   show('newtab',!searchLoaded);show('search-page',searchLoaded&&!docsLoaded);show('docs-page',docsLoaded);
   $('tab-title').textContent=docsLoaded?'tokio::runtime':searchLoaded?'DuckDuckGo':'Chrome';
+  const icon=asset(docsLoaded?'rust-mono':searchLoaded?'duckduckgo':'chrome');
+  if($('tab-logo').getAttribute('src')!==icon)$('tab-logo').src=icon;
   $('url').textContent=reading&&u>=.6?'docs.rs/tokio/latest/tokio/runtime/':t>=.6?'duckduckgo.com/?q=site:docs.rs+tokio+Runtime':'Search or enter address';
   $('loading').style.width=(clamp((u-.6)/.3)*100)+'%';$('loading').style.opacity=u>=.6&&u<.9?'1':'0';
   results.forEach((_,i)=>{const p=ease((t-.8-i*.08)/.18);$('result-'+i).style.opacity=p;$('result-'+i).style.transform=`translateY(${(1-p)*8}px)`;});
@@ -183,7 +196,8 @@ window.layoutCheck=()=>{
 };
 const params=new URLSearchParams(location.search);
 renderFrame(Number(params.get('t')||4));
-window.READY=true;
+window.READY=false;
+Promise.all([...document.images,...tabIcons].map(image=>image.decode())).then(()=>{window.READY=true;});
 if(params.has('play')&&!matchMedia('(prefers-reduced-motion: reduce)').matches){
   let start;function play(now){start??=now;renderFrame(((now-start)/1000)%DURATION);requestAnimationFrame(play);}requestAnimationFrame(play);
 }

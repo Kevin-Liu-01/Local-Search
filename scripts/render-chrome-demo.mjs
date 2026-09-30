@@ -19,6 +19,9 @@ const allowed=new Map([
   ['/docs/launch/fonts/Manrope.ttf','font/ttf'],
   ['/benchmarks/results/search-comparison-2026-09-29.json','application/json'],
 ]);
+for(const name of ['chrome','claude','codex','cursor-mono','openclaw','google','bing','brave','duckduckgo','rust-mono']){
+  allowed.set(`/site/public/brand/${name}.svg`,'image/svg+xml');
+}
 const server=createServer(async(req,res)=>{
   const url=new URL(req.url,'http://127.0.0.1');
   if(!allowed.has(url.pathname)){res.writeHead(404);res.end();return;}
@@ -43,7 +46,7 @@ if(process.argv.includes('--serve')){
   try{
     await mkdir(output,{recursive:true});await mkdir(frames,{recursive:true});
     if(!process.argv.includes('--benchmark-only')){
-    await run('batch','--bail',`open ${base}`,'set viewport 1280 720','eval document.fonts.ready.then(()=>true)');
+    await run('batch','--bail',`open ${base}`,'set viewport 1280 720','eval document.fonts.ready.then(()=>Promise.all(Array.from(document.images).map(image=>image.decode()))).then(()=>true)');
     assert.equal(await evaluate('window.READY'),true);
     for(const [name,time] of [['start',0],['loading',.95],['first-output',1.4],['mid-output',2.3],['search',4.2],['read',7.2],['outro',10]]){
       await run('batch','--bail',`eval "renderFrame(${time})"`,`screenshot ${path.join(frames,`${name}.png`)}`);
@@ -52,6 +55,12 @@ if(process.argv.includes('--serve')){
       assert.ok(check.terminalContentFits&&check.commandFits,JSON.stringify(check));
       assert.ok(check.outputLabelFits,JSON.stringify(check));
       assert.equal(check.terminalWidth,check.browserWidth,'Windows must be exactly 50/50');
+      const logos=await evaluate('Array.from(document.images).every(image=>image.complete&&image.naturalWidth>0)');
+      assert.ok(logos,'All brand assets must be decoded before capture');
+      if(name==='outro'){
+        const outro=await evaluate(`({agents:document.querySelectorAll('#agent-logos img').length,engines:document.querySelectorAll('#engine-logos img').length,bottom:document.querySelector('.install').getBoundingClientRect().bottom,limit:document.querySelector('#outro').getBoundingClientRect().bottom})`);
+        assert.equal(outro.agents,4);assert.equal(outro.engines,4);assert.ok(outro.bottom<=outro.limit-20,JSON.stringify(outro));
+      }
       if(name==='search'){
         assert.ok(check.lastResultBottom<=check.resultsViewportBottom-4,JSON.stringify(check));
         assert.ok(check.complete&&check.shownLines===check.totalLines&&check.outputAtEnd,JSON.stringify(check));

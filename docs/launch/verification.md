@@ -20,8 +20,10 @@
 - The public results retain their July 21 provenance. The shortened docs excerpt
   was checked against docs.rs on September 29. No new performance or live-session
   claim is made. Illustrated timing and shortened page text are labeled.
-- Chrome artwork is excluded from the exports because icon reuse permission was
-  not established. The Chrome name identifies the illustrated browser.
+- At the user's request, restored the repository's existing browser, engine,
+  and agent logos. All images must decode before capture. The ending checks
+  require four agent and four engine logos with clearance above the footer.
+  See `logo-assets.md` for the reused assets and provenance boundary.
 - README and social media pointers now use the new exports. This revision
   updates repository media only; it does not post externally or release a package.
 
