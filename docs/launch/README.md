@@ -15,8 +15,10 @@ All exports live in `../../site/public/social/2026-09/`.
 | LinkedIn main post | chrome-demo.mp4 | Same 12-second sequence, 1280×720 |
 | Minimal cover | chrome-cover.png | Brand, one line, install command |
 | Product still | chrome-demo.png | Terminal and Chrome, no explanatory paragraphs |
-| X post 6; README benchmark | benchmark-clean.png | Context per result across matched searches |
+| X post 6; September benchmark | benchmark-clean.png | Context per result across matched searches |
 | Narrow-screen benchmark | benchmark-mobile.png | Same chart with stacked, readable provider rows |
+| README benchmark | benchmark-july.png | July 21 recorded comparison, with different snippet lengths |
+| Narrow-screen July benchmark | benchmark-july-mobile.png | Same historical chart with stacked provider rows |
 
 Desktop stills are 1280×720; the mobile chart is 390px wide. The looping GIF is 960×540. The terminal and browser
 are exactly 50–50 (580px each). They stay fixed while commands, navigation,
@@ -70,6 +72,7 @@ node scripts/render-chrome-demo.mjs
 
 Add `--stills` to render the three PNGs and layout checks without re-encoding.
 Use `--benchmark-only` to capture the desktop/mobile chart without changing the demo.
+Add `--july` to render the historical README chart to separate July exports.
 Use `--serve` for an editable, looping preview. `?t=2.3` freezes results loading,
 `?t=4.2` shows the completed response, `?t=7.2` freezes reading, and `?t=10`
 shows the cover. Stop the preview server when done.
@@ -82,6 +85,12 @@ successful query/depth pairs across providers; it never compares different
 successful subsets. Frames stay in ignored
 `artifacts/chrome-demo-frames/`. The previous slideshow renderer is retained only
 to reproduce historical assets.
+
+The README's July chart instead reads
+`benchmarks/results/search-comparison-2026-07-21.json`, transcribed from the
+committed July report. Its provider-specific snippets and highlights have
+different lengths. The date and limitation stay visible in the chart; it must
+not be described as an equal-content test or a current measurement.
 
 ## Evidence and claims
 

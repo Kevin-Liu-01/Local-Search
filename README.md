@@ -101,18 +101,15 @@ Failures have a nonzero exit status and a structured error code.
 
 ## Benchmarks
 
-![Search context comparison: local-search 54.7, Exa 68.5, Brave Search 71.0, Tavily 73.5, and Firecrawl 70.3 median tokens per result](https://raw.githubusercontent.com/Kevin-Liu-01/Local-Search/main/site/public/social/2026-09/benchmark-clean.png?v=2026-09-30-dark)
+![July 21, 2026 context comparison: local-search 53.4, Exa 881.2, Brave Search 108.6, Tavily 259.5, and Firecrawl 74.8 median normalized tokens per result. Provider snippet lengths differ.](https://raw.githubusercontent.com/Kevin-Liu-01/Local-Search/main/site/public/social/2026-09/benchmark-july.png?v=2026-09-30)
 
-Ten matched queries, three results each, the same JSON fields, and a 120-character
-snippet cap for every provider. local-search 0.2.0 used **54.7 median tokens per
-result** through Bing. This measures context size, not search quality.
+Recorded July 21, 2026: 12 queries at 3- and 10-result depths, 24 requests per
+provider. local-search used **53.4 median normalized tokens per result**.
+Providers returned different amounts of snippet or highlight text, so this is
+not an equal-content or search-quality comparison.
 
-The full Bing run returned all requested results in **24/24 searches**. The chart
-uses the shared successful subset because some hosted requests failed. Latency,
-cache hits, and failed requests are reported separately.
-
-See the [search benchmark and methodology](https://github.com/Kevin-Liu-01/Local-Search/blob/main/benchmarks/search-2026-09-29.md)
-for the latest measurements, request settings, and reproducible runner.
+[July results and settings](https://github.com/Kevin-Liu-01/Local-Search/blob/main/benchmarks/hosted-search-2026-07-21.md)
+· [September comparison with a shared 120-character snippet cap](https://github.com/Kevin-Liu-01/Local-Search/blob/main/benchmarks/search-2026-09-29.md)
 
 ## Access and privacy
 

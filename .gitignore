@@ -28,5 +28,7 @@ __pycache__/
 !site/public/social/2026-09/chrome-cover.png
 !site/public/social/2026-09/benchmark-clean.png
 !site/public/social/2026-09/benchmark-mobile.png
+!site/public/social/2026-09/benchmark-july.png
+!site/public/social/2026-09/benchmark-july-mobile.png
 *.pdf
 site/public/docs-assets/

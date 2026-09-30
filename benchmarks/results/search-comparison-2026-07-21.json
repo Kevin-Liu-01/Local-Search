@@ -1,0 +1,15 @@
+{
+  "date": "2026-07-21",
+  "source": "benchmarks/hosted-search-2026-07-21.md",
+  "provenance": "Transcribed from the committed historical report, not a new run.",
+  "metric": "Median normalized request-plus-response tokens per result; provider-specific snippet lengths",
+  "scope": "12 queries · 24 requests per provider",
+  "note": "Different snippet lengths. Not an equal-content comparison.",
+  "providers": [
+    {"id": "lsearch", "label": "local-search", "tokens": 53.4},
+    {"id": "exa", "label": "Exa", "tokens": 881.2},
+    {"id": "brave", "label": "Brave Search", "tokens": 108.6},
+    {"id": "tavily", "label": "Tavily", "tokens": 259.5},
+    {"id": "firecrawl", "label": "Firecrawl", "tokens": 74.8}
+  ]
+}

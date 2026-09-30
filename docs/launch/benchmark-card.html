@@ -49,8 +49,11 @@ footer strong{color:#e5ebe5;font-weight:550}
 </main>
 <template id="brand"><svg class="mark" viewBox="0 0 64 44" aria-hidden="true"><path fill="currentColor" fill-rule="evenodd" d="M4 1h54l-2 7 7 5-4 9 4 7-7 14H5l2-7-6-5 4-9-4-7L4 1Zm7 33h6l11-24h-6L11 34Zm19-24h6v19h4v5H30V10Zm13 0h14v6h-8v3h8v15H43v-6h8v-3h-8V10Z"/></svg></template>
 <script>
-fetch('../../benchmarks/results/search-comparison-2026-09-29.json').then(r=>r.json()).then(async data=>{
- const max=Math.ceil(Math.max(...data.providers.map(provider=>provider.tokens))/10)*10;
+const july=new URLSearchParams(location.search).get('dataset')==='july';
+const date=july?'2026-07-21':'2026-09-29';
+fetch('../../benchmarks/results/search-comparison-'+date+'.json').then(r=>r.json()).then(async data=>{
+ const step=july?100:10;
+ const max=Math.ceil(Math.max(...data.providers.map(provider=>provider.tokens))/step)*step;
  const baseline=data.providers.find(provider=>provider.id==='lsearch').tokens;
  const logos={exa:'exa.svg',brave:'brave.svg',tavily:'tavily.svg',firecrawl:'firecrawl.png'};
  const chart=document.querySelector('#chart');
@@ -68,7 +71,13 @@ fetch('../../benchmarks/results/search-comparison-2026-09-29.json').then(r=>r.js
   const ratio=document.createElement('span');ratio.className='ratio';ratio.textContent=local?'Baseline':(provider.tokens/baseline).toFixed(1)+'× baseline';value.append(ratio);
   row.append(name,track,value);chart.append(row);
  }
- document.querySelector('#scope').textContent=data.matched.length+' matched queries · 3 results each';
+ document.querySelector('#scope').textContent=july?data.scope:data.matched.length+' matched queries · 3 results each';
+ if(july){
+  const footer=document.querySelector('footer');
+  footer.replaceChildren();
+  const label=document.createElement('strong');label.textContent='Recorded July 21, 2026 · Provider-specific snippets and highlights';
+  footer.append(label,document.createElement('br'),document.createTextNode(data.note));
+ }
  await Promise.all(Array.from(document.images).map(image=>image.decode()));
  window.CHART_DATA=data;window.READY=true;
 }).catch(()=>{document.querySelector('#chart').textContent='Benchmark data could not be loaded.';});

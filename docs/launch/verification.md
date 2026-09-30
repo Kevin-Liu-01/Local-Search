@@ -2,6 +2,11 @@
 
 ## September 30 benchmark presentation
 
+- The README now selects the July 21 historical comparison at the user's request.
+  Separate July exports preserve the September equal-budget chart and evidence.
+  The chart labels its recorded date and unequal snippet lengths; values and
+  baseline ratios are verified against the committed July summary.
+
 - README chart matches the site's dark, logo-led layout. It retains September 29
   matched-query evidence, not the older July values in the visual reference.
 - Verified the 1280×720 export and full-height 390px mobile chart visually.
