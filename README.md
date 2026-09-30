@@ -1,548 +1,127 @@
-<p align="center">
-  <a href="https://lsearch.dev">
-    <img src="https://raw.githubusercontent.com/Kevin-Liu-01/Local-Search/main/site/public/social/2026-09/chrome-demo.gif?v=2026-09-29-chrome-fast" alt="Animated demo: equally sized terminal and Chrome windows load and scroll through all three search results, then a docs page opens and its text returns to the agent" width="100%">
-  </a>
-</p>
-
-<p align="center">
-  <a href="https://crates.io/crates/local-search"><img alt="crates.io" src="https://img.shields.io/crates/v/local-search?style=flat-square&amp;logo=rust&amp;logoColor=white&amp;label=crates.io&amp;color=168f94"></a>
-  <a href="https://www.npmjs.com/package/@kevinliu01/localsearch"><img alt="npm" src="https://img.shields.io/npm/v/%40kevinliu01%2Flocalsearch?style=flat-square&amp;logo=npm&amp;logoColor=white&amp;label=npm&amp;color=168f94"></a>
-  <img alt="0.2.0 arm64 build: 1.26 MB" src="https://img.shields.io/badge/0.2.0%20arm64%20build-1.26%20MB-168f94?style=flat-square&amp;logo=rust&amp;logoColor=white">
-  <img alt="Recorded median warm startup: 4.61 ms" src="https://img.shields.io/badge/recorded%20warm%20startup-4.61%20ms-168f94?style=flat-square">
-  <a href="https://github.com/Kevin-Liu-01/Local-Search/blob/main/LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-555?style=flat-square"></a>
-  <a href="https://www.lsearch.dev/docs"><img alt="Documentation" src="https://img.shields.io/badge/docs-local--search-555?style=flat-square"></a>
-</p>
-
 # local-search
 
-A local browser API for agents. Your agent calls a command. Chrome does the work
-on your machine. Useful data comes back.
+**Give your agent the browser you already use.**
 
-One CLI lets an agent search the web, read pages, extract records, interact with
-sites, and use your existing Chrome logins with Chrome's approval.
-Or choose a separate persistent profile for agent work. Results come back as
-compact JSON or readable text.
+Search the web, read pages, and use signed-in sites through one small Rust CLI.
+Choose your existing Chrome or a separate profile. Your agent gets compact JSON
+or readable text, without a hosted browser service or a search API key.
 
-```sh
-lsearch connect --existing  # approve in Chrome; setup below
-lsearch "open source browser automation rust" --engine google --limit 3 --json
-lsearch read https://www.linkedin.com/feed/ --format json
-```
+[Documentation](https://lsearch.dev/docs) · [Agent reference](https://github.com/Kevin-Liu-01/Local-Search/blob/main/SKILL.md) · [crates.io](https://crates.io/crates/local-search) · [npm](https://www.npmjs.com/package/@kevinliu01/localsearch)
 
-`lsearch` connects your agent to a browser profile you choose. Search public
-pages, read a discussion, or use a session you already signed into. Websites
-still control access. Chrome approval grants broad browser control, so use
-trusted agents and give them a clear task.
+<a href="https://lsearch.dev"><img src="https://raw.githubusercontent.com/Kevin-Liu-01/Local-Search/main/site/public/social/2026-09/chrome-demo.gif?v=2026-09-29-chrome-fast" alt="Demo: an agent runs lsearch, Chrome loads search results, and structured results return to the terminal" width="100%"></a>
 
-The animation uses illustrated timing and shortened page text. Search results are
-from the July 21, 2026 public trace; the docs excerpt was checked September 29.
-[View the still](https://raw.githubusercontent.com/Kevin-Liu-01/Local-Search/main/site/public/social/2026-09/chrome-demo.png)
-or [download the video](https://raw.githubusercontent.com/Kevin-Liu-01/Local-Search/main/site/public/social/2026-09/chrome-demo.mp4).
-
-**Start with the [illustrated agent guide](https://github.com/Kevin-Liu-01/Local-Search/blob/main/docs/agent-guide.md).** It shows
-browser setup, signed-in LinkedIn/GitHub/Reddit checks, search, extraction,
-interaction, requests, and disconnect with readable screenshots.
-
-![Verified signed-in access checks for LinkedIn, GitHub, and Reddit. Private content omitted.](https://raw.githubusercontent.com/Kevin-Liu-01/Local-Search/main/docs/images/03-signed-in-sites.png)
-
-Persistent existing-browser sessions require **local-search 0.2.0 or newer**
-on macOS/Linux. The npm bridge 0.2.0 installs that same native release. After
-upgrading an older existing-browser setup, run `lsearch connect --existing`
-once and approve again. See the [evidence record](https://github.com/Kevin-Liu-01/Local-Search/blob/main/docs/verification.md)
-for test provenance and release verification.
-
-## Give it to your agent
-
-Give Claude Code, Codex, Cursor, OpenClaw, or another shell-capable agent
-[SKILL.md](SKILL.md), then ask for the task you actually want done:
-
-> Use lsearch with the browser I choose. Read this page using my approved
-> session and summarize it with source links. Use compact JSON. Don't post,
-> message anyone, or change account settings. Ask before reconnecting or
-> switching profiles.
-
-You choose the browser and approve access. The agent handles commands, checks
-results, and returns only what the task needs. Browser approval grants broad
-control; the calling agent must still respect the scope of your request.
-
-## What You Get
-
-- One local browser interface for shell-capable agents.
-- Search results as stable JSON across Google, Bing, Brave, and DuckDuckGo.
-- Readable page extraction for Reddit, documentation, and other websites.
-- Your existing Chrome sessions, with Chrome approval. No cookie export.
-- An explicit choice of everyday Chrome or a separate persistent profile.
-- A remembered browser choice and an explicit error when it disconnects.
-- One approved existing-Chrome connection reused across commands on macOS/Linux.
-- `lsearch disconnect` to end access without closing Chrome or signing you out.
-- Optional result-page content extraction with `--with-content`.
-- Local `read`, `extract`, `map`, `request`, screenshot, MHTML, HTML, and HAR-like
-  capture commands.
-- A separate persistent profile when you want agent logins kept apart.
-- `lsearch cleanup` so agents do not leave browser instances or stale profile
-  markers behind.
-- Compatibility binaries: `local-search` and `local-browser`.
+*Illustrated demo, not a timing measurement. [Download video](https://raw.githubusercontent.com/Kevin-Liu-01/Local-Search/main/site/public/social/2026-09/chrome-demo.mp4).*
 
 ## Install
-
-Install through npm (Node.js 18+ and Rust/Cargo are required for the native
-build):
-
-```sh
-npm install -g @kevinliu01/localsearch
-```
-
-The npm package compiles and installs the same versioned Rust crate inside the
-package, then exposes `lsearch`, `localsearch`, `local-search`, and
-`local-browser`. There is no separate JavaScript implementation.
-
-Or install directly with Cargo:
 
 ```sh
 cargo install local-search
 ```
 
-For the latest unreleased build, install directly from GitHub:
+Or use npm (requires Node.js 18+ and Rust/Cargo):
 
 ```sh
-cargo install --git https://github.com/Kevin-Liu-01/Local-Search
+npm install -g @kevinliu01/localsearch
 ```
 
-From a checkout:
+Both install the same native Rust CLI. Chrome or Chromium is required.
+`local-search` and `local-browser` remain aliases for `lsearch`.
 
-```sh
-cargo install --path . --force
-lsearch doctor --pretty
-```
+## Connect your browser
 
-Compatibility binaries are also installed:
+Choose one:
 
-```sh
-local-search --help
-local-browser --help
-```
-
-### Update recommendations
-
-Opening `lsearch` with no arguments, or successfully setting up a browser with
-`connect` / `launch`, checks for a newer release in interactive terminals. Checks
-use a daily cache and a two-second network timeout. A newer release shows the
-appropriate Cargo or npm update command on stderr; nothing installs automatically.
-Searches, pipelines, `--json`, `--pretty`, and CI do not check automatically.
-Offline or missing `curl`? Startup still succeeds without a notice.
-
-Check explicitly at any time (stable JSON; no browser connection needed):
-
-```sh
-lsearch update-check --pretty
-```
-
-Cargo installs check crates.io; the npm bridge checks its own npm package version,
-which can differ from the native crate version. Checks use the system `curl` and
-request only public release metadata, never queries or browser state. Set
-`LOCAL_SEARCH_NO_UPDATE_CHECK=1` to disable automatic checks. An explicit
-`update-check` still runs. Source builds compare against published versions, not
-GitHub commits; rebuild from your checkout to pick up unreleased changes.
-
-## Quick Start
-
-Choose the browser your agent is allowed to use. With **Chrome 144+**, open
-`chrome://inspect/#remote-debugging`, enable remote debugging, then run:
+**Use your existing logins.** In Chrome 144+, enable remote debugging at
+`chrome://inspect/#remote-debugging`. Then run this command and approve Chrome's
+connection prompt:
 
 ```sh
 lsearch connect --existing
 ```
 
-Approve Chrome's connection prompt once. On macOS and Linux, a small local helper
-keeps that approved connection open for subsequent commands. `lsearch` uses your
-logins in place: no cookie copying, no second login, no prompt per search.
-The initial connection allows at least 60 seconds for approval.
+One approved connection is reused across commands on macOS/Linux. Your logins
+stay in Chrome; you do not need to export cookies.
 
-Access stays active between commands until you disconnect or the connection ends:
-
-```sh
-lsearch disconnect
-```
-
-This ends local-search access without closing Chrome, signing you out, or deleting
-cookies. After a browser restart or lost connection, run
-`lsearch connect --existing` and approve again. Searches never reconnect automatically. Existing
-selections created by older versions need this one-time reconnect after upgrading.
-Windows users can use the separate managed profile; the persistent existing-browser
-helper currently requires macOS or Linux.
-
-Prefer to keep your everyday browser separate? Choose:
+**Keep agent work separate.** Create a persistent local profile and sign into
+the sites your agent needs there:
 
 ```sh
 lsearch connect --managed
 ```
 
-This starts a separate persistent Chrome profile. On macOS it lives at:
-
-```txt
-~/Library/Application Support/local-search/chrome-profile
-```
-
-Sign in there once if you need authenticated access. Your choice is saved for
-later commands. A disconnected browser returns `browser_disconnected`; it never
-silently opens a different profile. Reconnect existing Chrome with
-`lsearch connect --existing`, or explicitly
-restart the managed profile with `lsearch launch`. It reuses the saved profile,
-port, and executable unless you explicitly override them.
-
-With either mode:
+Your choice is remembered. If the browser disconnects, lsearch reports an error
+instead of silently switching profiles. To end existing-browser access without
+closing Chrome:
 
 ```sh
-lsearch "latest rust cdp browser automation" --limit 3 --json
-lsearch search "site:docs.rs tokio Runtime" --limit 5 --json
-lsearch search "browser search for agents" --with-content --limit 3 --content-chars 1200 --json
-lsearch read https://example.com --format json
-lsearch extract "a[href]" --field title=text --field url=href --limit 10
-lsearch map https://example.com --depth 1 --limit 10
-lsearch cleanup --pretty
-```
-
-Agent-style flow:
-
-```sh
-lsearch search "example domain" --limit 1 --with-content --content-chars 240 --json
-lsearch map https://example.com --depth 1 --limit 10
-# When the user asks to end browser access:
 lsearch disconnect
 ```
 
-## Switching Search Engines vs Browsers
-
-`lsearch` has two separate choices that are easy to mix up:
-
-- Search engine: the search site queried inside the browser.
-- Browser backend: the local browser automation transport used to load pages.
-
-Search engines are switched with `--engine`. Google is the built-in default.
-Pass `--engine` when you want DuckDuckGo, Bing, or Brave Search:
+## Use it
 
 ```sh
-lsearch search "open source browser automation" --engine duckduckgo
-lsearch search "open source browser automation" --engine google
-lsearch search "open source browser automation" --engine bing
-lsearch search "open source browser automation" --engine brave
+# Search Google, Bing, Brave, or DuckDuckGo
+lsearch "rust async cancellation" --engine google --limit 3 --json
+
+# Read a page as text or structured data
+lsearch read https://docs.rs/tokio/latest/tokio/ --format markdown
+
+# Read a signed-in page through the profile you chose
+lsearch read https://www.linkedin.com/feed/ --format json
+
+# Inspect the current page before interacting
+lsearch snapshot --limit 40
 ```
 
-The shorthand form uses the default search engine:
+| Task | Command |
+| --- | --- |
+| Search with ranked titles, URLs, and snippets | `lsearch "query" --engine bing --json` |
+| Read a page | `lsearch read URL --format json` |
+| Extract repeated fields | `lsearch extract SELECTOR --field name=SOURCE` |
+| Map links on a site | `lsearch map URL --depth 1 --limit 20` |
+| Interact with a page | `lsearch snapshot`, then `click` or `fill` |
+| Make a browser-authenticated request | `lsearch request URL` |
+| Capture a page | `lsearch screenshot`, `html`, or `pdf` |
 
-```sh
-lsearch "open source browser automation"
-```
+Run `lsearch COMMAND --help` for options. The
+[command reference](https://github.com/Kevin-Liu-01/Local-Search/blob/main/SKILL.md)
+also covers tabs, bounded reads, exports, and error handling.
 
-Matching searches reuse locally cached results for five minutes, scoped to the
-connected browser session. Cache hits still verify that your chosen browser is
-connected; another browser or a restarted session cannot inherit those results.
-Use `--no-cache` for a fresh search, or change the window with `--cache-ttl`.
-Search snippets are capped at 120 characters by default; `--snippet-chars`
-changes that cap.
+## Give it to your agent
 
-Browser backend is different. Today, `local-search` is built around
-Chrome/Chromium's Chrome DevTools Protocol because it can control a normal local
-profile. Choose existing Chrome with approval, or a separate persistent profile:
+Works with Claude Code, Codex, Cursor, OpenClaw, and any agent that can run shell
+commands. Give it the [agent reference](https://github.com/Kevin-Liu-01/Local-Search/blob/main/SKILL.md), then a task:
 
-```sh
-lsearch connect --existing
-# Or, explicitly choose isolation:
-lsearch connect --managed
-```
+> Use lsearch with my connected browser. Research this topic and return a short
+> summary with source links. Do not post, send messages, or change settings.
+> Ask before reconnecting or switching profiles.
 
-To use a different Chromium-family app, pass its executable path when launching
-the managed profile:
+Piped search output and `--json` use stable JSON. Progress stays on stderr.
+Failures have a nonzero exit status and a structured error code.
 
-```sh
-lsearch launch --browser-path "/Applications/Brave Browser.app/Contents/MacOS/Brave Browser"
-lsearch launch --browser-path "/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge"
-```
+## Benchmarks
 
-To attach to an already-running Chromium/CDP endpoint:
+![Search context comparison: local-search 54.7, Exa 68.5, Brave Search 71.0, Tavily 73.5, and Firecrawl 70.3 median tokens per result](https://raw.githubusercontent.com/Kevin-Liu-01/Local-Search/main/site/public/social/2026-09/benchmark-clean.png?v=2026-09-29-search)
 
-```sh
-lsearch connect 9222  # verify and remember an explicit endpoint
-lsearch --cdp 9222 search "open source browser automation" --engine google
-lsearch --cdp ws://127.0.0.1:9222/devtools/browser/... search "browser tooling" --engine duckduckgo
-```
+Ten matched queries, three results each, the same JSON fields, and a 120-character
+snippet cap for every provider. local-search 0.2.0 used **54.7 median tokens per
+result** through Bing. This measures context size, not search quality.
 
-`--cdp` and `LOCAL_SEARCH_CDP` override the browser for one command only. They
-do not replace the saved selection or reuse its target. For a different existing
-Chrome user-data root, use `connect --existing --profile PATH` (not the root's
-`Default` or `Profile N` subfolder). The CLI opens a background work tab unless
-you deliberately select one with `--target` or `tabs use`.
+The full Bing run returned all requested results in **24/24 searches**. The chart
+uses the shared successful subset because some hosted requests failed. Latency,
+cache hits, and failed requests are reported separately.
 
-Chrome 136+ does not accept command-line remote-debugging flags against its
-default profile. Existing mode uses Chrome 144+'s consent-based endpoint instead.
-See [Chrome's configuration guide](https://developer.chrome.com/docs/devtools/agents/get-started/configuration).
+See the [search benchmark and methodology](https://github.com/Kevin-Liu-01/Local-Search/blob/main/benchmarks/search-2026-09-29.md)
+for the latest measurements, request settings, and reproducible runner.
 
-Safari is not currently a supported local signed-in browser backend. Safari's
-official WebDriver automation uses isolated automation sessions, not the normal
-profile state this project depends on. In practice: use Google, DuckDuckGo,
-Bing, or Brave Search inside a managed Chrome/Chromium profile; do not expect
-`--browser safari` to reuse your normal Safari session.
+## Access and privacy
 
-## Core redesign preview
+Browser work happens on your machine. Existing-browser approval gives broad
+access to that Chrome session, so connect only trusted agents and define their
+task clearly. A separate profile keeps agent logins apart from everyday browsing.
 
-The next core redesign is **unreleased**. Cargo and npm still install 0.2.0.
-It tightens page readiness, fixes stale-page reads and false blocked-page
-detection, and cleans up CDP target sessions.
+Sites still control access. lsearch does not bypass logins, CAPTCHAs, or site
+restrictions. Cookie values are redacted by default. See the
+[security model](https://github.com/Kevin-Liu-01/Local-Search/blob/main/SECURITY.md).
 
-![Development benchmark: Bing median uncached search 219.6 to 175.7 ms, cached search 23.9 to 16.5 ms. Uncached p95 worsened from 294.1 to 328.2 ms.](https://raw.githubusercontent.com/Kevin-Liu-01/Local-Search/main/site/public/social/2026-09/benchmark.png)
-
-On September 25, 2026 (Pacific), an alternating A/B run compared 0.2.0 with the
-development build on arm64 macOS. One Bing query, three results, 20 measured
-samples per build and mode. Uncached means `--no-cache` with a warm browser and
-OS. Cached samples reused a primed query.
-
-Median uncached search fell **20.0%** and median cached search fell **31.1%**.
-Uncached p95 got **11.6% slower**. These figures describe this workload, not a
-general speed guarantee. Some local reads also regressed. Google, Brave, and
-DuckDuckGo returned verification pages; the hosted-provider comparison was not
-rerun because its API keys were unavailable.
-
-[Full results and limitations](docs/core-redesign.md) ·
-[Raw Bing samples](benchmarks/results/local-ab-2026-09-25-bing-expanded.json) ·
-[Media and post drafts](docs/launch/README.md)
-
-## Earlier benchmarks
-
-The 0.2.0 registry install measured **1,255,776 bytes (1.26 MB)** for `lsearch`
-on arm64 macOS with Rust 1.98.1 on September 25, 2026. The compressed crate is
-80,937 bytes (79.0 KiB). See [release verification](docs/releases/0.2.0.md).
-The search and warm-startup benchmarks below describe earlier builds, not a
-new performance measurement for 0.2.0.
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/Kevin-Liu-01/Local-Search/main/site/public/social/local-search-benchmark.png" alt="local-search benchmark — less context, lower latency, and no search bill compared with hosted search providers" width="100%">
-</p>
-
-`lsearch` keeps browser plumbing and full search-page snapshots out of the
-agent's context. A source-build benchmark on 2026-07-21 measured visible command
-text plus stdout with the `o200k_base` tokenizer. It ran 12 queries through the
-same managed Chrome profile against DuckDuckGo, Google, and Bing, then compared
-normalized search JSON with a compact interactive snapshot of the same rendered
-results page.
-
-| Results requested | Usable runs | Median `lsearch` tokens | Median snapshot tokens | Median paired reduction |
-|---:|---:|---:|---:|---:|
-| 3 | 36/36 | 309 | 8,760.5 | 96.5% |
-| 10 | 36/36 | 891 | 8,708 | 89.8% |
-
-All 72 cross-engine searches returned the requested number of results. A
-separate DuckDuckGo stability check ran 12 queries five times each: 60/60
-responses matched the output schema, and 58/60 returned the exact same top-three
-URLs.
-
-Content extraction was stress-tested across 24 three-result searches. All 72
-result pages returned the full 1,200-character text cap, with zero command
-failures and zero `about:blank` pages.
-
-### Hosted Structured APIs
-
-A second live benchmark ran the same queries and depths through `lsearch`, Exa,
-Brave Search, Tavily, and Firecrawl. Each response was measured as returned, then
-normalized to the common `rank`, `title`, `url`, and `snippet` fields. Exa used
-highlights, Brave and Firecrawl used descriptions, Tavily used basic-search
-content, and `lsearch` used its search snippets.
-
-| Provider | Usable runs | Requested depth fulfilled | Median raw tokens | Median normalized tokens/result | Median latency | Full-run usage |
-|---|---:|---:|---:|---:|---:|---:|
-| **`lsearch`** | **24/24** | **24/24** | **413.5** | **53.4** | **148.7 ms** | **$0** |
-| Exa | 24/24 | 24/24 | 4,472.5 | 881.2 | 501.9 ms | $0.324 |
-| Brave Search | 24/24 | 24/24 | 13,104 | 108.6 | 322.0 ms | $0.120 |
-| Tavily | 24/24 | 17/24 | 1,163 | 259.5 | 1,184.4 ms | 24 credits ($0.192 PAYG) |
-| Firecrawl | 24/24 | 24/24 | 509 | 74.8 | 1,520.8 ms | 48 credits (≈$0.154 Hobby-plan equivalent) |
-
-`lsearch` was the fastest provider and returned the fewest raw and normalized
-tokens in this comparison while spending zero API credits. The matched workload
-contains 12 cold three-result searches followed by the same 12 queries at ten
-results. `lsearch` retained the full browser result set locally, so the second
-depth completed from its five-minute cache: cold median 384.5 ms, warm median
-6.5 ms. The full methodology and runner live in
-[`benchmarks/`](benchmarks/README.md).
-
-## Why This Exists
-
-Agent search is dominated by paid or hosted APIs:
-
-- [Exa](https://exa.ai/docs/reference/search) offers search plus extracted
-  contents/highlights and deeper research modes.
-- [Firecrawl](https://docs.firecrawl.dev/api-reference/v2-introduction) offers
-  search, scrape, crawl, map, extract, and agentic web data features.
-- [Brave Search API](https://api-dashboard.search.brave.com/documentation)
-  exposes Brave's independent index, including LLM-oriented context endpoints.
-- [Tavily](https://docs.tavily.com/documentation/api-reference/introduction)
-  offers search, extract, crawl, and research APIs for agents.
-
-Those are useful production services. `local-search` is for the cases where an
-agent should use the browser already on the machine and spend zero API credits.
-
-The browser-tooling neighbors are different:
-
-- [browse.sh](https://browse.sh/) / Browserbase Browse CLI is a broader browser
-  skills and browser automation surface.
-- [agent-browser](https://github.com/vercel-labs/agent-browser) is an
-  agent-first browser automation CLI with snapshots, refs, tabs, forms, and
-  network tools.
-- [browser-use CLI](https://docs.browser-use.com/open-source/browser-use-cli)
-  gives coding agents direct browser control using local or cloud browsers.
-- [AgentWebSearch](https://mcpmarket.com/server/agentwebsearch) is the closest
-  local-search neighbor: local LLM web search through real Chrome/CDP.
-
-`local-search` keeps the browser controls, but frames them as search
-infrastructure.
-
-## Comparison
-
-| Tool | Primary job | Hosted/API key | What local-search optimizes for |
-|---|---|---:|---|
-| Exa | AI-native web search, contents, highlights, deep search | Yes | Zero-cost local search and browser-session auth |
-| Firecrawl | Search, scrape, crawl, map, extract at scale | Hosted or self-hosted | Single-machine agent search without service setup |
-| Brave Search API | Independent search index and LLM context | Yes | Consumer search surfaces through your own browser |
-| Tavily | Search/extract/crawl/research APIs | Yes | No account, no metered usage, local browser state |
-| browse.sh / Browse CLI | Browser skills and browser/cloud automation | Optional cloud | Search-first CLI with paid-search replacement framing |
-| agent-browser | General browser automation for agents | No | Structured search/read/extract as the main product |
-| browser-use CLI | Agent browser control via Python workflows | Optional cloud | Native Rust, JSON-first search API replacement |
-| AgentWebSearch | Local Chrome search for LLMs | No | CLI-first structured outputs plus extraction/artifacts |
-
-## Commands
-
-Search:
-
-```sh
-lsearch "hi"
-lsearch search "open source browser automation rust" --limit 10
-lsearch search "firecrawl alternatives" --engine duckduckgo --with-content --limit 5
-```
-
-Interactive searches render as a concise colored result list with clickable
-titles and URLs. Agents and shell pipelines continue to receive the same compact
-JSON on stdout:
-
-```bash
-lsearch search "rust browser automation"              # colored list in a terminal
-lsearch search "rust browser automation" | jq .       # compact JSON through the pipe
-lsearch search "rust browser automation" --json       # force stable JSON in a PTY
-lsearch search "rust browser automation" --format table
-lsearch search "rust browser automation" --format json --pretty
-```
-
-`--format auto` is the search default. Status and animation stay on stderr, so
-they never contaminate agent-readable stdout. `NO_COLOR=1` disables ANSI color.
-
-Google is the default engine for speed. DuckDuckGo, Bing, and Brave Search remain
-available with `--engine duckduckgo`, `--engine bing`, and `--engine brave`.
-
-Read and extract:
-
-```sh
-lsearch read https://example.com --format markdown
-lsearch read https://example.com --format json --pretty
-lsearch extract "article" --field title="h1=>text" --field url="a=>href"
-```
-
-Map a site locally:
-
-```sh
-lsearch map https://docs.rs --depth 1 --limit 50 --pretty
-```
-
-Authenticated browser fetch:
-
-```sh
-lsearch request https://example.com/api/me --header "Accept: application/json" --pretty
-```
-
-Artifacts:
-
-```sh
-lsearch screenshot artifacts/page.png --full-page
-lsearch mhtml artifacts/page.mhtml
-lsearch record https://browse.sh/ --har artifacts/browse.har --mhtml artifacts/browse.mhtml
-```
-
-In the unreleased development build, recording keeps the newest 4,096 events
-or 8 MiB of serialized events. It is a
-bounded HAR-like capture, not a complete network audit or response-body archive.
-
-Browser primitives for debugging workflows:
-
-```sh
-lsearch snapshot --pretty
-lsearch click @e3
-lsearch fill "input[name=q]" "local search cli"
-lsearch press Enter
-```
-
-## Output Contract
-
-Successful structured commands return:
-
-```json
-{ "ok": true, "...": "..." }
-```
-
-Failures are JSON on stderr:
-
-```json
-{ "ok": false, "error": { "code": "browser_not_found", "message": "..." } }
-```
-
-Human-readable `read --format markdown`, `read --format text`, and `html`
-without a path write raw content to stdout.
-
-## Agent Hygiene
-
-`lsearch` is designed to be called by agents repeatedly. Use:
-
-```sh
-lsearch cleanup --pretty
-```
-
-to inspect the managed browser state, and:
-
-```sh
-lsearch cleanup --kill --pretty
-```
-
-when the task is done and the managed browser should be stopped. Cleanup only
-targets the managed local-search browser listener and stale profile marker files;
-it does not delete cookies, history, or profile data. Custom ports use separate
-PID markers. Cleanup preserves the chosen browser identity after stopping it,
-so later commands report disconnection rather than silently switching profiles.
-Normal `--kill` closes Chrome gracefully so it can save recent cookies. It never
-escalates to SIGKILL automatically. Use `--force` only for an unresponsive browser;
-unsaved session data may be lost.
-
-## Browser Setup
-
-Choose explicitly:
-
-```sh
-lsearch connect --existing    # Chrome 144+, enable remote debugging and approve
-# OR: lsearch connect --managed
-lsearch cleanup --pretty       # dry-run managed browser cleanup
-lsearch cleanup --kill         # stop managed browser and clear stale markers
-```
-
-Managed mode uses a separate persistent profile; existing mode uses Chrome's
-own approval flow. Both remember the selection. To inspect the available endpoints
-without requesting consent, run `lsearch doctor --pretty`. An explicit override:
-
-```sh
-lsearch --cdp 9222 tabs list
-lsearch --cdp ws://127.0.0.1:9222/devtools/browser/... tabs list
-```
-
-Agents can call the cleanup wrapper directly:
-
-```sh
-scripts/local-search-cleanup.sh --pretty
-scripts/local-search-cleanup.sh --kill --pretty
-```
-
-Safari is intentionally limited. Its official WebDriver automation uses isolated
-automation sessions, not the normal signed-in browsing profile this project
-targets.
+[MIT licensed](https://github.com/Kevin-Liu-01/Local-Search/blob/main/LICENSE).

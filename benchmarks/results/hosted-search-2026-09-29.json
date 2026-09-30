@@ -1,0 +1,2730 @@
+{
+  "method": {
+    "date": "2026-09-29",
+    "binary_sha256": null,
+    "engine": null,
+    "local_cache": "disabled for every request with --no-cache; not mixed cold/cache latency",
+    "provider_order": "sequential; not randomized; provider/order/network effects remain",
+    "encoding": "o200k_base",
+    "queries": [
+      "rust async cancellation",
+      "chrome devtools protocol remote debugging",
+      "tokio runtime docs.rs",
+      "firecrawl alternatives",
+      "github agent browser",
+      "openai responses api docs",
+      "best static site generator",
+      "local first software",
+      "princeton computer science curriculum",
+      "coffee shops san francisco",
+      "weather los angeles tomorrow",
+      "latest sqlite release"
+    ],
+    "limits": [
+      3,
+      10
+    ],
+    "token_scope": "serialized request shape plus raw or normalized JSON response",
+    "native_tokens": "actual provider request object once plus native snippets/highlights; different content budgets",
+    "equal_budget_tokens": "common {query,limit} request once plus normalized results with each snippet truncated to the same maximum",
+    "equal_snippet_chars": 120,
+    "equal_budget_caveat": "Equal maximum length does not equalize relevance, source ranking, or actual content length.",
+    "content": {
+      "lsearch": "search snippets",
+      "exa": "highlights",
+      "brave": "descriptions",
+      "tavily": "basic-search content",
+      "firecrawl": "descriptions without scrapeOptions"
+    }
+  },
+  "active_providers": [
+    "exa",
+    "brave",
+    "tavily",
+    "firecrawl"
+  ],
+  "missing_credentials": {},
+  "pricing": {
+    "exa": {
+      "usd_per_request_up_to_10_results": 0.007,
+      "usd_per_highlighted_page": 0.001,
+      "source": "https://exa.ai/pricing"
+    },
+    "brave": {
+      "usd_per_request": 0.005,
+      "source": "https://api-dashboard.search.brave.com/documentation/pricing"
+    },
+    "tavily": {
+      "credits_per_basic_search": 1,
+      "payg_usd_per_credit": 0.008,
+      "source": "https://docs.tavily.com/documentation/api-credits"
+    },
+    "firecrawl": {
+      "credits_per_10_results_rounded_up": 2,
+      "hobby_monthly_usd_billed_yearly": 16,
+      "hobby_monthly_credits": 5000,
+      "hobby_usd_per_credit_equivalent": 0.0032,
+      "pay_as_you_go": false,
+      "source": "https://www.firecrawl.dev/pricing"
+    }
+  },
+  "pricing_date": "2026-07-21",
+  "pricing_note": "Historical estimates, not verified current prices or an actual invoice. Failed requests may incur charges.",
+  "summary": {
+    "exa": {
+      "runs": 24,
+      "successful": 21,
+      "fulfilled_requested_depth": 21,
+      "result_count": {
+        "min": 3.0,
+        "median": 3.0,
+        "mean": 6.0,
+        "max": 10.0
+      },
+      "raw_total_tokens": {
+        "min": 864.0,
+        "median": 3617.0,
+        "mean": 5125.86,
+        "max": 16053.0
+      },
+      "raw_tokens_per_result": {
+        "min": 288.0,
+        "median": 941.1,
+        "mean": 862.01,
+        "max": 1605.3
+      },
+      "normalized_total_tokens": {
+        "min": 693.0,
+        "median": 3355.0,
+        "mean": 4666.86,
+        "max": 15407.0
+      },
+      "normalized_tokens_per_result": {
+        "min": 231.0,
+        "median": 900.6,
+        "mean": 787.33,
+        "max": 1540.7
+      },
+      "latency_ms": {
+        "min": 374.7,
+        "median": 472.7,
+        "mean": 487.43,
+        "max": 749.6
+      },
+      "equal_budget_total_tokens": {
+        "min": 184.0,
+        "median": 270.0,
+        "mean": 432.33,
+        "max": 863.0
+      },
+      "equal_budget_tokens_per_result": {
+        "min": 61.33,
+        "median": 70.6,
+        "mean": 73.11,
+        "max": 98.67
+      },
+      "estimated_attempt_cost_total": {
+        "usd": 0.324
+      }
+    },
+    "brave": {
+      "runs": 24,
+      "successful": 24,
+      "fulfilled_requested_depth": 24,
+      "result_count": {
+        "min": 3.0,
+        "median": 6.5,
+        "mean": 6.5,
+        "max": 10.0
+      },
+      "raw_total_tokens": {
+        "min": 2959.0,
+        "median": 15042.5,
+        "mean": 26182.58,
+        "max": 147772.0
+      },
+      "raw_tokens_per_result": {
+        "min": 811.8,
+        "median": 2652.115,
+        "mean": 5228.9,
+        "max": 46314.33
+      },
+      "normalized_total_tokens": {
+        "min": 238.0,
+        "median": 596.5,
+        "mean": 646.58,
+        "max": 1321.0
+      },
+      "normalized_tokens_per_result": {
+        "min": 70.7,
+        "median": 97.13499999999999,
+        "mean": 101.39,
+        "max": 162.0
+      },
+      "latency_ms": {
+        "min": 176.6,
+        "median": 408.85,
+        "mean": 460.18,
+        "max": 1229.2
+      },
+      "equal_budget_total_tokens": {
+        "min": 178.0,
+        "median": 422.0,
+        "mean": 440.62,
+        "max": 744.0
+      },
+      "equal_budget_tokens_per_result": {
+        "min": 59.33,
+        "median": 69.8,
+        "mean": 68.29,
+        "max": 80.67
+      },
+      "estimated_attempt_cost_total": {
+        "usd": 0.12
+      }
+    },
+    "tavily": {
+      "runs": 24,
+      "successful": 24,
+      "fulfilled_requested_depth": 20,
+      "result_count": {
+        "min": 3.0,
+        "median": 5.0,
+        "mean": 6.12,
+        "max": 10.0
+      },
+      "raw_total_tokens": {
+        "min": 669.0,
+        "median": 2067.5,
+        "mean": 2094.42,
+        "max": 4338.0
+      },
+      "raw_tokens_per_result": {
+        "min": 223.0,
+        "median": 330.625,
+        "mean": 342.87,
+        "max": 624.0
+      },
+      "normalized_total_tokens": {
+        "min": 561.0,
+        "median": 1925.0,
+        "mean": 1932.96,
+        "max": 4107.0
+      },
+      "normalized_tokens_per_result": {
+        "min": 187.0,
+        "median": 306.39,
+        "mean": 313.17,
+        "max": 587.33
+      },
+      "latency_ms": {
+        "min": 1011.3,
+        "median": 1329.15,
+        "mean": 1455.78,
+        "max": 2923.7
+      },
+      "equal_budget_total_tokens": {
+        "min": 185.0,
+        "median": 372.0,
+        "mean": 450.54,
+        "max": 892.0
+      },
+      "equal_budget_tokens_per_result": {
+        "min": 61.67,
+        "median": 72.4,
+        "mean": 74.05,
+        "max": 97.33
+      },
+      "estimated_attempt_cost_total": {
+        "credits": 24.0,
+        "payg_usd": 0.192
+      }
+    },
+    "firecrawl": {
+      "runs": 24,
+      "successful": 10,
+      "fulfilled_requested_depth": 10,
+      "result_count": {
+        "min": 3.0,
+        "median": 3.0,
+        "mean": 3.0,
+        "max": 3.0
+      },
+      "raw_total_tokens": {
+        "min": 253.0,
+        "median": 834.5,
+        "mean": 1221.2,
+        "max": 2875.0
+      },
+      "raw_tokens_per_result": {
+        "min": 84.33,
+        "median": 278.165,
+        "mean": 407.07,
+        "max": 958.33
+      },
+      "normalized_total_tokens": {
+        "min": 214.0,
+        "median": 793.0,
+        "mean": 1180.9,
+        "max": 2837.0
+      },
+      "normalized_tokens_per_result": {
+        "min": 71.33,
+        "median": 264.33500000000004,
+        "mean": 393.63,
+        "max": 945.67
+      },
+      "latency_ms": {
+        "min": 723.1,
+        "median": 1180.45,
+        "mean": 1511.97,
+        "max": 3776.7
+      },
+      "equal_budget_total_tokens": {
+        "min": 185.0,
+        "median": 211.0,
+        "mean": 225.8,
+        "max": 276.0
+      },
+      "equal_budget_tokens_per_result": {
+        "min": 61.67,
+        "median": 70.33,
+        "mean": 75.27,
+        "max": 92.0
+      },
+      "estimated_attempt_cost_total": {
+        "credits": 48.0
+      }
+    }
+  },
+  "failures": [
+    {
+      "provider": "exa",
+      "query": "rust async cancellation",
+      "limit": 10,
+      "ok": false,
+      "error": "malformed_result",
+      "estimated_cost": {
+        "usd": 0.017
+      }
+    },
+    {
+      "provider": "exa",
+      "query": "chrome devtools protocol remote debugging",
+      "limit": 10,
+      "ok": false,
+      "error": "malformed_result",
+      "estimated_cost": {
+        "usd": 0.017
+      }
+    },
+    {
+      "provider": "exa",
+      "query": "openai responses api docs",
+      "limit": 10,
+      "ok": false,
+      "error": "malformed_result",
+      "estimated_cost": {
+        "usd": 0.017
+      }
+    },
+    {
+      "provider": "firecrawl",
+      "query": "weather los angeles tomorrow",
+      "limit": 3,
+      "ok": false,
+      "error": "http_status_429",
+      "estimated_cost": {
+        "credits": 2.0
+      }
+    },
+    {
+      "provider": "firecrawl",
+      "query": "latest sqlite release",
+      "limit": 3,
+      "ok": false,
+      "error": "http_status_429",
+      "estimated_cost": {
+        "credits": 2.0
+      }
+    },
+    {
+      "provider": "firecrawl",
+      "query": "rust async cancellation",
+      "limit": 10,
+      "ok": false,
+      "error": "http_status_429",
+      "estimated_cost": {
+        "credits": 2.0
+      }
+    },
+    {
+      "provider": "firecrawl",
+      "query": "chrome devtools protocol remote debugging",
+      "limit": 10,
+      "ok": false,
+      "error": "http_status_429",
+      "estimated_cost": {
+        "credits": 2.0
+      }
+    },
+    {
+      "provider": "firecrawl",
+      "query": "tokio runtime docs.rs",
+      "limit": 10,
+      "ok": false,
+      "error": "http_status_429",
+      "estimated_cost": {
+        "credits": 2.0
+      }
+    },
+    {
+      "provider": "firecrawl",
+      "query": "firecrawl alternatives",
+      "limit": 10,
+      "ok": false,
+      "error": "http_status_429",
+      "estimated_cost": {
+        "credits": 2.0
+      }
+    },
+    {
+      "provider": "firecrawl",
+      "query": "github agent browser",
+      "limit": 10,
+      "ok": false,
+      "error": "http_status_429",
+      "estimated_cost": {
+        "credits": 2.0
+      }
+    },
+    {
+      "provider": "firecrawl",
+      "query": "openai responses api docs",
+      "limit": 10,
+      "ok": false,
+      "error": "http_status_429",
+      "estimated_cost": {
+        "credits": 2.0
+      }
+    },
+    {
+      "provider": "firecrawl",
+      "query": "best static site generator",
+      "limit": 10,
+      "ok": false,
+      "error": "http_status_429",
+      "estimated_cost": {
+        "credits": 2.0
+      }
+    },
+    {
+      "provider": "firecrawl",
+      "query": "local first software",
+      "limit": 10,
+      "ok": false,
+      "error": "http_status_429",
+      "estimated_cost": {
+        "credits": 2.0
+      }
+    },
+    {
+      "provider": "firecrawl",
+      "query": "princeton computer science curriculum",
+      "limit": 10,
+      "ok": false,
+      "error": "http_status_429",
+      "estimated_cost": {
+        "credits": 2.0
+      }
+    },
+    {
+      "provider": "firecrawl",
+      "query": "coffee shops san francisco",
+      "limit": 10,
+      "ok": false,
+      "error": "http_status_429",
+      "estimated_cost": {
+        "credits": 2.0
+      }
+    },
+    {
+      "provider": "firecrawl",
+      "query": "weather los angeles tomorrow",
+      "limit": 10,
+      "ok": false,
+      "error": "http_status_429",
+      "estimated_cost": {
+        "credits": 2.0
+      }
+    },
+    {
+      "provider": "firecrawl",
+      "query": "latest sqlite release",
+      "limit": 10,
+      "ok": false,
+      "error": "http_status_429",
+      "estimated_cost": {
+        "credits": 2.0
+      }
+    }
+  ],
+  "rows": [
+    {
+      "provider": "exa",
+      "query": "rust async cancellation",
+      "limit": 3,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 3,
+      "request_tokens": 23,
+      "raw_response_tokens": 3240,
+      "raw_total_tokens": 3263,
+      "raw_tokens_per_result": 1087.67,
+      "normalized_response_tokens": 3071,
+      "normalized_total_tokens": 3094,
+      "normalized_tokens_per_result": 1031.33,
+      "common_request_tokens": 11,
+      "equal_budget_total_tokens": 206,
+      "equal_budget_tokens_per_result": 68.67,
+      "latency_ms": 627.3,
+      "usage": {
+        "total": 0.007,
+        "search": {
+          "neural": 0.007
+        }
+      },
+      "estimated_cost": {
+        "usd": 0.01
+      }
+    },
+    {
+      "provider": "exa",
+      "query": "chrome devtools protocol remote debugging",
+      "limit": 3,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 3,
+      "request_tokens": 26,
+      "raw_response_tokens": 3157,
+      "raw_total_tokens": 3183,
+      "raw_tokens_per_result": 1061.0,
+      "normalized_response_tokens": 2790,
+      "normalized_total_tokens": 2816,
+      "normalized_tokens_per_result": 938.67,
+      "common_request_tokens": 14,
+      "equal_budget_total_tokens": 218,
+      "equal_budget_tokens_per_result": 72.67,
+      "latency_ms": 516.8,
+      "usage": {
+        "total": 0.007,
+        "search": {
+          "neural": 0.007
+        }
+      },
+      "estimated_cost": {
+        "usd": 0.01
+      }
+    },
+    {
+      "provider": "exa",
+      "query": "tokio runtime docs.rs",
+      "limit": 3,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 3,
+      "request_tokens": 25,
+      "raw_response_tokens": 3592,
+      "raw_total_tokens": 3617,
+      "raw_tokens_per_result": 1205.67,
+      "normalized_response_tokens": 3491,
+      "normalized_total_tokens": 3516,
+      "normalized_tokens_per_result": 1172.0,
+      "common_request_tokens": 13,
+      "equal_budget_total_tokens": 195,
+      "equal_budget_tokens_per_result": 65.0,
+      "latency_ms": 491.9,
+      "usage": {
+        "total": 0.007,
+        "search": {
+          "neural": 0.007
+        }
+      },
+      "estimated_cost": {
+        "usd": 0.01
+      }
+    },
+    {
+      "provider": "exa",
+      "query": "firecrawl alternatives",
+      "limit": 3,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 3,
+      "request_tokens": 23,
+      "raw_response_tokens": 3753,
+      "raw_total_tokens": 3776,
+      "raw_tokens_per_result": 1258.67,
+      "normalized_response_tokens": 3551,
+      "normalized_total_tokens": 3574,
+      "normalized_tokens_per_result": 1191.33,
+      "common_request_tokens": 11,
+      "equal_budget_total_tokens": 214,
+      "equal_budget_tokens_per_result": 71.33,
+      "latency_ms": 472.7,
+      "usage": {
+        "total": 0.007,
+        "search": {
+          "neural": 0.007
+        }
+      },
+      "estimated_cost": {
+        "usd": 0.01
+      }
+    },
+    {
+      "provider": "exa",
+      "query": "github agent browser",
+      "limit": 3,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 3,
+      "request_tokens": 23,
+      "raw_response_tokens": 1939,
+      "raw_total_tokens": 1962,
+      "raw_tokens_per_result": 654.0,
+      "normalized_response_tokens": 1766,
+      "normalized_total_tokens": 1789,
+      "normalized_tokens_per_result": 596.33,
+      "common_request_tokens": 11,
+      "equal_budget_total_tokens": 265,
+      "equal_budget_tokens_per_result": 88.33,
+      "latency_ms": 429.2,
+      "usage": {
+        "total": 0.007,
+        "search": {
+          "neural": 0.007
+        }
+      },
+      "estimated_cost": {
+        "usd": 0.01
+      }
+    },
+    {
+      "provider": "exa",
+      "query": "openai responses api docs",
+      "limit": 3,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 3,
+      "request_tokens": 25,
+      "raw_response_tokens": 3485,
+      "raw_total_tokens": 3510,
+      "raw_tokens_per_result": 1170.0,
+      "normalized_response_tokens": 3329,
+      "normalized_total_tokens": 3354,
+      "normalized_tokens_per_result": 1118.0,
+      "common_request_tokens": 13,
+      "equal_budget_total_tokens": 200,
+      "equal_budget_tokens_per_result": 66.67,
+      "latency_ms": 587.9,
+      "usage": {
+        "total": 0.007,
+        "search": {
+          "neural": 0.007
+        }
+      },
+      "estimated_cost": {
+        "usd": 0.01
+      }
+    },
+    {
+      "provider": "exa",
+      "query": "best static site generator",
+      "limit": 3,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 3,
+      "request_tokens": 24,
+      "raw_response_tokens": 1419,
+      "raw_total_tokens": 1443,
+      "raw_tokens_per_result": 481.0,
+      "normalized_response_tokens": 1002,
+      "normalized_total_tokens": 1026,
+      "normalized_tokens_per_result": 342.0,
+      "common_request_tokens": 12,
+      "equal_budget_total_tokens": 184,
+      "equal_budget_tokens_per_result": 61.33,
+      "latency_ms": 572.6,
+      "usage": {
+        "total": 0.007,
+        "search": {
+          "neural": 0.007
+        }
+      },
+      "estimated_cost": {
+        "usd": 0.01
+      }
+    },
+    {
+      "provider": "exa",
+      "query": "local first software",
+      "limit": 3,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 3,
+      "request_tokens": 23,
+      "raw_response_tokens": 3256,
+      "raw_total_tokens": 3279,
+      "raw_tokens_per_result": 1093.0,
+      "normalized_response_tokens": 3072,
+      "normalized_total_tokens": 3095,
+      "normalized_tokens_per_result": 1031.67,
+      "common_request_tokens": 11,
+      "equal_budget_total_tokens": 232,
+      "equal_budget_tokens_per_result": 77.33,
+      "latency_ms": 542.9,
+      "usage": {
+        "total": 0.007,
+        "search": {
+          "neural": 0.007
+        }
+      },
+      "estimated_cost": {
+        "usd": 0.01
+      }
+    },
+    {
+      "provider": "exa",
+      "query": "princeton computer science curriculum",
+      "limit": 3,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 3,
+      "request_tokens": 25,
+      "raw_response_tokens": 4214,
+      "raw_total_tokens": 4239,
+      "raw_tokens_per_result": 1413.0,
+      "normalized_response_tokens": 3987,
+      "normalized_total_tokens": 4012,
+      "normalized_tokens_per_result": 1337.33,
+      "common_request_tokens": 13,
+      "equal_budget_total_tokens": 205,
+      "equal_budget_tokens_per_result": 68.33,
+      "latency_ms": 440.9,
+      "usage": {
+        "total": 0.007,
+        "search": {
+          "neural": 0.007
+        }
+      },
+      "estimated_cost": {
+        "usd": 0.01
+      }
+    },
+    {
+      "provider": "exa",
+      "query": "coffee shops san francisco",
+      "limit": 3,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 3,
+      "request_tokens": 25,
+      "raw_response_tokens": 1341,
+      "raw_total_tokens": 1366,
+      "raw_tokens_per_result": 455.33,
+      "normalized_response_tokens": 1058,
+      "normalized_total_tokens": 1083,
+      "normalized_tokens_per_result": 361.0,
+      "common_request_tokens": 13,
+      "equal_budget_total_tokens": 204,
+      "equal_budget_tokens_per_result": 68.0,
+      "latency_ms": 393.2,
+      "usage": {
+        "total": 0.007,
+        "search": {
+          "neural": 0.007
+        }
+      },
+      "estimated_cost": {
+        "usd": 0.01
+      }
+    },
+    {
+      "provider": "exa",
+      "query": "weather los angeles tomorrow",
+      "limit": 3,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 3,
+      "request_tokens": 24,
+      "raw_response_tokens": 840,
+      "raw_total_tokens": 864,
+      "raw_tokens_per_result": 288.0,
+      "normalized_response_tokens": 669,
+      "normalized_total_tokens": 693,
+      "normalized_tokens_per_result": 231.0,
+      "common_request_tokens": 12,
+      "equal_budget_total_tokens": 270,
+      "equal_budget_tokens_per_result": 90.0,
+      "latency_ms": 380.9,
+      "usage": {
+        "total": 0.007,
+        "search": {
+          "neural": 0.007
+        }
+      },
+      "estimated_cost": {
+        "usd": 0.01
+      }
+    },
+    {
+      "provider": "exa",
+      "query": "latest sqlite release",
+      "limit": 3,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 3,
+      "request_tokens": 23,
+      "raw_response_tokens": 923,
+      "raw_total_tokens": 946,
+      "raw_tokens_per_result": 315.33,
+      "normalized_response_tokens": 783,
+      "normalized_total_tokens": 806,
+      "normalized_tokens_per_result": 268.67,
+      "common_request_tokens": 11,
+      "equal_budget_total_tokens": 296,
+      "equal_budget_tokens_per_result": 98.67,
+      "latency_ms": 478.7,
+      "usage": {
+        "total": 0.007,
+        "search": {
+          "neural": 0.007
+        }
+      },
+      "estimated_cost": {
+        "usd": 0.01
+      }
+    },
+    {
+      "provider": "exa",
+      "query": "rust async cancellation",
+      "limit": 10,
+      "ok": false,
+      "error": "malformed_result",
+      "estimated_cost": {
+        "usd": 0.017
+      }
+    },
+    {
+      "provider": "exa",
+      "query": "chrome devtools protocol remote debugging",
+      "limit": 10,
+      "ok": false,
+      "error": "malformed_result",
+      "estimated_cost": {
+        "usd": 0.017
+      }
+    },
+    {
+      "provider": "exa",
+      "query": "tokio runtime docs.rs",
+      "limit": 10,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 10,
+      "request_tokens": 25,
+      "raw_response_tokens": 10498,
+      "raw_total_tokens": 10523,
+      "raw_tokens_per_result": 1052.3,
+      "normalized_response_tokens": 10155,
+      "normalized_total_tokens": 10180,
+      "normalized_tokens_per_result": 1018.0,
+      "common_request_tokens": 13,
+      "equal_budget_total_tokens": 656,
+      "equal_budget_tokens_per_result": 65.6,
+      "latency_ms": 467.9,
+      "usage": {
+        "total": 0.007,
+        "search": {
+          "neural": 0.007
+        }
+      },
+      "estimated_cost": {
+        "usd": 0.017
+      }
+    },
+    {
+      "provider": "exa",
+      "query": "firecrawl alternatives",
+      "limit": 10,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 10,
+      "request_tokens": 23,
+      "raw_response_tokens": 16030,
+      "raw_total_tokens": 16053,
+      "raw_tokens_per_result": 1605.3,
+      "normalized_response_tokens": 15384,
+      "normalized_total_tokens": 15407,
+      "normalized_tokens_per_result": 1540.7,
+      "common_request_tokens": 11,
+      "equal_budget_total_tokens": 706,
+      "equal_budget_tokens_per_result": 70.6,
+      "latency_ms": 515.6,
+      "usage": {
+        "total": 0.007,
+        "search": {
+          "neural": 0.007
+        }
+      },
+      "estimated_cost": {
+        "usd": 0.017
+      }
+    },
+    {
+      "provider": "exa",
+      "query": "github agent browser",
+      "limit": 10,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 10,
+      "request_tokens": 23,
+      "raw_response_tokens": 7474,
+      "raw_total_tokens": 7497,
+      "raw_tokens_per_result": 749.7,
+      "normalized_response_tokens": 6850,
+      "normalized_total_tokens": 6873,
+      "normalized_tokens_per_result": 687.3,
+      "common_request_tokens": 11,
+      "equal_budget_total_tokens": 716,
+      "equal_budget_tokens_per_result": 71.6,
+      "latency_ms": 416.7,
+      "usage": {
+        "total": 0.007,
+        "search": {
+          "neural": 0.007
+        }
+      },
+      "estimated_cost": {
+        "usd": 0.017
+      }
+    },
+    {
+      "provider": "exa",
+      "query": "openai responses api docs",
+      "limit": 10,
+      "ok": false,
+      "error": "malformed_result",
+      "estimated_cost": {
+        "usd": 0.017
+      }
+    },
+    {
+      "provider": "exa",
+      "query": "best static site generator",
+      "limit": 10,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 10,
+      "request_tokens": 24,
+      "raw_response_tokens": 5774,
+      "raw_total_tokens": 5798,
+      "raw_tokens_per_result": 579.8,
+      "normalized_response_tokens": 4260,
+      "normalized_total_tokens": 4284,
+      "normalized_tokens_per_result": 428.4,
+      "common_request_tokens": 12,
+      "equal_budget_total_tokens": 650,
+      "equal_budget_tokens_per_result": 65.0,
+      "latency_ms": 441.0,
+      "usage": {
+        "total": 0.007,
+        "search": {
+          "neural": 0.007
+        }
+      },
+      "estimated_cost": {
+        "usd": 0.017
+      }
+    },
+    {
+      "provider": "exa",
+      "query": "local first software",
+      "limit": 10,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 10,
+      "request_tokens": 23,
+      "raw_response_tokens": 13653,
+      "raw_total_tokens": 13676,
+      "raw_tokens_per_result": 1367.6,
+      "normalized_response_tokens": 13088,
+      "normalized_total_tokens": 13111,
+      "normalized_tokens_per_result": 1311.1,
+      "common_request_tokens": 11,
+      "equal_budget_total_tokens": 713,
+      "equal_budget_tokens_per_result": 71.3,
+      "latency_ms": 749.6,
+      "usage": {
+        "total": 0.007,
+        "search": {
+          "neural": 0.007
+        }
+      },
+      "estimated_cost": {
+        "usd": 0.017
+      }
+    },
+    {
+      "provider": "exa",
+      "query": "princeton computer science curriculum",
+      "limit": 10,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 10,
+      "request_tokens": 25,
+      "raw_response_tokens": 9386,
+      "raw_total_tokens": 9411,
+      "raw_tokens_per_result": 941.1,
+      "normalized_response_tokens": 8981,
+      "normalized_total_tokens": 9006,
+      "normalized_tokens_per_result": 900.6,
+      "common_request_tokens": 13,
+      "equal_budget_total_tokens": 670,
+      "equal_budget_tokens_per_result": 67.0,
+      "latency_ms": 421.9,
+      "usage": {
+        "total": 0.007,
+        "search": {
+          "neural": 0.007
+        }
+      },
+      "estimated_cost": {
+        "usd": 0.017
+      }
+    },
+    {
+      "provider": "exa",
+      "query": "coffee shops san francisco",
+      "limit": 10,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 10,
+      "request_tokens": 25,
+      "raw_response_tokens": 5227,
+      "raw_total_tokens": 5252,
+      "raw_tokens_per_result": 525.2,
+      "normalized_response_tokens": 3330,
+      "normalized_total_tokens": 3355,
+      "normalized_tokens_per_result": 335.5,
+      "common_request_tokens": 13,
+      "equal_budget_total_tokens": 624,
+      "equal_budget_tokens_per_result": 62.4,
+      "latency_ms": 472.9,
+      "usage": {
+        "total": 0.007,
+        "search": {
+          "neural": 0.007
+        }
+      },
+      "estimated_cost": {
+        "usd": 0.017
+      }
+    },
+    {
+      "provider": "exa",
+      "query": "weather los angeles tomorrow",
+      "limit": 10,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 10,
+      "request_tokens": 24,
+      "raw_response_tokens": 4492,
+      "raw_total_tokens": 4516,
+      "raw_tokens_per_result": 451.6,
+      "normalized_response_tokens": 3755,
+      "normalized_total_tokens": 3779,
+      "normalized_tokens_per_result": 377.9,
+      "common_request_tokens": 12,
+      "equal_budget_total_tokens": 792,
+      "equal_budget_tokens_per_result": 79.2,
+      "latency_ms": 374.7,
+      "usage": {
+        "total": 0.007,
+        "search": {
+          "neural": 0.007
+        }
+      },
+      "estimated_cost": {
+        "usd": 0.017
+      }
+    },
+    {
+      "provider": "exa",
+      "query": "latest sqlite release",
+      "limit": 10,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 10,
+      "request_tokens": 23,
+      "raw_response_tokens": 3446,
+      "raw_total_tokens": 3469,
+      "raw_tokens_per_result": 346.9,
+      "normalized_response_tokens": 3128,
+      "normalized_total_tokens": 3151,
+      "normalized_tokens_per_result": 315.1,
+      "common_request_tokens": 11,
+      "equal_budget_total_tokens": 863,
+      "equal_budget_tokens_per_result": 86.3,
+      "latency_ms": 440.7,
+      "usage": {
+        "total": 0.007,
+        "search": {
+          "neural": 0.007
+        }
+      },
+      "estimated_cost": {
+        "usd": 0.017
+      }
+    },
+    {
+      "provider": "brave",
+      "query": "rust async cancellation",
+      "limit": 3,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 3,
+      "request_tokens": 11,
+      "raw_response_tokens": 12094,
+      "raw_total_tokens": 12105,
+      "raw_tokens_per_result": 4035.0,
+      "normalized_response_tokens": 352,
+      "normalized_total_tokens": 363,
+      "normalized_tokens_per_result": 121.0,
+      "common_request_tokens": 11,
+      "equal_budget_total_tokens": 223,
+      "equal_budget_tokens_per_result": 74.33,
+      "latency_ms": 550.9,
+      "usage": {
+        "x-ratelimit-limit": "50, 0",
+        "x-ratelimit-policy": "50;w=1, 0;w=2592000",
+        "x-ratelimit-remaining": "49, 0",
+        "x-ratelimit-reset": "1, 83311"
+      },
+      "estimated_cost": {
+        "usd": 0.005
+      }
+    },
+    {
+      "provider": "brave",
+      "query": "chrome devtools protocol remote debugging",
+      "limit": 3,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 3,
+      "request_tokens": 14,
+      "raw_response_tokens": 15217,
+      "raw_total_tokens": 15231,
+      "raw_tokens_per_result": 5077.0,
+      "normalized_response_tokens": 279,
+      "normalized_total_tokens": 293,
+      "normalized_tokens_per_result": 97.67,
+      "common_request_tokens": 14,
+      "equal_budget_total_tokens": 207,
+      "equal_budget_tokens_per_result": 69.0,
+      "latency_ms": 649.8,
+      "usage": {
+        "x-ratelimit-limit": "50, 0",
+        "x-ratelimit-policy": "50;w=1, 0;w=2592000",
+        "x-ratelimit-remaining": "48, 0",
+        "x-ratelimit-reset": "1, 83310"
+      },
+      "estimated_cost": {
+        "usd": 0.005
+      }
+    },
+    {
+      "provider": "brave",
+      "query": "tokio runtime docs.rs",
+      "limit": 3,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 3,
+      "request_tokens": 13,
+      "raw_response_tokens": 7358,
+      "raw_total_tokens": 7371,
+      "raw_tokens_per_result": 2457.0,
+      "normalized_response_tokens": 281,
+      "normalized_total_tokens": 294,
+      "normalized_tokens_per_result": 98.0,
+      "common_request_tokens": 13,
+      "equal_budget_total_tokens": 178,
+      "equal_budget_tokens_per_result": 59.33,
+      "latency_ms": 534.5,
+      "usage": {
+        "x-ratelimit-limit": "50, 0",
+        "x-ratelimit-policy": "50;w=1, 0;w=2592000",
+        "x-ratelimit-remaining": "48, 0",
+        "x-ratelimit-reset": "1, 83310"
+      },
+      "estimated_cost": {
+        "usd": 0.005
+      }
+    },
+    {
+      "provider": "brave",
+      "query": "firecrawl alternatives",
+      "limit": 3,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 3,
+      "request_tokens": 11,
+      "raw_response_tokens": 20280,
+      "raw_total_tokens": 20291,
+      "raw_tokens_per_result": 6763.67,
+      "normalized_response_tokens": 309,
+      "normalized_total_tokens": 320,
+      "normalized_tokens_per_result": 106.67,
+      "common_request_tokens": 11,
+      "equal_budget_total_tokens": 212,
+      "equal_budget_tokens_per_result": 70.67,
+      "latency_ms": 548.9,
+      "usage": {
+        "x-ratelimit-limit": "50, 0",
+        "x-ratelimit-policy": "50;w=1, 0;w=2592000",
+        "x-ratelimit-remaining": "48, 0",
+        "x-ratelimit-reset": "1, 83309"
+      },
+      "estimated_cost": {
+        "usd": 0.005
+      }
+    },
+    {
+      "provider": "brave",
+      "query": "github agent browser",
+      "limit": 3,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 3,
+      "request_tokens": 11,
+      "raw_response_tokens": 6327,
+      "raw_total_tokens": 6338,
+      "raw_tokens_per_result": 2112.67,
+      "normalized_response_tokens": 244,
+      "normalized_total_tokens": 255,
+      "normalized_tokens_per_result": 85.0,
+      "common_request_tokens": 11,
+      "equal_budget_total_tokens": 217,
+      "equal_budget_tokens_per_result": 72.33,
+      "latency_ms": 588.9,
+      "usage": {
+        "x-ratelimit-limit": "50, 0",
+        "x-ratelimit-policy": "50;w=1, 0;w=2592000",
+        "x-ratelimit-remaining": "48, 0",
+        "x-ratelimit-reset": "1, 83309"
+      },
+      "estimated_cost": {
+        "usd": 0.005
+      }
+    },
+    {
+      "provider": "brave",
+      "query": "openai responses api docs",
+      "limit": 3,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 3,
+      "request_tokens": 13,
+      "raw_response_tokens": 17589,
+      "raw_total_tokens": 17602,
+      "raw_tokens_per_result": 5867.33,
+      "normalized_response_tokens": 473,
+      "normalized_total_tokens": 486,
+      "normalized_tokens_per_result": 162.0,
+      "common_request_tokens": 13,
+      "equal_budget_total_tokens": 186,
+      "equal_budget_tokens_per_result": 62.0,
+      "latency_ms": 440.9,
+      "usage": {
+        "x-ratelimit-limit": "50, 0",
+        "x-ratelimit-policy": "50;w=1, 0;w=2592000",
+        "x-ratelimit-remaining": "48, 0",
+        "x-ratelimit-reset": "1, 83308"
+      },
+      "estimated_cost": {
+        "usd": 0.005
+      }
+    },
+    {
+      "provider": "brave",
+      "query": "best static site generator",
+      "limit": 3,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 3,
+      "request_tokens": 12,
+      "raw_response_tokens": 14165,
+      "raw_total_tokens": 14177,
+      "raw_tokens_per_result": 4725.67,
+      "normalized_response_tokens": 267,
+      "normalized_total_tokens": 279,
+      "normalized_tokens_per_result": 93.0,
+      "common_request_tokens": 12,
+      "equal_budget_total_tokens": 242,
+      "equal_budget_tokens_per_result": 80.67,
+      "latency_ms": 395.4,
+      "usage": {
+        "x-ratelimit-limit": "50, 0",
+        "x-ratelimit-policy": "50;w=1, 0;w=2592000",
+        "x-ratelimit-remaining": "48, 0",
+        "x-ratelimit-reset": "1, 83307"
+      },
+      "estimated_cost": {
+        "usd": 0.005
+      }
+    },
+    {
+      "provider": "brave",
+      "query": "local first software",
+      "limit": 3,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 3,
+      "request_tokens": 11,
+      "raw_response_tokens": 15775,
+      "raw_total_tokens": 15786,
+      "raw_tokens_per_result": 5262.0,
+      "normalized_response_tokens": 227,
+      "normalized_total_tokens": 238,
+      "normalized_tokens_per_result": 79.33,
+      "common_request_tokens": 11,
+      "equal_budget_total_tokens": 197,
+      "equal_budget_tokens_per_result": 65.67,
+      "latency_ms": 572.8,
+      "usage": {
+        "x-ratelimit-limit": "50, 0",
+        "x-ratelimit-policy": "50;w=1, 0;w=2592000",
+        "x-ratelimit-remaining": "47, 0",
+        "x-ratelimit-reset": "1, 83307"
+      },
+      "estimated_cost": {
+        "usd": 0.005
+      }
+    },
+    {
+      "provider": "brave",
+      "query": "princeton computer science curriculum",
+      "limit": 3,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 3,
+      "request_tokens": 13,
+      "raw_response_tokens": 7998,
+      "raw_total_tokens": 8011,
+      "raw_tokens_per_result": 2670.33,
+      "normalized_response_tokens": 271,
+      "normalized_total_tokens": 284,
+      "normalized_tokens_per_result": 94.67,
+      "common_request_tokens": 13,
+      "equal_budget_total_tokens": 217,
+      "equal_budget_tokens_per_result": 72.33,
+      "latency_ms": 572.1,
+      "usage": {
+        "x-ratelimit-limit": "50, 0",
+        "x-ratelimit-policy": "50;w=1, 0;w=2592000",
+        "x-ratelimit-remaining": "48, 0",
+        "x-ratelimit-reset": "1, 83306"
+      },
+      "estimated_cost": {
+        "usd": 0.005
+      }
+    },
+    {
+      "provider": "brave",
+      "query": "coffee shops san francisco",
+      "limit": 3,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 3,
+      "request_tokens": 13,
+      "raw_response_tokens": 138930,
+      "raw_total_tokens": 138943,
+      "raw_tokens_per_result": 46314.33,
+      "normalized_response_tokens": 342,
+      "normalized_total_tokens": 355,
+      "normalized_tokens_per_result": 118.33,
+      "common_request_tokens": 13,
+      "equal_budget_total_tokens": 214,
+      "equal_budget_tokens_per_result": 71.33,
+      "latency_ms": 1229.2,
+      "usage": {
+        "x-ratelimit-limit": "50, 0",
+        "x-ratelimit-policy": "50;w=1, 0;w=2592000",
+        "x-ratelimit-remaining": "48, 0",
+        "x-ratelimit-reset": "1, 83306"
+      },
+      "estimated_cost": {
+        "usd": 0.005
+      }
+    },
+    {
+      "provider": "brave",
+      "query": "weather los angeles tomorrow",
+      "limit": 3,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 3,
+      "request_tokens": 12,
+      "raw_response_tokens": 2947,
+      "raw_total_tokens": 2959,
+      "raw_tokens_per_result": 986.33,
+      "normalized_response_tokens": 242,
+      "normalized_total_tokens": 254,
+      "normalized_tokens_per_result": 84.67,
+      "common_request_tokens": 12,
+      "equal_budget_total_tokens": 220,
+      "equal_budget_tokens_per_result": 73.33,
+      "latency_ms": 367.0,
+      "usage": {
+        "x-ratelimit-limit": "50, 0",
+        "x-ratelimit-policy": "50;w=1, 0;w=2592000",
+        "x-ratelimit-remaining": "49, 0",
+        "x-ratelimit-reset": "1, 83304"
+      },
+      "estimated_cost": {
+        "usd": 0.005
+      }
+    },
+    {
+      "provider": "brave",
+      "query": "latest sqlite release",
+      "limit": 3,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 3,
+      "request_tokens": 11,
+      "raw_response_tokens": 9698,
+      "raw_total_tokens": 9709,
+      "raw_tokens_per_result": 3236.33,
+      "normalized_response_tokens": 346,
+      "normalized_total_tokens": 357,
+      "normalized_tokens_per_result": 119.0,
+      "common_request_tokens": 11,
+      "equal_budget_total_tokens": 179,
+      "equal_budget_tokens_per_result": 59.67,
+      "latency_ms": 586.4,
+      "usage": {
+        "x-ratelimit-limit": "50, 0",
+        "x-ratelimit-policy": "50;w=1, 0;w=2592000",
+        "x-ratelimit-remaining": "48, 0",
+        "x-ratelimit-reset": "1, 83304"
+      },
+      "estimated_cost": {
+        "usd": 0.005
+      }
+    },
+    {
+      "provider": "brave",
+      "query": "rust async cancellation",
+      "limit": 10,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 10,
+      "request_tokens": 11,
+      "raw_response_tokens": 19340,
+      "raw_total_tokens": 19351,
+      "raw_tokens_per_result": 1935.1,
+      "normalized_response_tokens": 1055,
+      "normalized_total_tokens": 1066,
+      "normalized_tokens_per_result": 106.6,
+      "common_request_tokens": 11,
+      "equal_budget_total_tokens": 718,
+      "equal_budget_tokens_per_result": 71.8,
+      "latency_ms": 178.8,
+      "usage": {
+        "x-ratelimit-limit": "50, 0",
+        "x-ratelimit-policy": "50;w=1, 0;w=2592000",
+        "x-ratelimit-remaining": "47, 0",
+        "x-ratelimit-reset": "1, 83303"
+      },
+      "estimated_cost": {
+        "usd": 0.005
+      }
+    },
+    {
+      "provider": "brave",
+      "query": "chrome devtools protocol remote debugging",
+      "limit": 10,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 10,
+      "request_tokens": 14,
+      "raw_response_tokens": 26325,
+      "raw_total_tokens": 26339,
+      "raw_tokens_per_result": 2633.9,
+      "normalized_response_tokens": 858,
+      "normalized_total_tokens": 872,
+      "normalized_tokens_per_result": 87.2,
+      "common_request_tokens": 14,
+      "equal_budget_total_tokens": 654,
+      "equal_budget_tokens_per_result": 65.4,
+      "latency_ms": 216.4,
+      "usage": {
+        "x-ratelimit-limit": "50, 0",
+        "x-ratelimit-policy": "50;w=1, 0;w=2592000",
+        "x-ratelimit-remaining": "47, 0",
+        "x-ratelimit-reset": "1, 83303"
+      },
+      "estimated_cost": {
+        "usd": 0.005
+      }
+    },
+    {
+      "provider": "brave",
+      "query": "tokio runtime docs.rs",
+      "limit": 10,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 10,
+      "request_tokens": 13,
+      "raw_response_tokens": 12723,
+      "raw_total_tokens": 12736,
+      "raw_tokens_per_result": 1273.6,
+      "normalized_response_tokens": 971,
+      "normalized_total_tokens": 984,
+      "normalized_tokens_per_result": 98.4,
+      "common_request_tokens": 13,
+      "equal_budget_total_tokens": 615,
+      "equal_budget_tokens_per_result": 61.5,
+      "latency_ms": 393.9,
+      "usage": {
+        "x-ratelimit-limit": "50, 0",
+        "x-ratelimit-policy": "50;w=1, 0;w=2592000",
+        "x-ratelimit-remaining": "47, 0",
+        "x-ratelimit-reset": "1, 83303"
+      },
+      "estimated_cost": {
+        "usd": 0.005
+      }
+    },
+    {
+      "provider": "brave",
+      "query": "firecrawl alternatives",
+      "limit": 10,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 10,
+      "request_tokens": 11,
+      "raw_response_tokens": 32086,
+      "raw_total_tokens": 32097,
+      "raw_tokens_per_result": 3209.7,
+      "normalized_response_tokens": 955,
+      "normalized_total_tokens": 966,
+      "normalized_tokens_per_result": 96.6,
+      "common_request_tokens": 11,
+      "equal_budget_total_tokens": 706,
+      "equal_budget_tokens_per_result": 70.6,
+      "latency_ms": 244.5,
+      "usage": {
+        "x-ratelimit-limit": "50, 0",
+        "x-ratelimit-policy": "50;w=1, 0;w=2592000",
+        "x-ratelimit-remaining": "46, 0",
+        "x-ratelimit-reset": "1, 83302"
+      },
+      "estimated_cost": {
+        "usd": 0.005
+      }
+    },
+    {
+      "provider": "brave",
+      "query": "github agent browser",
+      "limit": 10,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 10,
+      "request_tokens": 11,
+      "raw_response_tokens": 13097,
+      "raw_total_tokens": 13108,
+      "raw_tokens_per_result": 1310.8,
+      "normalized_response_tokens": 901,
+      "normalized_total_tokens": 912,
+      "normalized_tokens_per_result": 91.2,
+      "common_request_tokens": 11,
+      "equal_budget_total_tokens": 744,
+      "equal_budget_tokens_per_result": 74.4,
+      "latency_ms": 287.1,
+      "usage": {
+        "x-ratelimit-limit": "50, 0",
+        "x-ratelimit-policy": "50;w=1, 0;w=2592000",
+        "x-ratelimit-remaining": "47, 0",
+        "x-ratelimit-reset": "1, 83302"
+      },
+      "estimated_cost": {
+        "usd": 0.005
+      }
+    },
+    {
+      "provider": "brave",
+      "query": "openai responses api docs",
+      "limit": 10,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 10,
+      "request_tokens": 13,
+      "raw_response_tokens": 27435,
+      "raw_total_tokens": 27448,
+      "raw_tokens_per_result": 2744.8,
+      "normalized_response_tokens": 1308,
+      "normalized_total_tokens": 1321,
+      "normalized_tokens_per_result": 132.1,
+      "common_request_tokens": 13,
+      "equal_budget_total_tokens": 642,
+      "equal_budget_tokens_per_result": 64.2,
+      "latency_ms": 179.0,
+      "usage": {
+        "x-ratelimit-limit": "50, 0",
+        "x-ratelimit-policy": "50;w=1, 0;w=2592000",
+        "x-ratelimit-remaining": "47, 0",
+        "x-ratelimit-reset": "1, 83302"
+      },
+      "estimated_cost": {
+        "usd": 0.005
+      }
+    },
+    {
+      "provider": "brave",
+      "query": "best static site generator",
+      "limit": 10,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 10,
+      "request_tokens": 12,
+      "raw_response_tokens": 20625,
+      "raw_total_tokens": 20637,
+      "raw_tokens_per_result": 2063.7,
+      "normalized_response_tokens": 988,
+      "normalized_total_tokens": 1000,
+      "normalized_tokens_per_result": 100.0,
+      "common_request_tokens": 12,
+      "equal_budget_total_tokens": 718,
+      "equal_budget_tokens_per_result": 71.8,
+      "latency_ms": 279.5,
+      "usage": {
+        "x-ratelimit-limit": "50, 0",
+        "x-ratelimit-policy": "50;w=1, 0;w=2592000",
+        "x-ratelimit-remaining": "46, 0",
+        "x-ratelimit-reset": "1, 83301"
+      },
+      "estimated_cost": {
+        "usd": 0.005
+      }
+    },
+    {
+      "provider": "brave",
+      "query": "local first software",
+      "limit": 10,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 10,
+      "request_tokens": 11,
+      "raw_response_tokens": 22725,
+      "raw_total_tokens": 22736,
+      "raw_tokens_per_result": 2273.6,
+      "normalized_response_tokens": 862,
+      "normalized_total_tokens": 873,
+      "normalized_tokens_per_result": 87.3,
+      "common_request_tokens": 11,
+      "equal_budget_total_tokens": 689,
+      "equal_budget_tokens_per_result": 68.9,
+      "latency_ms": 176.6,
+      "usage": {
+        "x-ratelimit-limit": "50, 0",
+        "x-ratelimit-policy": "50;w=1, 0;w=2592000",
+        "x-ratelimit-remaining": "46, 0",
+        "x-ratelimit-reset": "1, 83301"
+      },
+      "estimated_cost": {
+        "usd": 0.005
+      }
+    },
+    {
+      "provider": "brave",
+      "query": "princeton computer science curriculum",
+      "limit": 10,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 10,
+      "request_tokens": 13,
+      "raw_response_tokens": 14650,
+      "raw_total_tokens": 14663,
+      "raw_tokens_per_result": 1466.3,
+      "normalized_response_tokens": 908,
+      "normalized_total_tokens": 921,
+      "normalized_tokens_per_result": 92.1,
+      "common_request_tokens": 13,
+      "equal_budget_total_tokens": 648,
+      "equal_budget_tokens_per_result": 64.8,
+      "latency_ms": 300.5,
+      "usage": {
+        "x-ratelimit-limit": "50, 0",
+        "x-ratelimit-policy": "50;w=1, 0;w=2592000",
+        "x-ratelimit-remaining": "46, 0",
+        "x-ratelimit-reset": "1, 83301"
+      },
+      "estimated_cost": {
+        "usd": 0.005
+      }
+    },
+    {
+      "provider": "brave",
+      "query": "coffee shops san francisco",
+      "limit": 10,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 10,
+      "request_tokens": 13,
+      "raw_response_tokens": 147759,
+      "raw_total_tokens": 147772,
+      "raw_tokens_per_result": 14777.2,
+      "normalized_response_tokens": 1183,
+      "normalized_total_tokens": 1196,
+      "normalized_tokens_per_result": 119.6,
+      "common_request_tokens": 13,
+      "equal_budget_total_tokens": 736,
+      "equal_budget_tokens_per_result": 73.6,
+      "latency_ms": 1144.7,
+      "usage": {
+        "x-ratelimit-limit": "50, 0",
+        "x-ratelimit-policy": "50;w=1, 0;w=2592000",
+        "x-ratelimit-remaining": "46, 0",
+        "x-ratelimit-reset": "1, 83301"
+      },
+      "estimated_cost": {
+        "usd": 0.005
+      }
+    },
+    {
+      "provider": "brave",
+      "query": "weather los angeles tomorrow",
+      "limit": 10,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 10,
+      "request_tokens": 12,
+      "raw_response_tokens": 8106,
+      "raw_total_tokens": 8118,
+      "raw_tokens_per_result": 811.8,
+      "normalized_response_tokens": 695,
+      "normalized_total_tokens": 707,
+      "normalized_tokens_per_result": 70.7,
+      "common_request_tokens": 12,
+      "equal_budget_total_tokens": 611,
+      "equal_budget_tokens_per_result": 61.1,
+      "latency_ms": 422.3,
+      "usage": {
+        "x-ratelimit-limit": "50, 0",
+        "x-ratelimit-policy": "50;w=1, 0;w=2592000",
+        "x-ratelimit-remaining": "49, 0",
+        "x-ratelimit-reset": "1, 83299"
+      },
+      "estimated_cost": {
+        "usd": 0.005
+      }
+    },
+    {
+      "provider": "brave",
+      "query": "latest sqlite release",
+      "limit": 10,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 10,
+      "request_tokens": 11,
+      "raw_response_tokens": 14843,
+      "raw_total_tokens": 14854,
+      "raw_tokens_per_result": 1485.4,
+      "normalized_response_tokens": 911,
+      "normalized_total_tokens": 922,
+      "normalized_tokens_per_result": 92.2,
+      "common_request_tokens": 11,
+      "equal_budget_total_tokens": 602,
+      "equal_budget_tokens_per_result": 60.2,
+      "latency_ms": 184.3,
+      "usage": {
+        "x-ratelimit-limit": "50, 0",
+        "x-ratelimit-policy": "50;w=1, 0;w=2592000",
+        "x-ratelimit-remaining": "48, 0",
+        "x-ratelimit-reset": "1, 83298"
+      },
+      "estimated_cost": {
+        "usd": 0.005
+      }
+    },
+    {
+      "provider": "tavily",
+      "query": "rust async cancellation",
+      "limit": 3,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 3,
+      "request_tokens": 33,
+      "raw_response_tokens": 844,
+      "raw_total_tokens": 877,
+      "raw_tokens_per_result": 292.33,
+      "normalized_response_tokens": 738,
+      "normalized_total_tokens": 771,
+      "normalized_tokens_per_result": 257.0,
+      "common_request_tokens": 11,
+      "equal_budget_total_tokens": 226,
+      "equal_budget_tokens_per_result": 75.33,
+      "latency_ms": 1196.7,
+      "usage": null,
+      "estimated_cost": {
+        "credits": 1.0,
+        "payg_usd": 0.008
+      }
+    },
+    {
+      "provider": "tavily",
+      "query": "chrome devtools protocol remote debugging",
+      "limit": 3,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 3,
+      "request_tokens": 36,
+      "raw_response_tokens": 879,
+      "raw_total_tokens": 915,
+      "raw_tokens_per_result": 305.0,
+      "normalized_response_tokens": 770,
+      "normalized_total_tokens": 806,
+      "normalized_tokens_per_result": 268.67,
+      "common_request_tokens": 14,
+      "equal_budget_total_tokens": 243,
+      "equal_budget_tokens_per_result": 81.0,
+      "latency_ms": 1198.9,
+      "usage": null,
+      "estimated_cost": {
+        "credits": 1.0,
+        "payg_usd": 0.008
+      }
+    },
+    {
+      "provider": "tavily",
+      "query": "tokio runtime docs.rs",
+      "limit": 3,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 3,
+      "request_tokens": 35,
+      "raw_response_tokens": 1016,
+      "raw_total_tokens": 1051,
+      "raw_tokens_per_result": 350.33,
+      "normalized_response_tokens": 907,
+      "normalized_total_tokens": 942,
+      "normalized_tokens_per_result": 314.0,
+      "common_request_tokens": 13,
+      "equal_budget_total_tokens": 243,
+      "equal_budget_tokens_per_result": 81.0,
+      "latency_ms": 1376.6,
+      "usage": null,
+      "estimated_cost": {
+        "credits": 1.0,
+        "payg_usd": 0.008
+      }
+    },
+    {
+      "provider": "tavily",
+      "query": "firecrawl alternatives",
+      "limit": 3,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 3,
+      "request_tokens": 33,
+      "raw_response_tokens": 826,
+      "raw_total_tokens": 859,
+      "raw_tokens_per_result": 286.33,
+      "normalized_response_tokens": 717,
+      "normalized_total_tokens": 750,
+      "normalized_tokens_per_result": 250.0,
+      "common_request_tokens": 11,
+      "equal_budget_total_tokens": 210,
+      "equal_budget_tokens_per_result": 70.0,
+      "latency_ms": 1301.6,
+      "usage": null,
+      "estimated_cost": {
+        "credits": 1.0,
+        "payg_usd": 0.008
+      }
+    },
+    {
+      "provider": "tavily",
+      "query": "github agent browser",
+      "limit": 3,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 3,
+      "request_tokens": 33,
+      "raw_response_tokens": 1124,
+      "raw_total_tokens": 1157,
+      "raw_tokens_per_result": 385.67,
+      "normalized_response_tokens": 1009,
+      "normalized_total_tokens": 1042,
+      "normalized_tokens_per_result": 347.33,
+      "common_request_tokens": 11,
+      "equal_budget_total_tokens": 211,
+      "equal_budget_tokens_per_result": 70.33,
+      "latency_ms": 1011.3,
+      "usage": null,
+      "estimated_cost": {
+        "credits": 1.0,
+        "payg_usd": 0.008
+      }
+    },
+    {
+      "provider": "tavily",
+      "query": "openai responses api docs",
+      "limit": 3,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 3,
+      "request_tokens": 35,
+      "raw_response_tokens": 845,
+      "raw_total_tokens": 880,
+      "raw_tokens_per_result": 293.33,
+      "normalized_response_tokens": 738,
+      "normalized_total_tokens": 773,
+      "normalized_tokens_per_result": 257.67,
+      "common_request_tokens": 13,
+      "equal_budget_total_tokens": 253,
+      "equal_budget_tokens_per_result": 84.33,
+      "latency_ms": 1217.6,
+      "usage": null,
+      "estimated_cost": {
+        "credits": 1.0,
+        "payg_usd": 0.008
+      }
+    },
+    {
+      "provider": "tavily",
+      "query": "best static site generator",
+      "limit": 3,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 3,
+      "request_tokens": 34,
+      "raw_response_tokens": 1061,
+      "raw_total_tokens": 1095,
+      "raw_tokens_per_result": 365.0,
+      "normalized_response_tokens": 956,
+      "normalized_total_tokens": 990,
+      "normalized_tokens_per_result": 330.0,
+      "common_request_tokens": 12,
+      "equal_budget_total_tokens": 230,
+      "equal_budget_tokens_per_result": 76.67,
+      "latency_ms": 1360.8,
+      "usage": null,
+      "estimated_cost": {
+        "credits": 1.0,
+        "payg_usd": 0.008
+      }
+    },
+    {
+      "provider": "tavily",
+      "query": "local first software",
+      "limit": 3,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 3,
+      "request_tokens": 33,
+      "raw_response_tokens": 636,
+      "raw_total_tokens": 669,
+      "raw_tokens_per_result": 223.0,
+      "normalized_response_tokens": 528,
+      "normalized_total_tokens": 561,
+      "normalized_tokens_per_result": 187.0,
+      "common_request_tokens": 11,
+      "equal_budget_total_tokens": 190,
+      "equal_budget_tokens_per_result": 63.33,
+      "latency_ms": 1233.2,
+      "usage": null,
+      "estimated_cost": {
+        "credits": 1.0,
+        "payg_usd": 0.008
+      }
+    },
+    {
+      "provider": "tavily",
+      "query": "princeton computer science curriculum",
+      "limit": 3,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 3,
+      "request_tokens": 35,
+      "raw_response_tokens": 1051,
+      "raw_total_tokens": 1086,
+      "raw_tokens_per_result": 362.0,
+      "normalized_response_tokens": 944,
+      "normalized_total_tokens": 979,
+      "normalized_tokens_per_result": 326.33,
+      "common_request_tokens": 13,
+      "equal_budget_total_tokens": 203,
+      "equal_budget_tokens_per_result": 67.67,
+      "latency_ms": 1040.6,
+      "usage": null,
+      "estimated_cost": {
+        "credits": 1.0,
+        "payg_usd": 0.008
+      }
+    },
+    {
+      "provider": "tavily",
+      "query": "coffee shops san francisco",
+      "limit": 3,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 3,
+      "request_tokens": 35,
+      "raw_response_tokens": 952,
+      "raw_total_tokens": 987,
+      "raw_tokens_per_result": 329.0,
+      "normalized_response_tokens": 842,
+      "normalized_total_tokens": 877,
+      "normalized_tokens_per_result": 292.33,
+      "common_request_tokens": 13,
+      "equal_budget_total_tokens": 215,
+      "equal_budget_tokens_per_result": 71.67,
+      "latency_ms": 1365.1,
+      "usage": null,
+      "estimated_cost": {
+        "credits": 1.0,
+        "payg_usd": 0.008
+      }
+    },
+    {
+      "provider": "tavily",
+      "query": "weather los angeles tomorrow",
+      "limit": 3,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 3,
+      "request_tokens": 34,
+      "raw_response_tokens": 1838,
+      "raw_total_tokens": 1872,
+      "raw_tokens_per_result": 624.0,
+      "normalized_response_tokens": 1728,
+      "normalized_total_tokens": 1762,
+      "normalized_tokens_per_result": 587.33,
+      "common_request_tokens": 12,
+      "equal_budget_total_tokens": 292,
+      "equal_budget_tokens_per_result": 97.33,
+      "latency_ms": 1613.0,
+      "usage": null,
+      "estimated_cost": {
+        "credits": 1.0,
+        "payg_usd": 0.008
+      }
+    },
+    {
+      "provider": "tavily",
+      "query": "latest sqlite release",
+      "limit": 3,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 3,
+      "request_tokens": 33,
+      "raw_response_tokens": 913,
+      "raw_total_tokens": 946,
+      "raw_tokens_per_result": 315.33,
+      "normalized_response_tokens": 808,
+      "normalized_total_tokens": 841,
+      "normalized_tokens_per_result": 280.33,
+      "common_request_tokens": 11,
+      "equal_budget_total_tokens": 185,
+      "equal_budget_tokens_per_result": 61.67,
+      "latency_ms": 1246.6,
+      "usage": null,
+      "estimated_cost": {
+        "credits": 1.0,
+        "payg_usd": 0.008
+      }
+    },
+    {
+      "provider": "tavily",
+      "query": "rust async cancellation",
+      "limit": 10,
+      "ok": true,
+      "fulfilled_requested_depth": false,
+      "result_count": 8,
+      "request_tokens": 33,
+      "raw_response_tokens": 2625,
+      "raw_total_tokens": 2658,
+      "raw_tokens_per_result": 332.25,
+      "normalized_response_tokens": 2434,
+      "normalized_total_tokens": 2467,
+      "normalized_tokens_per_result": 308.38,
+      "common_request_tokens": 11,
+      "equal_budget_total_tokens": 580,
+      "equal_budget_tokens_per_result": 72.5,
+      "latency_ms": 1322.5,
+      "usage": null,
+      "estimated_cost": {
+        "credits": 1.0,
+        "payg_usd": 0.008
+      }
+    },
+    {
+      "provider": "tavily",
+      "query": "chrome devtools protocol remote debugging",
+      "limit": 10,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 10,
+      "request_tokens": 36,
+      "raw_response_tokens": 3478,
+      "raw_total_tokens": 3514,
+      "raw_tokens_per_result": 351.4,
+      "normalized_response_tokens": 3252,
+      "normalized_total_tokens": 3288,
+      "normalized_tokens_per_result": 328.8,
+      "common_request_tokens": 14,
+      "equal_budget_total_tokens": 723,
+      "equal_budget_tokens_per_result": 72.3,
+      "latency_ms": 1210.9,
+      "usage": null,
+      "estimated_cost": {
+        "credits": 1.0,
+        "payg_usd": 0.008
+      }
+    },
+    {
+      "provider": "tavily",
+      "query": "tokio runtime docs.rs",
+      "limit": 10,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 10,
+      "request_tokens": 35,
+      "raw_response_tokens": 2521,
+      "raw_total_tokens": 2556,
+      "raw_tokens_per_result": 255.6,
+      "normalized_response_tokens": 2296,
+      "normalized_total_tokens": 2331,
+      "normalized_tokens_per_result": 233.1,
+      "common_request_tokens": 13,
+      "equal_budget_total_tokens": 708,
+      "equal_budget_tokens_per_result": 70.8,
+      "latency_ms": 1935.6,
+      "usage": null,
+      "estimated_cost": {
+        "credits": 1.0,
+        "payg_usd": 0.008
+      }
+    },
+    {
+      "provider": "tavily",
+      "query": "firecrawl alternatives",
+      "limit": 10,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 10,
+      "request_tokens": 33,
+      "raw_response_tokens": 3238,
+      "raw_total_tokens": 3271,
+      "raw_tokens_per_result": 327.1,
+      "normalized_response_tokens": 3011,
+      "normalized_total_tokens": 3044,
+      "normalized_tokens_per_result": 304.4,
+      "common_request_tokens": 11,
+      "equal_budget_total_tokens": 715,
+      "equal_budget_tokens_per_result": 71.5,
+      "latency_ms": 1577.8,
+      "usage": null,
+      "estimated_cost": {
+        "credits": 1.0,
+        "payg_usd": 0.008
+      }
+    },
+    {
+      "provider": "tavily",
+      "query": "github agent browser",
+      "limit": 10,
+      "ok": true,
+      "fulfilled_requested_depth": false,
+      "result_count": 7,
+      "request_tokens": 33,
+      "raw_response_tokens": 2230,
+      "raw_total_tokens": 2263,
+      "raw_tokens_per_result": 323.29,
+      "normalized_response_tokens": 2055,
+      "normalized_total_tokens": 2088,
+      "normalized_tokens_per_result": 298.29,
+      "common_request_tokens": 11,
+      "equal_budget_total_tokens": 452,
+      "equal_budget_tokens_per_result": 64.57,
+      "latency_ms": 1273.5,
+      "usage": null,
+      "estimated_cost": {
+        "credits": 1.0,
+        "payg_usd": 0.008
+      }
+    },
+    {
+      "provider": "tavily",
+      "query": "openai responses api docs",
+      "limit": 10,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 10,
+      "request_tokens": 35,
+      "raw_response_tokens": 3760,
+      "raw_total_tokens": 3795,
+      "raw_tokens_per_result": 379.5,
+      "normalized_response_tokens": 3531,
+      "normalized_total_tokens": 3566,
+      "normalized_tokens_per_result": 356.6,
+      "common_request_tokens": 13,
+      "equal_budget_total_tokens": 753,
+      "equal_budget_tokens_per_result": 75.3,
+      "latency_ms": 1335.8,
+      "usage": null,
+      "estimated_cost": {
+        "credits": 1.0,
+        "payg_usd": 0.008
+      }
+    },
+    {
+      "provider": "tavily",
+      "query": "best static site generator",
+      "limit": 10,
+      "ok": true,
+      "fulfilled_requested_depth": false,
+      "result_count": 8,
+      "request_tokens": 34,
+      "raw_response_tokens": 3014,
+      "raw_total_tokens": 3048,
+      "raw_tokens_per_result": 381.0,
+      "normalized_response_tokens": 2819,
+      "normalized_total_tokens": 2853,
+      "normalized_tokens_per_result": 356.62,
+      "common_request_tokens": 12,
+      "equal_budget_total_tokens": 685,
+      "equal_budget_tokens_per_result": 85.62,
+      "latency_ms": 2923.7,
+      "usage": null,
+      "estimated_cost": {
+        "credits": 1.0,
+        "payg_usd": 0.008
+      }
+    },
+    {
+      "provider": "tavily",
+      "query": "local first software",
+      "limit": 10,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 10,
+      "request_tokens": 33,
+      "raw_response_tokens": 2727,
+      "raw_total_tokens": 2760,
+      "raw_tokens_per_result": 276.0,
+      "normalized_response_tokens": 2502,
+      "normalized_total_tokens": 2535,
+      "normalized_tokens_per_result": 253.5,
+      "common_request_tokens": 11,
+      "equal_budget_total_tokens": 618,
+      "equal_budget_tokens_per_result": 61.8,
+      "latency_ms": 1233.8,
+      "usage": null,
+      "estimated_cost": {
+        "credits": 1.0,
+        "payg_usd": 0.008
+      }
+    },
+    {
+      "provider": "tavily",
+      "query": "princeton computer science curriculum",
+      "limit": 10,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 10,
+      "request_tokens": 35,
+      "raw_response_tokens": 2544,
+      "raw_total_tokens": 2579,
+      "raw_tokens_per_result": 257.9,
+      "normalized_response_tokens": 2316,
+      "normalized_total_tokens": 2351,
+      "normalized_tokens_per_result": 235.1,
+      "common_request_tokens": 13,
+      "equal_budget_total_tokens": 646,
+      "equal_budget_tokens_per_result": 64.6,
+      "latency_ms": 1557.4,
+      "usage": null,
+      "estimated_cost": {
+        "credits": 1.0,
+        "payg_usd": 0.008
+      }
+    },
+    {
+      "provider": "tavily",
+      "query": "coffee shops san francisco",
+      "limit": 10,
+      "ok": true,
+      "fulfilled_requested_depth": false,
+      "result_count": 8,
+      "request_tokens": 35,
+      "raw_response_tokens": 2792,
+      "raw_total_tokens": 2827,
+      "raw_tokens_per_result": 353.38,
+      "normalized_response_tokens": 2604,
+      "normalized_total_tokens": 2639,
+      "normalized_tokens_per_result": 329.88,
+      "common_request_tokens": 13,
+      "equal_budget_total_tokens": 590,
+      "equal_budget_tokens_per_result": 73.75,
+      "latency_ms": 1622.4,
+      "usage": null,
+      "estimated_cost": {
+        "credits": 1.0,
+        "payg_usd": 0.008
+      }
+    },
+    {
+      "provider": "tavily",
+      "query": "weather los angeles tomorrow",
+      "limit": 10,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 10,
+      "request_tokens": 34,
+      "raw_response_tokens": 4229,
+      "raw_total_tokens": 4263,
+      "raw_tokens_per_result": 426.3,
+      "normalized_response_tokens": 3994,
+      "normalized_total_tokens": 4028,
+      "normalized_tokens_per_result": 402.8,
+      "common_request_tokens": 12,
+      "equal_budget_total_tokens": 892,
+      "equal_budget_tokens_per_result": 89.2,
+      "latency_ms": 1801.8,
+      "usage": null,
+      "estimated_cost": {
+        "credits": 1.0,
+        "payg_usd": 0.008
+      }
+    },
+    {
+      "provider": "tavily",
+      "query": "latest sqlite release",
+      "limit": 10,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 10,
+      "request_tokens": 33,
+      "raw_response_tokens": 4305,
+      "raw_total_tokens": 4338,
+      "raw_tokens_per_result": 433.8,
+      "normalized_response_tokens": 4074,
+      "normalized_total_tokens": 4107,
+      "normalized_tokens_per_result": 410.7,
+      "common_request_tokens": 11,
+      "equal_budget_total_tokens": 750,
+      "equal_budget_tokens_per_result": 75.0,
+      "latency_ms": 1981.4,
+      "usage": null,
+      "estimated_cost": {
+        "credits": 1.0,
+        "payg_usd": 0.008
+      }
+    },
+    {
+      "provider": "firecrawl",
+      "query": "rust async cancellation",
+      "limit": 3,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 3,
+      "request_tokens": 16,
+      "raw_response_tokens": 279,
+      "raw_total_tokens": 295,
+      "raw_tokens_per_result": 98.33,
+      "normalized_response_tokens": 236,
+      "normalized_total_tokens": 252,
+      "normalized_tokens_per_result": 84.0,
+      "common_request_tokens": 11,
+      "equal_budget_total_tokens": 211,
+      "equal_budget_tokens_per_result": 70.33,
+      "latency_ms": 723.1,
+      "usage": {
+        "creditsUsed": 2
+      },
+      "estimated_cost": {
+        "credits": 2.0
+      }
+    },
+    {
+      "provider": "firecrawl",
+      "query": "chrome devtools protocol remote debugging",
+      "limit": 3,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 3,
+      "request_tokens": 19,
+      "raw_response_tokens": 711,
+      "raw_total_tokens": 730,
+      "raw_tokens_per_result": 243.33,
+      "normalized_response_tokens": 674,
+      "normalized_total_tokens": 693,
+      "normalized_tokens_per_result": 231.0,
+      "common_request_tokens": 14,
+      "equal_budget_total_tokens": 204,
+      "equal_budget_tokens_per_result": 68.0,
+      "latency_ms": 1157.4,
+      "usage": {
+        "creditsUsed": 2
+      },
+      "estimated_cost": {
+        "credits": 2.0
+      }
+    },
+    {
+      "provider": "firecrawl",
+      "query": "tokio runtime docs.rs",
+      "limit": 3,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 3,
+      "request_tokens": 18,
+      "raw_response_tokens": 698,
+      "raw_total_tokens": 716,
+      "raw_tokens_per_result": 238.67,
+      "normalized_response_tokens": 653,
+      "normalized_total_tokens": 671,
+      "normalized_tokens_per_result": 223.67,
+      "common_request_tokens": 13,
+      "equal_budget_total_tokens": 230,
+      "equal_budget_tokens_per_result": 76.67,
+      "latency_ms": 1236.6,
+      "usage": {
+        "creditsUsed": 2
+      },
+      "estimated_cost": {
+        "credits": 2.0
+      }
+    },
+    {
+      "provider": "firecrawl",
+      "query": "firecrawl alternatives",
+      "limit": 3,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 3,
+      "request_tokens": 16,
+      "raw_response_tokens": 2645,
+      "raw_total_tokens": 2661,
+      "raw_tokens_per_result": 887.0,
+      "normalized_response_tokens": 2609,
+      "normalized_total_tokens": 2625,
+      "normalized_tokens_per_result": 875.0,
+      "common_request_tokens": 11,
+      "equal_budget_total_tokens": 270,
+      "equal_budget_tokens_per_result": 90.0,
+      "latency_ms": 964.5,
+      "usage": {
+        "creditsUsed": 2
+      },
+      "estimated_cost": {
+        "credits": 2.0
+      }
+    },
+    {
+      "provider": "firecrawl",
+      "query": "github agent browser",
+      "limit": 3,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 3,
+      "request_tokens": 16,
+      "raw_response_tokens": 923,
+      "raw_total_tokens": 939,
+      "raw_tokens_per_result": 313.0,
+      "normalized_response_tokens": 877,
+      "normalized_total_tokens": 893,
+      "normalized_tokens_per_result": 297.67,
+      "common_request_tokens": 11,
+      "equal_budget_total_tokens": 205,
+      "equal_budget_tokens_per_result": 68.33,
+      "latency_ms": 1720.6,
+      "usage": {
+        "creditsUsed": 2
+      },
+      "estimated_cost": {
+        "credits": 2.0
+      }
+    },
+    {
+      "provider": "firecrawl",
+      "query": "openai responses api docs",
+      "limit": 3,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 3,
+      "request_tokens": 18,
+      "raw_response_tokens": 235,
+      "raw_total_tokens": 253,
+      "raw_tokens_per_result": 84.33,
+      "normalized_response_tokens": 196,
+      "normalized_total_tokens": 214,
+      "normalized_tokens_per_result": 71.33,
+      "common_request_tokens": 13,
+      "equal_budget_total_tokens": 185,
+      "equal_budget_tokens_per_result": 61.67,
+      "latency_ms": 3776.7,
+      "usage": {
+        "creditsUsed": 2
+      },
+      "estimated_cost": {
+        "credits": 2.0
+      }
+    },
+    {
+      "provider": "firecrawl",
+      "query": "best static site generator",
+      "limit": 3,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 3,
+      "request_tokens": 17,
+      "raw_response_tokens": 594,
+      "raw_total_tokens": 611,
+      "raw_tokens_per_result": 203.67,
+      "normalized_response_tokens": 555,
+      "normalized_total_tokens": 572,
+      "normalized_tokens_per_result": 190.67,
+      "common_request_tokens": 12,
+      "equal_budget_total_tokens": 276,
+      "equal_budget_tokens_per_result": 92.0,
+      "latency_ms": 915.2,
+      "usage": {
+        "creditsUsed": 2
+      },
+      "estimated_cost": {
+        "credits": 2.0
+      }
+    },
+    {
+      "provider": "firecrawl",
+      "query": "local first software",
+      "limit": 3,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 3,
+      "request_tokens": 16,
+      "raw_response_tokens": 1982,
+      "raw_total_tokens": 1998,
+      "raw_tokens_per_result": 666.0,
+      "normalized_response_tokens": 1942,
+      "normalized_total_tokens": 1958,
+      "normalized_tokens_per_result": 652.67,
+      "common_request_tokens": 11,
+      "equal_budget_total_tokens": 211,
+      "equal_budget_tokens_per_result": 70.33,
+      "latency_ms": 2264.7,
+      "usage": {
+        "creditsUsed": 2
+      },
+      "estimated_cost": {
+        "credits": 2.0
+      }
+    },
+    {
+      "provider": "firecrawl",
+      "query": "princeton computer science curriculum",
+      "limit": 3,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 3,
+      "request_tokens": 18,
+      "raw_response_tokens": 2857,
+      "raw_total_tokens": 2875,
+      "raw_tokens_per_result": 958.33,
+      "normalized_response_tokens": 2819,
+      "normalized_total_tokens": 2837,
+      "normalized_tokens_per_result": 945.67,
+      "common_request_tokens": 13,
+      "equal_budget_total_tokens": 209,
+      "equal_budget_tokens_per_result": 69.67,
+      "latency_ms": 1176.7,
+      "usage": {
+        "creditsUsed": 2
+      },
+      "estimated_cost": {
+        "credits": 2.0
+      }
+    },
+    {
+      "provider": "firecrawl",
+      "query": "coffee shops san francisco",
+      "limit": 3,
+      "ok": true,
+      "fulfilled_requested_depth": true,
+      "result_count": 3,
+      "request_tokens": 18,
+      "raw_response_tokens": 1116,
+      "raw_total_tokens": 1134,
+      "raw_tokens_per_result": 378.0,
+      "normalized_response_tokens": 1076,
+      "normalized_total_tokens": 1094,
+      "normalized_tokens_per_result": 364.67,
+      "common_request_tokens": 13,
+      "equal_budget_total_tokens": 257,
+      "equal_budget_tokens_per_result": 85.67,
+      "latency_ms": 1184.2,
+      "usage": {
+        "creditsUsed": 2
+      },
+      "estimated_cost": {
+        "credits": 2.0
+      }
+    },
+    {
+      "provider": "firecrawl",
+      "query": "weather los angeles tomorrow",
+      "limit": 3,
+      "ok": false,
+      "error": "http_status_429",
+      "estimated_cost": {
+        "credits": 2.0
+      }
+    },
+    {
+      "provider": "firecrawl",
+      "query": "latest sqlite release",
+      "limit": 3,
+      "ok": false,
+      "error": "http_status_429",
+      "estimated_cost": {
+        "credits": 2.0
+      }
+    },
+    {
+      "provider": "firecrawl",
+      "query": "rust async cancellation",
+      "limit": 10,
+      "ok": false,
+      "error": "http_status_429",
+      "estimated_cost": {
+        "credits": 2.0
+      }
+    },
+    {
+      "provider": "firecrawl",
+      "query": "chrome devtools protocol remote debugging",
+      "limit": 10,
+      "ok": false,
+      "error": "http_status_429",
+      "estimated_cost": {
+        "credits": 2.0
+      }
+    },
+    {
+      "provider": "firecrawl",
+      "query": "tokio runtime docs.rs",
+      "limit": 10,
+      "ok": false,
+      "error": "http_status_429",
+      "estimated_cost": {
+        "credits": 2.0
+      }
+    },
+    {
+      "provider": "firecrawl",
+      "query": "firecrawl alternatives",
+      "limit": 10,
+      "ok": false,
+      "error": "http_status_429",
+      "estimated_cost": {
+        "credits": 2.0
+      }
+    },
+    {
+      "provider": "firecrawl",
+      "query": "github agent browser",
+      "limit": 10,
+      "ok": false,
+      "error": "http_status_429",
+      "estimated_cost": {
+        "credits": 2.0
+      }
+    },
+    {
+      "provider": "firecrawl",
+      "query": "openai responses api docs",
+      "limit": 10,
+      "ok": false,
+      "error": "http_status_429",
+      "estimated_cost": {
+        "credits": 2.0
+      }
+    },
+    {
+      "provider": "firecrawl",
+      "query": "best static site generator",
+      "limit": 10,
+      "ok": false,
+      "error": "http_status_429",
+      "estimated_cost": {
+        "credits": 2.0
+      }
+    },
+    {
+      "provider": "firecrawl",
+      "query": "local first software",
+      "limit": 10,
+      "ok": false,
+      "error": "http_status_429",
+      "estimated_cost": {
+        "credits": 2.0
+      }
+    },
+    {
+      "provider": "firecrawl",
+      "query": "princeton computer science curriculum",
+      "limit": 10,
+      "ok": false,
+      "error": "http_status_429",
+      "estimated_cost": {
+        "credits": 2.0
+      }
+    },
+    {
+      "provider": "firecrawl",
+      "query": "coffee shops san francisco",
+      "limit": 10,
+      "ok": false,
+      "error": "http_status_429",
+      "estimated_cost": {
+        "credits": 2.0
+      }
+    },
+    {
+      "provider": "firecrawl",
+      "query": "weather los angeles tomorrow",
+      "limit": 10,
+      "ok": false,
+      "error": "http_status_429",
+      "estimated_cost": {
+        "credits": 2.0
+      }
+    },
+    {
+      "provider": "firecrawl",
+      "query": "latest sqlite release",
+      "limit": 10,
+      "ok": false,
+      "error": "http_status_429",
+      "estimated_cost": {
+        "credits": 2.0
+      }
+    }
+  ]
+}

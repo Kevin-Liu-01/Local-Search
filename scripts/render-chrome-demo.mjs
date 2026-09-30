@@ -17,7 +17,7 @@ const allowed=new Map([
   ['/docs/launch/chrome-demo.html','text/html'],
   ['/docs/launch/benchmark-card.html','text/html'],
   ['/docs/launch/fonts/Manrope.ttf','font/ttf'],
-  ['/benchmarks/results/local-ab-2026-09-25-bing-expanded.json','application/json'],
+  ['/benchmarks/results/search-comparison-2026-09-29.json','application/json'],
 ]);
 const server=createServer(async(req,res)=>{
   const url=new URL(req.url,'http://127.0.0.1');
@@ -42,6 +42,7 @@ if(process.argv.includes('--serve')){
   const checks=[];
   try{
     await mkdir(output,{recursive:true});await mkdir(frames,{recursive:true});
+    if(!process.argv.includes('--benchmark-only')){
     await run('batch','--bail',`open ${base}`,'set viewport 1280 720','eval document.fonts.ready.then(()=>true)');
     assert.equal(await evaluate('window.READY'),true);
     for(const [name,time] of [['start',0],['loading',.95],['first-output',1.4],['mid-output',2.3],['search',4.2],['read',7.2],['outro',10]]){
@@ -76,13 +77,24 @@ if(process.argv.includes('--serve')){
       await exec('ffmpeg',['-v','error','-y','-framerate',String(fps),'-i',path.join(frames,'frame-%04d.png'),'-frames:v',String(duration*fps),'-an','-c:v','libx264','-crf','18','-pix_fmt','yuv420p','-movflags','+faststart',path.join(output,'chrome-demo.mp4')],{timeout:120000});
       await exec('ffmpeg',['-v','error','-y','-i',path.join(output,'chrome-demo.mp4'),'-filter_complex','fps=15,scale=960:540:flags=lanczos,split[a][b];[a]palettegen=stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=4','-loop','0',path.join(output,'chrome-demo.gif')],{timeout:120000});
     }
-    await run('batch','--bail',`open ${base.replace('chrome-demo.html','benchmark-card.html')}`,'eval document.fonts.ready.then(()=>true)');
+    }
+    await run('batch','--bail',`open ${base.replace('chrome-demo.html','benchmark-card.html')}`,'set viewport 1280 720','eval document.fonts.ready.then(()=>true)');
     assert.equal(await evaluate('window.READY'),true);
     const benchmark=await evaluate(`({width:document.documentElement.scrollWidth,height:document.documentElement.scrollHeight,footerBottom:document.querySelector('footer').getBoundingClientRect().bottom,font:document.fonts.check('24px Manrope')})`);
     assert.ok(benchmark.font&&benchmark.width===1280&&benchmark.height===720&&benchmark.footerBottom<=694,JSON.stringify(benchmark));
     checks.push({name:'benchmark',...benchmark});
     await run('screenshot',path.join(output,'benchmark-clean.png'));
+    if(process.argv.includes('--benchmark-only')){
+      const data=JSON.parse(await readFile(path.join(root,'benchmarks/results/search-comparison-2026-09-29.json'),'utf8'));
+      assert.deepEqual(await evaluate('CHART_DATA'),data);
+      await run('batch','--bail','set viewport 390 844',`screenshot --full ${path.join(output,'benchmark-mobile.png')}`);
+      const mobile=await evaluate('({width:document.documentElement.scrollWidth,viewport:innerWidth})');
+      assert.equal(mobile.width,mobile.viewport);
+      checks.push({name:'benchmark-mobile',...mobile});
+      await writeFile(path.join(output,'benchmark-checks.json'),JSON.stringify({checks},null,2)+'\n');
+    }else{
     await writeFile(path.join(output,'chrome-demo-checks.json'),JSON.stringify({dimensions:[1280,720],gifDimensions:[960,540],fps,checks},null,2)+'\n');
+    }
   }finally{
     try{await run('close');}finally{await new Promise(resolve=>server.close(resolve));}
   }

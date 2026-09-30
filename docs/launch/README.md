@@ -2,8 +2,8 @@
 
 Updated September 29, 2026. The lead media is now a continuous Chrome demo,
 not the earlier text-heavy slide animation. No social posts have been published
-by this task. The browser workflow is available in 0.2.0. Performance figures
-describe the unreleased core redesign, not a new package release.
+by this task. The browser workflow is available in 0.2.0. The context chart
+measures that published release against fresh hosted-provider requests.
 
 ## Media order
 
@@ -15,9 +15,10 @@ All exports live in `../../site/public/social/2026-09/`.
 | LinkedIn main post | chrome-demo.mp4 | Same 12-second sequence, 1280×720 |
 | Minimal cover | chrome-cover.png | Brand, one line, install command |
 | Product still | chrome-demo.png | Terminal and Chrome, no explanatory paragraphs |
-| X post 6 | benchmark-clean.png | Two median comparisons and the p95 regression |
+| X post 6; README benchmark | benchmark-clean.png | Context per result across matched searches |
+| Narrow-screen benchmark | benchmark-mobile.png | Same chart with stacked, readable provider rows |
 
-All new stills are 1280×720. The looping GIF is 960×540. The terminal and browser
+Desktop stills are 1280×720; the mobile chart is 390px wide. The looping GIF is 960×540. The terminal and browser
 are exactly 50–50 (580px each). They stay fixed while commands, navigation,
 results, and returned data change. Results appear in under a second, then both
 panels scroll through all three results. A
@@ -59,27 +60,29 @@ node scripts/render-chrome-demo.mjs
 ```
 
 Add `--stills` to render the three PNGs and layout checks without re-encoding.
+Use `--benchmark-only` to capture the desktop/mobile chart without changing the demo.
 Use `--serve` for an editable, looping preview. `?t=2.3` freezes results loading,
 `?t=4.2` shows the completed response, `?t=7.2` freezes reading, and `?t=10`
 shows the cover. Stop the preview server when done.
 
 Sources: `chrome-demo.html` and `benchmark-card.html`. Exact text remains editable
 HTML, using bundled Manrope and the project palette. The benchmark reads the raw
-JSON. Bars share a zero baseline and proportional scale within each comparison;
-cached and uncached panels use independent scales. Frames stay in ignored
+JSON. All five context bars share a zero baseline and scale. The chart joins
+successful query/depth pairs across providers; it never compares different
+successful subsets. Frames stay in ignored
 `artifacts/chrome-demo-frames/`. The previous slideshow renderer is retained only
 to reproduce historical assets.
 
 ## Evidence and claims
 
-- `../core-redesign.md`: redesign changes, tests, measurements, limitations.
-- `../../benchmarks/results/local-ab-2026-09-25-bing-expanded.json`: one Bing
-  query, three results, 20 samples per build per mode, two excluded warmups,
-  alternating A/B, warm browser and OS, arm64 macOS, Chrome 154.0.8037.57.
-- Uncached means local-search `--no-cache`. It does not flush Chrome or OS caches.
-- Median: 219.597 to 175.653 ms uncached; 23.908 to 16.4625 ms cached.
-- Uncached p95: 294.068 to 328.185 ms, a regression kept on the graphic.
-- No new hosted-provider speed, pricing, or token superiority claim.
+- `../../benchmarks/search-2026-09-29.md`: complete methodology and outcomes.
+- `../../benchmarks/results/search-comparison-2026-09-29.json`: ten matched
+  three-result queries, common schema, 120-character snippet cap, o200k_base.
+- Median tokens/result: local-search 54.7, Exa 68.5, Brave 71.0, Tavily 73.5,
+  Firecrawl 70.3. This is context size, not a relevance or quality ranking.
+- The 24-request run includes failed and underfilled hosted responses. The
+  chart is explicitly the common successful subset, not all 24 requests.
+- No speed-ranking or current-price claim. The latency run had high machine load.
 - Existing-session behavior: root `SKILL.md` and `../verification.md`.
 - External primary reference checked September 25:
   https://developer.chrome.com/docs/devtools/agents/get-started/configuration
@@ -121,6 +124,6 @@ in the revised media. The font license is bundled in `fonts/OFL.txt`.
 - Cover: local-search. Your agent. Your Chrome. cargo install local-search.
 - Choice: Existing Chrome keeps current logins with approval. A separate profile
   keeps agent sessions apart. The choice is saved, and disconnects return errors.
-- Benchmark: Development build versus 0.2.0 on one Bing query. Median uncached
-  search 219.6 to 175.7 ms; cached 23.9 to 16.5 ms. Uncached p95 worsened from
-  294.1 to 328.2 ms. Twenty samples per build and mode on arm64 macOS.
+- Benchmark: Median context tokens per result for ten matched three-result
+  queries: local-search 54.7, Exa 68.5, Brave Search 71.0, Tavily 73.5, Firecrawl
+  70.3. Same 120-character snippet cap and common JSON schema. September 29, 2026.

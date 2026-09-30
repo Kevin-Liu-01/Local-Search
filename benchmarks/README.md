@@ -1,5 +1,16 @@
 # Benchmarks
 
+## Search measurements
+
+Start with the [September 29 search benchmark](search-2026-09-29.md): published
+local-search, live Bing searches, and freshly measured hosted providers. The
+context chart joins successful samples on both query and result depth. It does
+not compare different provider subsets or mix cached and uncached latency.
+
+`search.py` owns fresh-profile local engine measurements and verified cache
+reuse. `comparison.py` builds the shared-success context comparison. The A/B
+runner below is for engineering investigations, not the public product summary.
+
 ## Baseline versus candidate
 
 `local_ab.py` measures two release binaries on the same machine. The order

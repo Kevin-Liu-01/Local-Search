@@ -1,6 +1,6 @@
 # X and LinkedIn drafts
 
-Prepared September 25, 2026. Product workflow: released 0.2.0. Core redesign: unreleased.
+Updated September 29, 2026. Product workflow and local benchmark: released 0.2.0.
 See [the media map and publishing checks](README.md) before posting.
 
 ## X thread
@@ -50,17 +50,17 @@ Sites still decide what you can access. Verification pages are reported as block
 
 ### 6/9
 
-I've also been rebuilding the core. The development build is still unreleased.
+The useful part is what your agent gets back: ranked results without the page around them.
 
-Bing, one query, 20 samples/build: median uncached search fell 219.6 to 175.7 ms. Cached: 23.9 to 16.5 ms.
+In a fresh comparison of ten matched queries, local-search used 54.7 median tokens per result. Exa, Brave Search, Tavily, and Firecrawl used 68.5 to 73.5 with the same snippet cap and JSON fields.
 
-Uncached p95 got slower: 294.1 to 328.2 ms. Full scope and caveats in the graphic.
+Context size, not a search-quality ranking. Methodology: https://github.com/Kevin-Liu-01/Local-Search/blob/main/benchmarks/search-2026-09-29.md
 
 ### 7/9
 
-Some local reads were slower too. Google, Brave, and DuckDuckGo hit verification pages in this rerun. Hosted-provider benchmarks still need a fresh run with API keys.
+The full Bing run returned the requested results in 24 out of 24 searches. Some hosted requests failed or returned fewer results, so the chart compares only the query/depth pairs that worked across all five.
 
-I'm keeping the raw results with the code so the next change has something concrete to beat.
+The full results are public, including failures, cache behavior, and latency. No cherry-picked speed headline.
 
 ### 8/9
 
@@ -72,7 +72,7 @@ or
 
 npm install -g @kevinliu01/localsearch
 
-The npm package builds the same native Rust CLI and requires Rust/Cargo. These install released 0.2.0. The redesign is unreleased.
+The npm package builds the same native Rust CLI and requires Rust/Cargo.
 
 MIT licensed. Choose your browser during setup.
 
@@ -105,7 +105,7 @@ You can also keep agent work in a separate persistent profile. Your choice is re
 
 Chrome's approval grants broad control. Use trusted agents and scope the task. Sites still control access, and verification pages stay blocked.
 
-I've also been rebuilding the core. In one Bing workload with 20 samples per build, median uncached search went from 219.6 to 175.7 ms. Cached search went from 23.9 to 16.5 ms. Uncached p95 got slower, from 294.1 to 328.2 ms. That redesign is still unreleased, and the result is specific to this workload.
+In a fresh search comparison, local-search used 54.7 median tokens per result across ten queries shared by all five providers. The comparison used the same JSON fields and a 120-character snippet cap. The full Bing run returned all requested results in 24/24 searches. Failures and partial responses from the hosted providers stay in the public report.
 
 The released 0.2.0 CLI already supports the browser workflow shown here.
 
@@ -120,4 +120,6 @@ Start with one page and a clear task. I'll put the setup guide and source in the
 Setup guide: https://lsearch.dev/docs
 Source: https://github.com/Kevin-Liu-01/Local-Search
 
-The attached workflow is an illustration, not a timed recording. Connecting to existing Chrome requires approval. Performance figures refer to the unreleased development build; the benchmark report will be linked here once that work is pushed.
+The attached workflow is an illustration, not a timed recording. Connecting to existing Chrome requires approval.
+
+Search benchmark and methodology: https://github.com/Kevin-Liu-01/Local-Search/blob/main/benchmarks/search-2026-09-29.md

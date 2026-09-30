@@ -1,0 +1,84 @@
+{
+  "date": "2026-09-29",
+  "version": "lsearch 0.2.0",
+  "metric": "Median tokens per result; common query/limit request and normalized JSON, 120-character snippet cap",
+  "matched": [
+    {
+      "query": "best static site generator",
+      "limit": 3
+    },
+    {
+      "query": "chrome devtools protocol remote debugging",
+      "limit": 3
+    },
+    {
+      "query": "coffee shops san francisco",
+      "limit": 3
+    },
+    {
+      "query": "firecrawl alternatives",
+      "limit": 3
+    },
+    {
+      "query": "github agent browser",
+      "limit": 3
+    },
+    {
+      "query": "local first software",
+      "limit": 3
+    },
+    {
+      "query": "openai responses api docs",
+      "limit": 3
+    },
+    {
+      "query": "princeton computer science curriculum",
+      "limit": 3
+    },
+    {
+      "query": "rust async cancellation",
+      "limit": 3
+    },
+    {
+      "query": "tokio runtime docs.rs",
+      "limit": 3
+    }
+  ],
+  "providers": [
+    {
+      "id": "lsearch",
+      "label": "local-search \u00b7 Bing",
+      "tokens": 54.66,
+      "successful": 24,
+      "attempted": 24
+    },
+    {
+      "id": "exa",
+      "label": "Exa",
+      "tokens": 68.5,
+      "successful": 21,
+      "attempted": 24
+    },
+    {
+      "id": "brave",
+      "label": "Brave Search",
+      "tokens": 71.0,
+      "successful": 24,
+      "attempted": 24
+    },
+    {
+      "id": "tavily",
+      "label": "Tavily",
+      "tokens": 73.5,
+      "successful": 24,
+      "attempted": 24
+    },
+    {
+      "id": "firecrawl",
+      "label": "Firecrawl",
+      "tokens": 70.33,
+      "successful": 10,
+      "attempted": 24
+    }
+  ]
+}
