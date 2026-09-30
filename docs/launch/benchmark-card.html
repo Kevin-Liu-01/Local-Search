@@ -6,55 +6,70 @@
 <title>local-search · Search context benchmark</title>
 <style>
 @font-face{font-family:Manrope;src:url('./fonts/Manrope.ttf');font-weight:200 800;font-display:block}
-*{box-sizing:border-box}body{margin:0;background:#f5f5f2;color:#151515;font-family:Manrope,sans-serif}
-main{width:1280px;min-height:720px;padding:32px 48px 28px}
-header{display:flex;justify-content:space-between;align-items:center;font-size:20px;color:#5e625c}
-.brand{display:flex;align-items:center;gap:12px;font-size:25px;color:#151515;font-weight:700;letter-spacing:-.8px}
-.mark{width:45px;height:32px;color:#0d6f74}
-h1{font-size:58px;letter-spacing:-2.7px;font-weight:650;margin:25px 0 10px;line-height:1.15}
-.subtitle{font-size:23px;color:#5e625c;margin:0 0 24px}
-.columns,.row{display:grid;grid-template-columns:255px 1fr 95px;gap:24px;align-items:center}
-.columns{font-size:18px;color:#5e625c;padding:0 18px 10px}
-.columns span:last-child{text-align:right}
-.row{min-height:64px;padding:10px 18px;border-top:1px solid #d7d7d1}
-.row.local{background:#c9f1ef;border:0}
-.name{font-size:24px;font-weight:550;letter-spacing:-.5px;line-height:1.25}.name small{display:block;font-size:17px;font-weight:450;color:#0d6f74}
-.track{height:26px;background:#e7e8e2}.bar{height:100%;background:#929b91}
-.local .track{background:#b6e5e3}.local .bar{background:#168b90}
-.value{font-size:31px;font-weight:650;text-align:right;font-variant-numeric:tabular-nums;letter-spacing:-1px}
-.local .value{color:#0d6f74}
-footer{border-top:1px solid #d7d7d1;margin-top:22px;padding-top:16px;color:#5e625c;font-size:18px;line-height:1.6}
-footer strong{font-weight:650;color:#151515}
+*{box-sizing:border-box}body{margin:0;background:#1a211d;color:#e5ebe5;font-family:Manrope,sans-serif}
+main{width:1280px;min-height:720px;padding:34px 48px 28px}
+header{display:flex;justify-content:space-between;align-items:flex-start;gap:40px}
+h1{font-size:38px;letter-spacing:-1.5px;font-weight:650;margin:0 0 12px;line-height:1.2}
+.subtitle{font-size:21px;color:#acb7ad;margin:0}
+.scope{max-width:230px;text-align:right;font-size:19px;line-height:1.5;color:#acb7ad;padding-top:7px}
+.axis,.row{display:grid;grid-template-columns:224px 1fr 160px;gap:24px;align-items:center;padding:0 22px}
+.axis{margin:28px 0 14px;color:#acb7ad;font-size:18px}
+.axis-scale{grid-column:2;display:flex;justify-content:space-between}
+.row{height:84px;border-bottom:1px solid #36433a}
+.row.local{background:#193d34;border:1px solid #366357;border-radius:7px;color:#79d9d6}
+.name{display:flex;align-items:center;gap:12px;font-size:23px;font-weight:600;letter-spacing:-.4px}
+.logo{width:30px;height:30px;object-fit:contain;flex:none}
+.logo[src$="tavily.svg"]{background:#fff;border-radius:5px}
+.mark{width:34px;height:28px;flex:none}
+.track{height:25px;background:#28322b}.bar{height:100%;background:#859c8c}
+.local .track{background:#2a4c40}.local .bar{background:#58c6ca}
+.value{font-size:30px;line-height:1.2;font-weight:650;font-variant-numeric:tabular-nums}
+.ratio{display:block;font-size:18px;font-weight:450;color:#acb7ad;margin-top:7px;white-space:nowrap}
+.local .ratio{color:#79d9d6}
+footer{border-left:2px solid #4a5c4e;margin-top:24px;padding-left:16px;color:#acb7ad;font-size:17px;line-height:1.65}
+footer strong{color:#e5ebe5;font-weight:550}
 @media(max-width:700px){
- main{width:100%;min-height:0;padding:28px 22px}header{font-size:16px;gap:12px}.brand{font-size:20px}.mark{width:32px}
- h1{font-size:37px;letter-spacing:-1.5px;line-height:1.15;margin-top:28px}.subtitle{font-size:18px;line-height:1.5}
- .columns{display:block;padding:0 0 14px;font-size:16px}.columns span:first-child,.columns span:last-child{display:none}.row{grid-template-columns:1fr auto;gap:10px;padding:16px 12px}.name{font-size:21px}.name small{display:inline;margin-left:8px}.value{font-size:26px}
- .track{grid-row:2;grid-column:1/-1;height:22px}.value{grid-row:1;grid-column:2}footer{font-size:16px;margin-top:20px}
+ main{width:100%;min-height:0;padding:26px 20px}header{display:block}
+ h1{font-size:28px;letter-spacing:-1px}.subtitle{font-size:17px;line-height:1.5}
+ .scope{text-align:left;max-width:none;font-size:16px;padding-top:14px}
+ .axis{display:block;margin-top:20px;padding:0 12px;font-size:16px}
+ .row{height:auto;min-height:110px;grid-template-columns:1fr auto;gap:12px;padding:16px 12px}
+ .name{font-size:19px;gap:9px}.logo{width:25px;height:25px}.mark{width:29px;height:24px}
+ .value{grid-row:1;grid-column:2;font-size:25px;text-align:right}.ratio{font-size:16px;margin-top:4px}
+ .track{grid-row:2;grid-column:1/-1;height:20px}
+ footer{font-size:16px;margin-top:22px}
 }
 </style>
 </head>
 <body><main>
-<header><div class="brand"><svg class="mark" viewBox="0 0 64 44" aria-hidden="true"><path fill="currentColor" fill-rule="evenodd" d="M4 1h54l-2 7 7 5-4 9 4 7-7 14H5l2-7-6-5 4-9-4-7L4 1Zm7 33h6l11-24h-6L11 34Zm19-24h6v19h4v5H30V10Zm13 0h14v6h-8v3h8v15H43v-6h8v-3h-8V10Z"/></svg>local-search</div><span>lsearch.dev</span></header>
-<h1>Search with less context.</h1>
-<p class="subtitle">Same queries. Same snippet cap. Smaller JSON.</p>
-<div class="columns"><span>Search interface</span><span>Median tokens per result · lower is better</span><span>Tokens</span></div>
+<header><div><h1>Less context per result.</h1><p class="subtitle">Normalized tokens per result. Lower is better.</p></div><div class="scope" id="scope"></div></header>
+<div class="axis" aria-hidden="true"><div class="axis-scale"><span>0</span><span id="axis-max"></span></div></div>
 <div id="chart" role="list" aria-label="Median tokens per result, matched successful searches"></div>
-<footer><strong id="scope"></strong><br>120-character snippet cap · Common JSON schema · September 29, 2026</footer>
+<footer><strong>120-character snippets · Same JSON fields · local-search 0.2.0 / Bing</strong><br>September 29, 2026 · Shared successful subset of 24 requests per provider</footer>
 </main>
+<template id="brand"><svg class="mark" viewBox="0 0 64 44" aria-hidden="true"><path fill="currentColor" fill-rule="evenodd" d="M4 1h54l-2 7 7 5-4 9 4 7-7 14H5l2-7-6-5 4-9-4-7L4 1Zm7 33h6l11-24h-6L11 34Zm19-24h6v19h4v5H30V10Zm13 0h14v6h-8v3h8v15H43v-6h8v-3h-8V10Z"/></svg></template>
 <script>
-fetch('../../benchmarks/results/search-comparison-2026-09-29.json').then(r=>r.json()).then(data=>{
- const max=80;
+fetch('../../benchmarks/results/search-comparison-2026-09-29.json').then(r=>r.json()).then(async data=>{
+ const max=Math.ceil(Math.max(...data.providers.map(provider=>provider.tokens))/10)*10;
+ const baseline=data.providers.find(provider=>provider.id==='lsearch').tokens;
+ const logos={exa:'exa.svg',brave:'brave.svg',tavily:'tavily.svg',firecrawl:'firecrawl.png'};
  const chart=document.querySelector('#chart');
+ document.querySelector('#axis-max').textContent=max+' tokens';
  for(const provider of data.providers){
-  const row=document.createElement('div');row.className='row'+(provider.id==='lsearch'?' local':'');row.setAttribute('role','listitem');
-  const name=document.createElement('div');name.className='name';name.textContent=provider.id==='lsearch'?'local-search':provider.label;
-  if(provider.id==='lsearch'){const sub=document.createElement('small');sub.textContent='0.2.0 · Bing';name.append(sub);}
+  const local=provider.id==='lsearch';
+  const row=document.createElement('div');row.className='row'+(local?' local':'');row.setAttribute('role','listitem');
+  const name=document.createElement('div');name.className='name';
+  if(local){name.append(document.querySelector('#brand').content.cloneNode(true));}
+  else{const logo=document.createElement('img');logo.className='logo';logo.src='../../site/public/brand/'+logos[provider.id];logo.alt='';name.append(logo);}
+  name.append(document.createTextNode(local?'local-search':provider.label));
   const track=document.createElement('div');track.className='track';track.setAttribute('aria-hidden','true');
   const bar=document.createElement('div');bar.className='bar';bar.style.width=(provider.tokens/max*100)+'%';track.append(bar);
   const value=document.createElement('div');value.className='value';value.textContent=provider.tokens.toFixed(1);
+  const ratio=document.createElement('span');ratio.className='ratio';ratio.textContent=local?'Baseline':(provider.tokens/baseline).toFixed(1)+'× baseline';value.append(ratio);
   row.append(name,track,value);chart.append(row);
  }
- document.querySelector('#scope').textContent=data.matched.length+' matched queries · 3 results each · Successful subset of a 24-request run';
+ document.querySelector('#scope').textContent=data.matched.length+' matched queries · 3 results each';
+ await Promise.all(Array.from(document.images).map(image=>image.decode()));
  window.CHART_DATA=data;window.READY=true;
 }).catch(()=>{document.querySelector('#chart').textContent='Benchmark data could not be loaded.';});
 </script>

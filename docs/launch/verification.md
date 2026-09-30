@@ -1,5 +1,15 @@
 # Launch media verification
 
+## September 30 benchmark presentation
+
+- README chart matches the site's dark, logo-led layout. It retains September 29
+  matched-query evidence, not the older July values in the visual reference.
+- Verified the 1280×720 export and full-height 390px mobile chart visually.
+  All five values, baseline ratios, proportional bar widths, and decoded logos
+  are checked against the source data. No horizontal overflow on mobile.
+- Renderer syntax and whitespace checks pass. The demo cleanup remains intact;
+  chart-only rendering does not change the GIF or video.
+
 ## September 29 revision
 
 - Replaced the slide-style README lead with a 12-second terminal/Chrome sequence.
@@ -19,7 +29,10 @@
   GIF full-frame decode, MP4 full decode, and `git diff --check` also pass.
 - The public results retain their July 21 provenance. The shortened docs excerpt
   was checked against docs.rs on September 29. No new performance or live-session
-  claim is made. Illustrated timing and shortened page text are labeled.
+  claim is made. Illustrated timing and shortened page text are documented in
+  surrounding copy, not overlaid on the animation. September 30 removed the
+  numbered chapter labels and bottom-left captions; every checked frame
+  asserts those elements are absent.
 - At the user's request, restored the repository's existing browser, engine,
   and agent logos. All images must decode before capture. The ending checks
   require four agent and four engine logos with clearance above the footer.

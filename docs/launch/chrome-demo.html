@@ -14,8 +14,6 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:Manrope,sans-
 .top{height:44px;display:flex;align-items:center;justify-content:space-between}
 .brand{display:flex;align-items:center;gap:12px;font-size:28px;font-weight:650;letter-spacing:-1px}
 .mark{width:47px;height:34px;color:var(--teal)}
-.chapter{display:flex;align-items:center;gap:12px;font-size:21px;color:var(--muted)}
-.chapter b{color:var(--teal);font-size:21px;font-weight:600}
 .stage{position:absolute;inset:100px 44px 68px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:32px}
 .window{min-width:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff;position:relative}
 .terminal{background:#151b17;border-color:#29372f;color:#f4f6f2}
@@ -65,7 +63,7 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:Manrope,sans-
 .docbody .code{font-size:20px;background:#f3f4ef;padding:13px 16px;border:1px solid #e1e6dc;border-radius:6px;color:#315f62}
 .bridge{position:absolute;width:32px;height:20px;left:calc(50% - 16px);top:255px;overflow:visible}
 .bridge path{stroke:#168b90;stroke-width:2;stroke-dasharray:5 5;fill:none}
-.bottom{position:absolute;left:44px;right:44px;bottom:25px;display:flex;justify-content:space-between;font-size:18px;color:#687165}.bottom strong{color:var(--teal);font-weight:600}
+.bottom{position:absolute;left:44px;right:44px;bottom:25px;display:flex;justify-content:flex-end;font-size:18px;color:#687165}.bottom strong{color:var(--teal);font-weight:600}
 .outro{position:absolute;inset:100px 44px 68px;background:var(--paper);display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;pointer-events:none}
 .outro .brand{font-size:46px;letter-spacing:-1.6px;gap:18px}.outro .mark{width:76px;height:54px}.outro h1{font-size:51px;line-height:1.15;font-weight:600;letter-spacing:-2px;text-align:center;margin:20px 0 24px}
 .logo-groups{display:flex;gap:84px;margin-bottom:26px}.logo-group{text-align:center}.logo-group p{font-size:20px;color:var(--muted);margin:0 0 14px}.logo-row{display:flex;gap:22px;align-items:center;justify-content:center}.logo-row img{width:44px;height:44px;object-fit:contain}.outro h1 span{display:inline-flex;align-items:center;gap:13px}.outro h1 img{width:45px;height:45px}
@@ -75,7 +73,7 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:Manrope,sans-
 </head>
 <body>
 <main class="canvas" aria-label="Illustrated local-search command and Chrome workflow">
-  <header class="top"><div class="brand" id="brand"></div><div class="chapter"><b id="step-number">01</b><span id="step-name">Search the web</span></div></header>
+  <header class="top"><div class="brand" id="brand"></div></header>
   <div class="stage" id="stage">
     <section class="window terminal" aria-label="Agent terminal">
       <div class="titlebar"><div class="traffic"><i></i><i></i><i></i></div>local-search<div class="agent-strip" id="agent-strip" aria-label="Works with shell-capable agents"></div></div>
@@ -106,7 +104,7 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:Manrope,sans-
     </section>
   </div>
   <section class="outro" id="outro"><div class="brand" id="outro-brand"></div><h1>Your agent.<br><span><img src="../../site/public/brand/chrome.svg" alt="">Your Chrome.</span></h1><div class="logo-groups"><div class="logo-group"><p>Works with</p><div class="logo-row" id="agent-logos"></div></div><div class="logo-group"><p>Search with</p><div class="logo-row" id="engine-logos"></div></div></div><div class="install"><span>$</span>cargo install local-search</div></section>
-  <footer class="bottom"><span id="caption">Illustrated demo</span><strong>lsearch.dev</strong></footer>
+  <footer class="bottom"><strong>lsearch.dev</strong></footer>
 </main>
 <script>
 // Deliberately authored timing. No browser connection or user data is involved.
@@ -151,7 +149,6 @@ window.renderFrame=(t)=>{
   const command=reading?readActual:searchCommand;
   const typed=Math.min(command.length,Math.max(0,Math.floor((u-.05)*150)));
   $('command').innerHTML=commandMarkup(command.slice(0,typed),reading)+(typed<command.length?'<span class="cursor"></span>':'');
-  $('step-number').textContent=reading?'02':'01';$('step-name').textContent=reading?'Read the page':'Search in Chrome';
   const searchLoaded=t>=.75;
   const docsLoaded=reading&&u>=.75;
   show('newtab',!searchLoaded);show('search-page',searchLoaded&&!docsLoaded);show('docs-page',docsLoaded);
@@ -179,11 +176,9 @@ window.renderFrame=(t)=>{
   $('status').textContent=complete?(reading?'Page text returned to your agent':'All 3 results returned to your agent'):returned?'Receiving page data':u>=.6?(reading?'Reading in local Chrome':'Searching in local Chrome'):'Connected to local Chrome';
   $('bridge-line').style.strokeDashoffset=(returned?1:-1)*t*30;
   $('bridge-line').style.opacity=u>=.6&&!complete?'1':'.32';
-  $('caption').textContent=t>=9.45?'A local browser API for agents':'Illustrated timing · Shortened page text';
   const end=ease((t-9)/.45);
   $('stage').style.opacity=1-end;$('stage').style.transform=`translateY(${-8*end}px)`;
   $('outro').style.opacity=end;$('outro').style.transform=`translateY(${12*(1-end)}px)`;
-  document.querySelector('.chapter').style.opacity=1-end;
   $('brand').style.opacity=1-end;
   window.frameState={t,reading,returned,complete,shownLines,totalLines:jsonLines.length};
   return window.frameState;

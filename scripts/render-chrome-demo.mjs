@@ -19,9 +19,10 @@ const allowed=new Map([
   ['/docs/launch/fonts/Manrope.ttf','font/ttf'],
   ['/benchmarks/results/search-comparison-2026-09-29.json','application/json'],
 ]);
-for(const name of ['chrome','claude','codex','cursor-mono','openclaw','google','bing','brave','duckduckgo','rust-mono']){
+for(const name of ['chrome','claude','codex','cursor-mono','openclaw','google','bing','brave','duckduckgo','rust-mono','exa','tavily']){
   allowed.set(`/site/public/brand/${name}.svg`,'image/svg+xml');
 }
+allowed.set('/site/public/brand/firecrawl.png','image/png');
 const server=createServer(async(req,res)=>{
   const url=new URL(req.url,'http://127.0.0.1');
   if(!allowed.has(url.pathname)){res.writeHead(404);res.end();return;}
@@ -51,6 +52,7 @@ if(process.argv.includes('--serve')){
     for(const [name,time] of [['start',0],['loading',.95],['first-output',1.4],['mid-output',2.3],['search',4.2],['read',7.2],['outro',10]]){
       await run('batch','--bail',`eval "renderFrame(${time})"`,`screenshot ${path.join(frames,`${name}.png`)}`);
       const check=await evaluate('layoutCheck()');
+      assert.equal(await evaluate("document.querySelector('.chapter, #caption, #step-number, #step-name') === null"),true,'No chapter labels or caption overlays');
       assert.ok(check.font&&check.width===1280&&check.height===720,JSON.stringify(check));
       assert.ok(check.terminalContentFits&&check.commandFits,JSON.stringify(check));
       assert.ok(check.outputLabelFits,JSON.stringify(check));
@@ -87,8 +89,20 @@ if(process.argv.includes('--serve')){
       await exec('ffmpeg',['-v','error','-y','-i',path.join(output,'chrome-demo.mp4'),'-filter_complex','fps=15,scale=960:540:flags=lanczos,split[a][b];[a]palettegen=stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=4','-loop','0',path.join(output,'chrome-demo.gif')],{timeout:120000});
     }
     }
-    await run('batch','--bail',`open ${base.replace('chrome-demo.html','benchmark-card.html')}`,'set viewport 1280 720','eval document.fonts.ready.then(()=>true)');
+    await run('batch','--bail',`open ${base.replace('chrome-demo.html','benchmark-card.html')}`,'set viewport 1280 720','wait --fn "window.READY === true"','eval document.fonts.ready.then(()=>true)');
     assert.equal(await evaluate('window.READY'),true);
+    const chartRows=await evaluate(`Array.from(document.querySelectorAll('#chart .row')).map(row=>({value:parseFloat(row.querySelector('.value').firstChild.textContent),ratio:row.querySelector('.ratio').textContent,width:parseFloat(row.querySelector('.bar').style.width),logo:!!row.querySelector('svg, img'),imagesDecoded:Array.from(row.querySelectorAll('img')).every(image=>image.complete&&image.naturalWidth>0)}))`);
+    const chartData=await evaluate('CHART_DATA');
+    const chartMax=Math.ceil(Math.max(...chartData.providers.map(provider=>provider.tokens))/10)*10;
+    const chartBaseline=chartData.providers.find(provider=>provider.id==='lsearch').tokens;
+    assert.equal(chartRows.length,chartData.providers.length);
+    for(const [index,row] of chartRows.entries()){
+      const provider=chartData.providers[index];
+      assert.equal(row.value,Number(provider.tokens.toFixed(1)));
+      assert.equal(row.ratio,provider.id==='lsearch'?'Baseline':(provider.tokens/chartBaseline).toFixed(1)+'× baseline');
+      assert.ok(Math.abs(row.width-provider.tokens/chartMax*100)<0.001);
+      assert.ok(row.logo&&row.imagesDecoded,'Every chart provider needs a decoded logo');
+    }
     const benchmark=await evaluate(`({width:document.documentElement.scrollWidth,height:document.documentElement.scrollHeight,footerBottom:document.querySelector('footer').getBoundingClientRect().bottom,font:document.fonts.check('24px Manrope')})`);
     assert.ok(benchmark.font&&benchmark.width===1280&&benchmark.height===720&&benchmark.footerBottom<=694,JSON.stringify(benchmark));
     checks.push({name:'benchmark',...benchmark});

@@ -1,4 +1,4 @@
-# Demo logo assets
+# Demo and benchmark logo assets
 
 User-directed reuse of the previously supplied repository assets, September 29,
 2026. No new downloads, stock account, paid plan, export quota, or generated
@@ -22,6 +22,14 @@ their colors and proportions. The exported GIF/video rasterizes these assets.
 | brave.svg | https://search.brave.com/ | c0de0e726a5ca39a63fac999b39030f7ad3b7ec86f516b9e4575e869ad4a5303 |
 | duckduckgo.svg | https://duckduckgo.com/ | 905694fbd62e8ca176f4990d94d5afedbccb92d05b146339775bb8d4deb9ef72 |
 | rust-mono.svg | https://www.rust-lang.org/ | 95a291d8887610d103704adcc5c5f2cbfa4c80a96f8e72b00531d5691beb67a8 |
+| exa.svg | https://exa.ai/ | 3370144d994ce3021db0ce5cf952563b7a198346920b0ce61d5b8af65b3518a3 |
+| tavily.svg | https://www.tavily.com/ | 826487eec6e2ba31e6efd556385c33bcde4a9e3e9e5f4282f60925d7892a42f1 |
+| firecrawl.png | https://www.firecrawl.dev/ | 45090f76016599fab724e5553e39942a88d1c10c3a2cd2fe18a1d909c53082a1 |
+
+The September 30 README benchmark reuses the supplied Exa, Brave Search,
+Tavily, and Firecrawl marks to identify measured providers, with original
+colors and proportions. It uses the September 29 matched-query data, not the
+older numbers in the user's visual reference.
 
 Source of these exact files is the existing user-provided repository, not a
 newly licensed stock collection. Prior acquisition/license metadata is not

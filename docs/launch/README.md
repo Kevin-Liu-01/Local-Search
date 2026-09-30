@@ -25,6 +25,9 @@ panels scroll through all three results. A
 three-second closing card gives one install command. No slide deck or repeated
 marketing headlines interrupts the workflow.
 
+No numbered chapter labels or bottom-left captions appear in the animation.
+Keep the illustrated-timing disclosure in the surrounding README/post copy.
+
 The terminal header shows Claude, Codex, Cursor, and OpenClaw. Chrome and
 DuckDuckGo identify the illustrated browser and search; Rust identifies the
 docs page. The closing frame groups agent logos and the four supported search
@@ -73,7 +76,8 @@ shows the cover. Stop the preview server when done.
 
 Sources: `chrome-demo.html` and `benchmark-card.html`. Exact text remains editable
 HTML, using bundled Manrope and the project palette. The benchmark reads the raw
-JSON. All five context bars share a zero baseline and scale. The chart joins
+JSON. The dark chart uses provider logos and baseline ratios, matching the site.
+All five context bars share a zero baseline and scale. The chart joins
 successful query/depth pairs across providers; it never compares different
 successful subsets. Frames stay in ignored
 `artifacts/chrome-demo-frames/`. The previous slideshow renderer is retained only

@@ -8,7 +8,7 @@ or readable text, without a hosted browser service or a search API key.
 
 [Documentation](https://lsearch.dev/docs) · [Agent reference](https://github.com/Kevin-Liu-01/Local-Search/blob/main/SKILL.md) · [crates.io](https://crates.io/crates/local-search) · [npm](https://www.npmjs.com/package/@kevinliu01/localsearch)
 
-<a href="https://lsearch.dev"><img src="https://raw.githubusercontent.com/Kevin-Liu-01/Local-Search/main/site/public/social/2026-09/chrome-demo.gif?v=2026-09-29-logos" alt="Demo: an agent runs lsearch, Chrome loads search results, and structured results return to the terminal" width="100%"></a>
+<a href="https://lsearch.dev"><img src="https://raw.githubusercontent.com/Kevin-Liu-01/Local-Search/main/site/public/social/2026-09/chrome-demo.gif?v=2026-09-30-clean" alt="Demo: an agent runs lsearch, Chrome loads search results, and structured results return to the terminal" width="100%"></a>
 
 *Illustrated demo, not a timing measurement. [Download video](https://raw.githubusercontent.com/Kevin-Liu-01/Local-Search/main/site/public/social/2026-09/chrome-demo.mp4).*
 
@@ -101,7 +101,7 @@ Failures have a nonzero exit status and a structured error code.
 
 ## Benchmarks
 
-![Search context comparison: local-search 54.7, Exa 68.5, Brave Search 71.0, Tavily 73.5, and Firecrawl 70.3 median tokens per result](https://raw.githubusercontent.com/Kevin-Liu-01/Local-Search/main/site/public/social/2026-09/benchmark-clean.png?v=2026-09-29-search)
+![Search context comparison: local-search 54.7, Exa 68.5, Brave Search 71.0, Tavily 73.5, and Firecrawl 70.3 median tokens per result](https://raw.githubusercontent.com/Kevin-Liu-01/Local-Search/main/site/public/social/2026-09/benchmark-clean.png?v=2026-09-30-dark)
 
 Ten matched queries, three results each, the same JSON fields, and a 120-character
 snippet cap for every provider. local-search 0.2.0 used **54.7 median tokens per
