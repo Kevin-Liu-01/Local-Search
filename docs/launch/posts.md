@@ -5,7 +5,8 @@ See [the media map and publishing checks](README.md) before posting.
 
 ## X thread
 
-Media: post 1 agent-browser.gif; post 4 browser-choice.gif; post 6 benchmark.png.
+Media: post 1 chrome-demo.gif; post 6 benchmark-clean.png. The browser-choice slideshow
+is an older reference, not recommended lead media.
 
 ### 1/9
 
@@ -86,7 +87,7 @@ Browser access is powerful. Keep the task specific.
 
 ## LinkedIn
 
-Attach agent-browser.mp4. For a static post, use hero-portrait.png.
+Attach chrome-demo.mp4. For a minimal static post, use chrome-cover.png.
 
 Your browser is already signed in. Your coding agent should be able to use it.
 

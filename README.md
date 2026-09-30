@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://lsearch.dev">
-    <img src="https://raw.githubusercontent.com/Kevin-Liu-01/Local-Search/main/site/public/social/2026-09/agent-browser.gif?v=2026-09-clean-browser" alt="Illustrated local-search workflow: an agent calls a CLI command, local Chrome searches, compact results return, and an approved existing session can read signed-in pages" width="100%">
+    <img src="https://raw.githubusercontent.com/Kevin-Liu-01/Local-Search/main/site/public/social/2026-09/chrome-demo.gif?v=2026-09-29-chrome-fast" alt="Animated demo: equally sized terminal and Chrome windows load and scroll through all three search results, then a docs page opens and its text returns to the agent" width="100%">
   </a>
 </p>
 
@@ -34,10 +34,10 @@ pages, read a discussion, or use a session you already signed into. Websites
 still control access. Chrome approval grants broad browser control, so use
 trusted agents and give them a clear task.
 
-The animation is an illustrated workflow, not a timed live recording. Its public
-search results were recorded July 21, 2026; private page content is omitted.
-[View the still guide](https://raw.githubusercontent.com/Kevin-Liu-01/Local-Search/main/site/public/social/2026-09/hero.png)
-or [download the video](https://raw.githubusercontent.com/Kevin-Liu-01/Local-Search/main/site/public/social/2026-09/agent-browser.mp4).
+The animation uses illustrated timing and shortened page text. Search results are
+from the July 21, 2026 public trace; the docs excerpt was checked September 29.
+[View the still](https://raw.githubusercontent.com/Kevin-Liu-01/Local-Search/main/site/public/social/2026-09/chrome-demo.png)
+or [download the video](https://raw.githubusercontent.com/Kevin-Liu-01/Local-Search/main/site/public/social/2026-09/chrome-demo.mp4).
 
 **Start with the [illustrated agent guide](https://github.com/Kevin-Liu-01/Local-Search/blob/main/docs/agent-guide.md).** It shows
 browser setup, signed-in LinkedIn/GitHub/Reddit checks, search, extraction,

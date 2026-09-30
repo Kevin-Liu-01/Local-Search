@@ -1,5 +1,35 @@
 # Launch media verification
 
+## September 29 revision
+
+- Replaced the slide-style README lead with a 12-second terminal/Chrome sequence.
+  Editable HTML has deterministic `renderFrame(t)` timing and a reduced-motion
+  still preview. No logged-in browser is used by the renderer.
+- Exported H.264 video: 1280×720, 20 fps, 240 frames, 12 seconds.
+- Exported looping GIF: 960×540, 180 decoded frames, 12 seconds, loop=0.
+- Inspected search, read, and ending frames. Checked font loading, frame bounds,
+  command wrapping, terminal content fit, and clearance below the third result.
+  Both windows measure 580px. Seven timeline checkpoints cover loading, streamed
+  output, completed search, reading, and the ending. The completed JSON is parsed
+  and checked for `ok: true` and result ranks `[1, 2, 3]`; the terminal reaches the
+  final line and Chrome scrolls far enough to show the full third result.
+- Three stills: UI poster, minimal cover, and simplified benchmark comparison.
+  The benchmark values are read from the committed JSON, not typed by hand.
+- Website lint, typecheck, and production build pass. The renderer syntax check,
+  GIF full-frame decode, MP4 full decode, and `git diff --check` also pass.
+- The public results retain their July 21 provenance. The shortened docs excerpt
+  was checked against docs.rs on September 29. No new performance or live-session
+  claim is made. Illustrated timing and shortened page text are labeled.
+- Chrome artwork is excluded from the exports because icon reuse permission was
+  not established. The Chrome name identifies the illustrated browser.
+- README and social media pointers now use the new exports. This revision
+  updates repository media only; it does not post externally or release a package.
+
+The per-frame layout evidence is `site/public/social/2026-09/chrome-demo-checks.json`.
+The renderer source is `scripts/render-chrome-demo.mjs`; frames are ignored.
+
+## Previous slide kit
+
 Prepared September 25, 2026 (Pacific) in the core-redesign worktree.
 
 ## Passed

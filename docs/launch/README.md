@@ -1,8 +1,9 @@
 # September launch kit
 
-Status: local drafts and exports. Nothing in this kit has been published.
-The browser workflow is available in 0.2.0. Performance figures describe the
-unreleased core redesign. Do not call it a new package release.
+Updated September 29, 2026. The lead media is now a continuous Chrome demo,
+not the earlier text-heavy slide animation. No social posts have been published
+by this task. The browser workflow is available in 0.2.0. Performance figures
+describe the unreleased core redesign, not a new package release.
 
 ## Media order
 
@@ -10,29 +11,38 @@ All exports live in `../../site/public/social/2026-09/`.
 
 | Placement | File | Purpose |
 | --- | --- | --- |
-| X post 1; README lead | agent-browser.gif | Agent command, browser results, signed-in reading, install |
-| X post 4 | browser-choice.gif | Choose a profile, approve, reuse, disconnect |
-| X post 6 | benchmark.png | Two measured medians and the p95 regression |
-| LinkedIn main post | agent-browser.mp4 | Same workflow, with crisp video text |
-| Static alternative | hero.png | Product premise without animation |
-| Browser choice still | choice.png | Two browser modes and exact commands |
-| Mobile-feed still | hero-portrait.png | 1080×1350 product explanation |
-| Mobile-feed proof | benchmark-portrait.png | Stacked, readable comparison |
+| X post 1; README lead | chrome-demo.gif | A command types, Chrome searches, then a docs page opens |
+| LinkedIn main post | chrome-demo.mp4 | Same 12-second sequence, 1280×720 |
+| Minimal cover | chrome-cover.png | Brand, one line, install command |
+| Product still | chrome-demo.png | Terminal and Chrome, no explanatory paragraphs |
+| X post 6 | benchmark-clean.png | Two median comparisons and the p95 regression |
 
-MP4 copies of both GIFs are included. PNG keyframes also serve as still
-alternatives. Animation timings explain the steps; they do not represent
-measured CLI latency. The public search results come from the July 21 trace in
-`site/lib/traces.ts`. Titles are shortened in the illustration. Output is an
-excerpt, not the full success envelope. The signed-in illustration contains no
-account data and makes no guarantee of access to a particular site.
+All new stills are 1280×720. The looping GIF is 960×540. The terminal and browser
+are exactly 50–50 (580px each). They stay fixed while commands, navigation,
+results, and returned data change. Results appear in under a second, then both
+panels scroll through all three results. A
+three-second closing card gives one install command. No slide deck or repeated
+marketing headlines interrupts the workflow.
+
+Timing is illustrative, not measured latency. Search uses the July 21, 2026
+`tokio-runtime` trace in `site/lib/traces.ts`. The JSON view reveals the complete
+recorded search response, formatted for readability, including all three results
+and their titles, URLs, domains, and snippets. The docs view and
+Markdown are shortened, authored excerpts based on the public
+[Tokio runtime page](https://docs.rs/tokio/latest/tokio/runtime/), checked
+September 29, 2026. This is not a fresh live search or signed-in access test.
+The demo starts after browser setup. It contains no account data.
+
+The older `agent-browser`, `browser-choice`, `hero`, and portrait assets remain
+historical references. Do not use their text-heavy slides as the lead media.
 
 ## Copy
 
 `posts.md` contains the copy-ready nine-post X thread, LinkedIn post, and first
 comment. Keep the media with its matching post. No external posting has been
-authorized. Keep the unpublished benchmark report link out of public copy
-until the evidence and assets are pushed. The first comment intentionally
-states that boundary instead of linking to a nonexistent main-branch file.
+authorized. Check the draft's release wording before posting. The benchmark
+evidence and revised media are versioned with the source; committing them does
+not publish a social post or a package release.
 
 Before posting, confirm the current published version. These drafts were
 prepared against the verified 0.2.0 release on September 25, 2026. Do not use
@@ -45,19 +55,20 @@ and ffmpeg. It uses a fresh headless browser session, restricted to loopback.
 It never attaches to everyday Chrome or reads signed-in content.
 
 ```sh
-node scripts/render-launch-media.mjs
+node scripts/render-chrome-demo.mjs
 ```
 
-To inspect the editable composition, run the same command with `--serve`.
-Use `?scene=hero`, `search`, `results`, `read`, `choice`, `connect`, `disconnect`,
-`outro`, or `benchmark`. Stop the preview server when done.
+Add `--stills` to render the three PNGs and layout checks without re-encoding.
+Use `--serve` for an editable, looping preview. `?t=2.3` freezes results loading,
+`?t=4.2` shows the completed response, `?t=7.2` freezes reading, and `?t=10`
+shows the cover. Stop the preview server when done.
 
-Source: `media.html`. Real text, embedded inline vector primitives, Manrope,
-project colors. The benchmark bars derive from the raw JSON, share a zero
-baseline within each comparison, and scale proportionally. The cache and
-uncached comparisons use independent scales and explicitly labeled values.
-The image-generation study was used only for composition exploration. Its
-invented logo, commands, results, gradients, and decoration are not included.
+Sources: `chrome-demo.html` and `benchmark-card.html`. Exact text remains editable
+HTML, using bundled Manrope and the project palette. The benchmark reads the raw
+JSON. Bars share a zero baseline and proportional scale within each comparison;
+cached and uncached panels use independent scales. Frames stay in ignored
+`artifacts/chrome-demo-frames/`. The previous slideshow renderer is retained only
+to reproduce historical assets.
 
 ## Evidence and claims
 
@@ -86,14 +97,28 @@ Font file: https://raw.githubusercontent.com/google/fonts/main/ofl/manrope/Manro
 
 License: https://github.com/google/fonts/blob/main/ofl/manrope/OFL.txt
 
-Retrieved September 25, 2026. The font is unmodified. No third-party brand
-artwork, stock images, private captures, or generated concept pixels are shipped.
+Font retrieved September 25, 2026, unmodified. New window geometry and navigation
+icons are original HTML/SVG in `chrome-demo.html` under the repository MIT license.
+No stock-image plan, per-export fee, attribution requirement beyond the bundled
+MIT/OFL notices, or account is involved. Editable source is delivered with the
+renders; no third-party artwork ownership or trademark rights are transferred.
+
+The repository's Chrome SVG was inspected as a reference, but is not embedded
+in the new exports. Its reuse permission was not established. Only the Chrome
+name is used for informational identification, with no partnership claim.
+Reference: [Google brand guidance](https://about.google/brand-resource-center/guidance/)
+and [current icon guidance](https://partnermarketinghub.withgoogle.com/brands/google/branding-guidelines/how-to-show-googles-brand/#product-icons),
+checked September 29, 2026; no displayed revision date or approval account.
+Reference SVG SHA-256: `e97c9c44672f1b40ca0700751318a4aafcb6e69138575f68b0c203cb3ec55dfc`.
+No third-party brand artwork, private captures, or generated concept pixels ship
+in the revised media. The font license is bundled in `fonts/OFL.txt`.
 
 ## Alt text
 
-- Workflow: An agent runs lsearch, local Chrome searches, and compact results
-  return. Another example reads a signed-in page using an approved Chrome
-  session. Illustrated timing; dated public output; private content omitted.
+- Workflow: Equal-width terminal and Chrome windows load and scroll through all
+  three public search results and the complete JSON response. A read command opens the
+  first docs page and returns a shortened Markdown excerpt. Illustrated timing.
+- Cover: local-search. Your agent. Your Chrome. cargo install local-search.
 - Choice: Existing Chrome keeps current logins with approval. A separate profile
   keeps agent sessions apart. The choice is saved, and disconnects return errors.
 - Benchmark: Development build versus 0.2.0 on one Bing query. Median uncached

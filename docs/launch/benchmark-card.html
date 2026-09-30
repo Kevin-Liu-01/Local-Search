@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>local-search · benchmark</title>
+<style>
+@font-face{font-family:Manrope;src:url('./fonts/Manrope.ttf');font-weight:200 800;font-display:block}
+*{box-sizing:border-box}
+body{margin:0;background:#f5f5f2;color:#151515;font-family:Manrope,sans-serif}
+main{width:1280px;height:720px;padding:36px 48px;overflow:hidden}
+header{display:flex;justify-content:space-between;align-items:center;font-size:22px;color:#5e625c}
+.brand{display:flex;align-items:center;gap:12px;font-size:27px;color:#151515;font-weight:650;letter-spacing:-1px}
+.mark{width:46px;height:32px;color:#0d6f74}
+h1{font-size:61px;letter-spacing:-2.5px;font-weight:650;margin:28px 0 24px;line-height:1.15}
+.charts{display:grid;grid-template-columns:1fr 1fr;gap:64px}
+section{border-top:1px solid #d7d7d1;padding-top:18px}
+.section-title{display:flex;justify-content:space-between;align-items:center;font-size:24px}
+.section-title h2{font-size:24px;font-weight:600;margin:0}.section-title span{font-size:19px;color:#5e625c}
+.gain{font-size:69px;letter-spacing:-2.6px;line-height:1.2;font-weight:600;color:#0d6f74;margin:14px 0 17px}.gain small{font-size:23px;letter-spacing:-.5px;color:#5e625c;font-weight:500;margin-left:12px}
+.label{display:flex;justify-content:space-between;font-size:21px;margin:13px 0 8px}.label strong{font-weight:600;font-variant-numeric:tabular-nums}
+.track{height:16px;background:#e6e8e1}.fill{height:100%;background:#929b91}.fill.new{background:#168b90}
+.tail{margin-top:28px;padding:17px 20px;background:#e7eae2;display:flex;justify-content:space-between;align-items:center;font-size:23px}.tail strong{font-weight:600}.tail span{font-variant-numeric:tabular-nums}
+footer{margin-top:22px;font-size:18px;color:#5e625c;line-height:1.5;display:flex;justify-content:space-between;gap:24px}footer strong{color:#0d6f74;font-weight:600;white-space:nowrap}
+</style>
+</head>
+<body><main>
+<header><div class="brand"><svg class="mark" viewBox="0 0 64 44"><path fill="currentColor" fill-rule="evenodd" d="M4 1h54l-2 7 7 5-4 9 4 7-7 14H5l2-7-6-5 4-9-4-7L4 1Zm7 33h6l11-24h-6L11 34Zm19-24h6v19h4v5H30V10Zm13 0h14v6h-8v3h8v15H43v-6h8v-3h-8V10Z"/></svg>local-search</div><span>Development build · Unreleased</span></header>
+<h1>Lower search medians.</h1>
+<div class="charts" id="charts"></div>
+<div class="tail"><strong>Uncached p95 got slower</strong><span id="p95"></span></div>
+<footer><span>1 Bing query · 3 results · 20 runs / build / mode · Alternating A/B<br>Warm Chrome / OS · arm64 macOS · September 25, 2026</span><strong>lsearch.dev</strong></footer>
+</main>
+<script>
+fetch('../../benchmarks/results/local-ab-2026-09-25-bing-expanded.json').then(r=>r.json()).then(data=>{
+  const row=(label,key)=>{
+    const a=data.summary[key].baseline.latency_ms.median,b=data.summary[key].candidate.latency_ms.median;
+    return `<section><div class="section-title"><h2>${label}</h2><span>Median · ms</span></div><div class="gain">${Math.round((1-b/a)*100)}%<small>less time</small></div><div class="label"><span>0.2.0</span><strong>${a.toFixed(1)}</strong></div><div class="track"><div class="fill" style="width:100%"></div></div><div class="label"><span>Development</span><strong>${b.toFixed(1)}</strong></div><div class="track"><div class="fill new" style="width:${b/a*100}%"></div></div></section>`;
+  };
+  document.getElementById('charts').innerHTML=row('Uncached search','search_cold')+row('Cached search','search_cached');
+  const cold=data.summary.search_cold;
+  document.getElementById('p95').textContent=`${cold.baseline.latency_ms.p95.toFixed(1)} → ${cold.candidate.latency_ms.p95.toFixed(1)} ms`;
+  window.READY=true;
+});
+</script>
+</body>
+</html>

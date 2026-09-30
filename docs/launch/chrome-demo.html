@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1280">
+<title>local-search · Chrome demo</title>
+<style>
+@font-face{font-family:Manrope;src:url('./fonts/Manrope.ttf');font-weight:200 800;font-display:block}
+:root{--paper:#f5f5f2;--ink:#151515;--muted:#5e625c;--line:#d7d7d1;--teal:#0d6f74;--cyan:#84dedb}
+*{box-sizing:border-box;font-variant-ligatures:none}
+pre{font-family:inherit}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:Manrope,sans-serif}
+.canvas{position:relative;width:1280px;height:720px;overflow:hidden;padding:32px 44px}
+.top{height:44px;display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:12px;font-size:28px;font-weight:650;letter-spacing:-1px}
+.mark{width:47px;height:34px;color:var(--teal)}
+.chapter{display:flex;align-items:center;gap:12px;font-size:21px;color:var(--muted)}
+.chapter b{color:var(--teal);font-size:21px;font-weight:600}
+.stage{position:absolute;inset:100px 44px 68px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:32px}
+.window{min-width:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff;position:relative}
+.terminal{background:#151b17;border-color:#29372f;color:#f4f6f2}
+.titlebar{height:48px;background:#202b24;border-bottom:1px solid #334238;display:flex;align-items:center;justify-content:center;font-size:19px;color:#c9d2ca;position:relative}
+.traffic{display:flex;gap:7px;position:absolute;left:18px;top:20px}.traffic i{width:10px;height:10px;border-radius:50%;background:#dc7466}.traffic i:nth-child(2){background:#edbd62}.traffic i:nth-child(3){background:#78b980}
+.terminal-body{position:absolute;inset:48px 0 43px;padding:26px 24px;overflow:hidden}
+.command{font-size:24px;line-height:1.5;height:84px;overflow-wrap:anywhere;position:relative;white-space:pre-wrap;letter-spacing:-.4px;margin:0}
+.sigil{color:var(--cyan)}.query{color:#ebd08f}.flag{color:#8dccf1;white-space:nowrap}.cursor{display:inline-block;width:10px;height:25px;background:var(--cyan);vertical-align:-4px;margin-left:3px}
+.output{margin-top:16px;border-top:1px solid #334238;padding-top:18px}
+.output-label{font-size:18px;color:#b5c9bb;margin-bottom:12px;display:flex;justify-content:space-between;gap:16px}
+.output-label b{color:var(--cyan);font-weight:500}
+#output-body{height:252px;overflow:hidden;scrollbar-width:none}
+.json{font-size:21px;line-height:1.5;letter-spacing:-.35px;white-space:pre-wrap;overflow-wrap:anywhere;margin:0;color:#e2e9e2}
+.key{color:#84dedb}.string{color:#e5cf94}.number{color:#c3b3ef}
+.read-output{font-size:23px;line-height:1.5;color:#dce6df}
+.read-output h2{font-size:26px;color:var(--cyan);font-weight:600;margin:0 0 14px}
+.read-output p{margin:0 0 16px}.read-output ul{margin:0;padding-left:26px}
+.terminal-footer{position:absolute;inset:auto 0 0;height:43px;border-top:1px solid #334238;display:flex;align-items:center;gap:10px;padding:0 22px;font-size:18px;color:#aabeb0;background:#202b24}
+.tick{color:var(--cyan)}
+.chrome-tabs{height:48px;background:#dfe7e1;position:relative;padding:9px 44px 0 80px;display:flex;align-items:flex-end}
+.chrome-tabs .traffic{left:16px}
+.tab{height:39px;background:#fff;border-radius:10px 10px 0 0;padding:9px 16px;display:flex;align-items:center;gap:9px;font-size:17px;width:250px;white-space:nowrap}
+.tab .close{margin-left:auto;color:#657268;font-size:20px}.plus{font-size:25px;color:#657268;margin:0 16px 7px}
+.toolbar{height:58px;background:#fff;display:flex;align-items:center;gap:16px;padding:10px 16px;border-bottom:1px solid #e5e9e3;position:relative}
+.navicon{width:18px;height:18px;fill:none;stroke:#657268;stroke-width:1.6;flex-shrink:0}
+.address{height:36px;flex:1;min-width:0;display:flex;align-items:center;gap:10px;border-radius:22px;padding:0 14px;background:#eef2ed;color:#515d53;font-size:17px;white-space:nowrap;overflow:hidden}
+.address span{overflow:hidden;text-overflow:ellipsis}.address svg{width:15px;height:15px;flex-shrink:0}
+.loading{position:absolute;bottom:0;left:0;height:2px;background:#168b90;transform-origin:left}
+.page{position:absolute;inset:106px 0 0;background:#fff;overflow:hidden}
+.newtab{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding-bottom:35px;gap:22px;color:#556259}
+.newtab .chrome-name{font-size:42px;font-weight:500;letter-spacing:-1px}.newtab .empty-search{border:1px solid #d9e1d8;border-radius:28px;font-size:21px;padding:16px 50px;color:#677469}
+.search-page{height:100%;padding:20px 24px;display:flex;flex-direction:column}
+#results{flex:1;min-height:0;overflow:hidden;padding-bottom:8px;scrollbar-width:none}
+.searchbox{border:1px solid #cbd5cb;border-radius:9px;height:51px;flex-shrink:0;display:flex;align-items:center;gap:12px;padding:0 16px;font-size:22px;letter-spacing:-.35px}
+.searchbox svg{width:21px;height:21px;margin-left:auto;color:#657268;flex-shrink:0}
+.search-tabs{display:flex;flex-shrink:0;gap:27px;font-size:17px;color:#697367;padding-top:18px;border-bottom:1px solid #e4e8df;height:52px}
+.search-tabs span:first-child{color:var(--teal);border-bottom:2px solid #168b90;padding-bottom:13px}
+.result{margin-top:14px}.domain{font-size:16px;color:#566150;display:flex;gap:8px;align-items:center}.favicon{font-size:13px;color:#586651;border-radius:4px;background:#edf0e7;padding:1px 4px}
+.result h2{font-size:23px;line-height:1.3;color:#2459a5;font-weight:600;letter-spacing:-.5px;margin:5px 0 7px}
+.result p{font-size:18px;line-height:1.45;color:#5e625c;margin:0}
+.docbar{height:42px;display:flex;align-items:center;justify-content:space-between;background:#f0f1ed;color:#4b554d;padding:0 23px;font-size:18px;border-bottom:1px solid #dde2d8}
+.docbody{padding:25px 30px}.docbody .crumb{font-size:18px;color:#6e7469}.docbody h1{font-size:35px;letter-spacing:-1.5px;margin:10px 0 16px;font-weight:650}.docbody p{font-size:21px;line-height:1.5;color:#4a554d;margin:0 0 18px}
+.docbody h2{font-size:24px;margin:22px 0 12px;font-weight:600}.docbody ul{font-size:20px;line-height:1.75;margin:0;padding-left:25px;color:#4a554d}
+.docbody .code{font-size:20px;background:#f3f4ef;padding:13px 16px;border:1px solid #e1e6dc;border-radius:6px;color:#315f62}
+.bridge{position:absolute;width:32px;height:20px;left:calc(50% - 16px);top:255px;overflow:visible}
+.bridge path{stroke:#168b90;stroke-width:2;stroke-dasharray:5 5;fill:none}
+.bottom{position:absolute;left:44px;right:44px;bottom:25px;display:flex;justify-content:space-between;font-size:18px;color:#687165}.bottom strong{color:var(--teal);font-weight:600}
+.outro{position:absolute;inset:100px 44px 68px;background:var(--paper);display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;pointer-events:none}
+.outro .brand{font-size:50px;letter-spacing:-1.6px;gap:20px}.outro .mark{width:85px;height:60px}.outro h1{font-size:59px;line-height:1.15;font-weight:600;letter-spacing:-2.6px;text-align:center;margin:30px 0 35px}
+.outro h1 span{color:var(--teal)}.install{font-size:28px;border:1px solid #b4c8bb;background:#fff;padding:16px 26px;border-radius:8px;letter-spacing:-.6px}.install span{color:var(--teal);margin-right:10px}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<main class="canvas" aria-label="Illustrated local-search command and Chrome workflow">
+  <header class="top"><div class="brand" id="brand"></div><div class="chapter"><b id="step-number">01</b><span id="step-name">Search the web</span></div></header>
+  <div class="stage" id="stage">
+    <section class="window terminal" aria-label="Agent terminal">
+      <div class="titlebar"><div class="traffic"><i></i><i></i><i></i></div>local-search</div>
+      <div class="terminal-body"><pre class="command" id="command"></pre><div class="output" id="output"><div class="output-label"><span id="output-label"></span><b id="output-count"></b></div><div id="output-body"></div></div></div>
+      <div class="terminal-footer"><span class="tick" id="status-icon">✓</span><span id="status">Connected to local Chrome</span></div>
+    </section>
+    <svg class="bridge" viewBox="0 0 32 20" aria-hidden="true"><path id="bridge-line" d="M0 10H32"/></svg>
+    <section class="window browser" aria-label="Simulated Chrome">
+      <div class="chrome-tabs"><div class="traffic"><i></i><i></i><i></i></div><div class="tab"><span id="tab-title">Chrome</span><span class="close">×</span></div><span class="plus">+</span></div>
+      <div class="toolbar">
+        <svg class="navicon" viewBox="0 0 24 24"><path d="m12 5-7 7 7 7M5 12h15"/></svg>
+        <svg class="navicon" viewBox="0 0 24 24"><path d="M19 9a7 7 0 1 0 0 7M19 3v6h-6"/></svg>
+        <div class="address"><svg class="navicon" viewBox="0 0 24 24"><path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="3" fill="#eef2ed"/><circle cx="15" cy="17" r="3" fill="#eef2ed"/></svg><span id="url">Search or enter address</span></div>
+        <span style="font-size:23px;color:#657268">⋮</span><div class="loading" id="loading"></div>
+      </div>
+      <div class="page">
+        <div class="newtab" id="newtab"><div class="chrome-name">Chrome</div><div class="empty-search">Search or enter address</div></div>
+        <div class="search-page" id="search-page" hidden>
+          <div class="searchbox">site:docs.rs tokio Runtime<svg class="navicon" viewBox="0 0 24 24"><circle cx="10" cy="10" r="6"/><path d="m15 15 5 5"/></svg></div>
+          <div class="search-tabs"><span>All</span><span>Images</span><span>Videos</span><span>News</span></div>
+          <div id="results"></div>
+        </div>
+        <div id="docs-page" hidden>
+          <div class="docbar"><strong>Docs.rs</strong><span>tokio / runtime</span></div>
+          <div class="docbody"><div class="crumb">tokio</div><h1>Module runtime</h1><p>The Tokio runtime.</p><ul><li>I/O event loop</li><li>Task scheduler</li><li>Timer</li></ul><h2>Usage</h2><div class="code">#[tokio::main]</div></div>
+        </div>
+      </div>
+    </section>
+  </div>
+  <section class="outro" id="outro"><div class="brand" id="outro-brand"></div><h1>Your agent.<br><span>Your Chrome.</span></h1><div class="install"><span>$</span>cargo install local-search</div></section>
+  <footer class="bottom"><span id="caption">Illustrated demo</span><strong>lsearch.dev</strong></footer>
+</main>
+<script>
+// Deliberately authored timing. No browser connection or user data is involved.
+const mark='<svg class="mark" viewBox="0 0 64 44" aria-hidden="true"><path fill="currentColor" fill-rule="evenodd" d="M4 1h54l-2 7 7 5-4 9 4 7-7 14H5l2-7-6-5 4-9-4-7L4 1Zm7 33h6l11-24h-6L11 34Zm19-24h6v19h4v5H30V10Zm13 0h14v6h-8v3h8v15H43v-6h8v-3h-8V10Z"/></svg>local-search';
+const $=id=>document.getElementById(id);
+$('brand').innerHTML=mark;$('outro-brand').innerHTML=mark;
+// July 21, 2026 public trace: site/lib/traces.ts, tokio-runtime.
+const results=[
+  {rank:1,title:'tokio::runtime - Rust - Docs.rs',url:'https://docs.rs/tokio/latest/tokio/runtime/',domain:'docs.rs',snippet:'The Tokio runtime supplies an I/O driver, scheduler, and timer for asynchronous applications.'},
+  {rank:2,title:'Runtime in tokio::runtime - Rust - Docs.rs',url:'https://docs.rs/tokio/latest/tokio/runtime/struct.Runtime.html',domain:'docs.rs',snippet:'Runtime provides the I/O driver, task scheduler, timer, and blocking pool.'},
+  {rank:3,title:'tokio - Rust - Docs.rs',url:'https://docs.rs/tokio/latest/tokio/',domain:'docs.rs',snippet:'An event-driven, non-blocking platform for writing asynchronous applications in Rust.'}
+];
+const escape=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+$('results').innerHTML=results.map((r,i)=>`<article class="result" id="result-${i}"><div class="domain"><span class="favicon">rs</span>${r.domain}</div><h2>${escape(r.title)}</h2><p>${escape(r.snippet)}</p></article>`).join('');
+const searchCommand='lsearch "site:docs.rs tokio Runtime" --engine duckduckgo --limit 3 --json';
+// A visual wrap must never become a shell newline inside a URL.
+const readActual='lsearch read https://docs.rs/tokio/latest/tokio/runtime/ --format markdown';
+function commandMarkup(text,read){
+  const raw=escape(text);
+  if(read)return '<span class="sigil">$ </span>'+raw.replace(/(docs.rs\/|tokio\/|latest\/)/g,'$1<wbr>').replace(/(--format markdown)/g,'<span class="flag">$1</span>');
+  return '<span class="sigil">$ </span>'+raw.replace(/("[^"]*"?)/g,'<span class="query">$1</span>').replace(/(--[a-z]+(?: duckduckgo| 3)?)/g,'<span class="flag">$1</span>');
+}
+const clamp=n=>Math.max(0,Math.min(1,n));
+const ease=n=>1-Math.pow(1-clamp(n),3);
+function show(id,visible){$(id).hidden=!visible;}
+const payload={ok:true,engine:'duckduckgo',query:'site:docs.rs tokio Runtime',search:{blocked:false,title:'site:docs.rs tokio Runtime at DuckDuckGo',url:'https://html.duckduckgo.com/html/?q=site%3Adocs.rs+tokio+Runtime',results}};
+const jsonLines=JSON.stringify(payload,null,2).split('\n');
+function highlightJson(text){
+  return escape(text).replace(/("(?:[^"\\]|\\.)*"\s*:)|("(?:[^"\\]|\\.)*")|\b(true|false|\d+)\b/g,(match,key,string)=>`<span class="${key?'key':string?'string':'number'}">${match}</span>`);
+}
+window.DURATION=12;
+window.renderFrame=(t)=>{
+  const reading=t>=4.8;
+  const u=reading?t-4.8:t;
+  const command=reading?readActual:searchCommand;
+  const typed=Math.min(command.length,Math.max(0,Math.floor((u-.05)*150)));
+  $('command').innerHTML=commandMarkup(command.slice(0,typed),reading)+(typed<command.length?'<span class="cursor"></span>':'');
+  $('step-number').textContent=reading?'02':'01';$('step-name').textContent=reading?'Read the page':'Search in Chrome';
+  const searchLoaded=t>=.75;
+  const docsLoaded=reading&&u>=.75;
+  show('newtab',!searchLoaded);show('search-page',searchLoaded&&!docsLoaded);show('docs-page',docsLoaded);
+  $('tab-title').textContent=docsLoaded?'tokio::runtime':searchLoaded?'DuckDuckGo':'Chrome';
+  $('url').textContent=reading&&u>=.6?'docs.rs/tokio/latest/tokio/runtime/':t>=.6?'duckduckgo.com/?q=site:docs.rs+tokio+Runtime':'Search or enter address';
+  $('loading').style.width=(clamp((u-.6)/.3)*100)+'%';$('loading').style.opacity=u>=.6&&u<.9?'1':'0';
+  results.forEach((_,i)=>{const p=ease((t-.8-i*.08)/.18);$('result-'+i).style.opacity=p;$('result-'+i).style.transform=`translateY(${(1-p)*8}px)`;});
+  $('results').scrollTop=Math.max(0,$('results').scrollHeight-$('results').clientHeight)*ease((t-1.5)/1.8);
+  const returned=u>=1.05;
+  const shownLines=Math.min(jsonLines.length,Math.max(0,Math.floor((u-1.05)*18)+1));
+  const complete=reading?u>=1.8:shownLines===jsonLines.length;
+  show('output',returned);
+  $('output').style.opacity=ease((u-1.05)/.15);
+  $('output-label').textContent=reading?'Markdown preview':'JSON response';
+  $('output-count').textContent=reading?'Page text':complete?'3 / 3 results':'Receiving results';
+  $('output-body').innerHTML=reading?'<div class="read-output"><h2># Module runtime</h2><p>The Tokio runtime.</p><ul><li>I/O event loop</li><li>Task scheduler</li><li>Timer</li></ul></div>':`<pre class="json">${highlightJson(jsonLines.slice(0,shownLines).join('\n'))}</pre>`;
+  if(reading){
+    const blocks=$('output-body').querySelectorAll('h2,p,li');
+    blocks.forEach((block,i)=>{block.style.opacity=ease((u-1.05-i*.1)/.16);});
+  }
+  $('output-body').scrollTop=reading?0:$('output-body').scrollHeight;
+  $('status-icon').textContent=complete?'✓':u>=.6?'·':'✓';
+  $('status').textContent=complete?(reading?'Page text returned to your agent':'All 3 results returned to your agent'):returned?'Receiving page data':u>=.6?(reading?'Reading in local Chrome':'Searching in local Chrome'):'Connected to local Chrome';
+  $('bridge-line').style.strokeDashoffset=(returned?1:-1)*t*30;
+  $('bridge-line').style.opacity=u>=.6&&!complete?'1':'.32';
+  $('caption').textContent=t>=9.45?'A local browser API for agents':'Illustrated timing · Shortened page text';
+  const end=ease((t-9)/.45);
+  $('stage').style.opacity=1-end;$('stage').style.transform=`translateY(${-8*end}px)`;
+  $('outro').style.opacity=end;$('outro').style.transform=`translateY(${12*(1-end)}px)`;
+  document.querySelector('.chapter').style.opacity=1-end;
+  $('brand').style.opacity=1-end;
+  window.frameState={t,reading,returned,complete,shownLines,totalLines:jsonLines.length};
+  return window.frameState;
+};
+window.layoutCheck=()=>{
+  const body=document.querySelector('.terminal-body').getBoundingClientRect();
+  const output=$('output-body').getBoundingClientRect();
+  const terminal=document.querySelector('.terminal').getBoundingClientRect(),browser=document.querySelector('.browser').getBoundingClientRect();
+  return {...window.frameState,width:document.documentElement.scrollWidth,height:document.documentElement.scrollHeight,font:document.fonts.check('24px Manrope'),terminalWidth:terminal.width,browserWidth:browser.width,terminalContentFits:$('output').hidden||output.bottom<=body.bottom-12,outputLabelFits:$('output-count').getBoundingClientRect().right<=body.right-24,commandFits:$('command').scrollWidth<=$('command').clientWidth&&$('command').scrollHeight<=$('command').clientHeight,lastResultBottom:$('result-2').getBoundingClientRect().bottom,resultsViewportBottom:$('results').getBoundingClientRect().bottom,browserBottom:browser.bottom,outputAtEnd:$('output-body').scrollTop+$('output-body').clientHeight>=$('output-body').scrollHeight-1};
+};
+const params=new URLSearchParams(location.search);
+renderFrame(Number(params.get('t')||4));
+window.READY=true;
+if(params.has('play')&&!matchMedia('(prefers-reduced-motion: reduce)').matches){
+  let start;function play(now){start??=now;renderFrame(((now-start)/1000)%DURATION);requestAnimationFrame(play);}requestAnimationFrame(play);
+}
+</script>
+</body>
+</html>
