@@ -2,6 +2,11 @@
 
 ## September 30 benchmark presentation
 
+- Added a matching July latency chart before the token chart in the README.
+  Desktop and mobile exports retain the mixed-cache label and local cold/cache
+  breakdown. Automated assertions check those disclosures, provider medians,
+  and proportional bars. No fresh latency test or universal speed claim.
+
 - The README now selects the July 21 historical comparison at the user's request.
   Separate July exports preserve the September equal-budget chart and evidence.
   The chart labels its recorded date and unequal snippet lengths; values and

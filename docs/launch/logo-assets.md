@@ -28,8 +28,8 @@ their colors and proportions. The exported GIF/video rasterizes these assets.
 
 The September 30 README benchmark reuses the supplied Exa, Brave Search,
 Tavily, and Firecrawl marks to identify measured providers, with original
-colors and proportions. It uses the September 29 matched-query data, not the
-older numbers in the user's visual reference.
+colors and proportions. September matched-query charts and July historical
+context/latency charts use separate exports and date labels.
 
 Source of these exact files is the existing user-provided repository, not a
 newly licensed stock collection. Prior acquisition/license metadata is not

@@ -1,0 +1,16 @@
+{
+  "checks": [
+    {
+      "name": "benchmark",
+      "font": true,
+      "footerBottom": 685.6875,
+      "height": 720,
+      "width": 1280
+    },
+    {
+      "name": "benchmark-mobile",
+      "viewport": 390,
+      "width": 390
+    }
+  ]
+}

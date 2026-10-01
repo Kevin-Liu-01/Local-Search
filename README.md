@@ -101,6 +101,12 @@ Failures have a nonzero exit status and a structured error code.
 
 ## Benchmarks
 
+![July 21, 2026 median latency: local-search 148.7 ms, Exa 501.9 ms, Brave Search 322.0 ms, Tavily 1184.4 ms, Firecrawl 1520.8 ms. Local median mixes cold searches and cache hits; cold median 384.5 ms, cached median 6.5 ms.](https://raw.githubusercontent.com/Kevin-Liu-01/Local-Search/main/site/public/social/2026-09/benchmark-july-speed.png?v=2026-09-30)
+
+local-search recorded a **148.7 ms overall median**, including cold searches
+and cache hits. Separately: **384.5 ms cold**, **6.5 ms cached**.
+This is the July run, not an uncached speed ranking.
+
 ![July 21, 2026 context comparison: local-search 53.4, Exa 881.2, Brave Search 108.6, Tavily 259.5, and Firecrawl 74.8 median normalized tokens per result. Provider snippet lengths differ.](https://raw.githubusercontent.com/Kevin-Liu-01/Local-Search/main/site/public/social/2026-09/benchmark-july.png?v=2026-09-30)
 
 Recorded July 21, 2026: 12 queries at 3- and 10-result depths, 24 requests per

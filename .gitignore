@@ -30,5 +30,7 @@ __pycache__/
 !site/public/social/2026-09/benchmark-mobile.png
 !site/public/social/2026-09/benchmark-july.png
 !site/public/social/2026-09/benchmark-july-mobile.png
+!site/public/social/2026-09/benchmark-july-speed.png
+!site/public/social/2026-09/benchmark-july-speed-mobile.png
 *.pdf
 site/public/docs-assets/

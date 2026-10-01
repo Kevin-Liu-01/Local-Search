@@ -13,9 +13,13 @@ const output=path.join(root,'site/public/social/2026-09');
 const frames=path.join(root,'artifacts/chrome-demo-frames');
 const exec=promisify(execFile);
 const fps=20;
-const july=process.argv.includes('--july');
+const latency=process.argv.includes('--latency');
+const july=process.argv.includes('--july')||latency;
+const metric=latency?'latency_ms':'tokens';
 const chartDate=july?'2026-07-21':'2026-09-29';
-const chartName=july?'benchmark-july':'benchmark-clean';
+const chartName=latency?'benchmark-july-speed':july?'benchmark-july':'benchmark-clean';
+const chartMobileName=latency?'benchmark-july-speed-mobile':july?'benchmark-july-mobile':'benchmark-mobile';
+const chartChecksName=latency?'benchmark-july-speed-checks':july?'benchmark-july-checks':'benchmark-checks';
 const allowed=new Map([
   ['/docs/launch/chrome-demo.html','text/html'],
   ['/docs/launch/benchmark-card.html','text/html'],
@@ -93,19 +97,25 @@ if(process.argv.includes('--serve')){
       await exec('ffmpeg',['-v','error','-y','-i',path.join(output,'chrome-demo.mp4'),'-filter_complex','fps=15,scale=960:540:flags=lanczos,split[a][b];[a]palettegen=stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=4','-loop','0',path.join(output,'chrome-demo.gif')],{timeout:120000});
     }
     }
-    await run('batch','--bail',`open ${base.replace('chrome-demo.html','benchmark-card.html')}${july?'?dataset=july':''}`,'set viewport 1280 720','wait --fn "window.READY === true"','eval document.fonts.ready.then(()=>true)');
+    await run('batch','--bail',`open ${base.replace('chrome-demo.html','benchmark-card.html')}${july?'?dataset=july':''}${latency?'&metric=latency':''}`,'set viewport 1280 720','wait --fn "window.READY === true"','eval document.fonts.ready.then(()=>true)');
     assert.equal(await evaluate('window.READY'),true);
     const chartRows=await evaluate(`Array.from(document.querySelectorAll('#chart .row')).map(row=>({value:parseFloat(row.querySelector('.value').firstChild.textContent),ratio:row.querySelector('.ratio').textContent,width:parseFloat(row.querySelector('.bar').style.width),logo:!!row.querySelector('svg, img'),imagesDecoded:Array.from(row.querySelectorAll('img')).every(image=>image.complete&&image.naturalWidth>0)}))`);
     const chartData=await evaluate('CHART_DATA');
+    if(latency){
+      const footer=await evaluate("document.querySelector('footer').textContent");
+      assert.ok(footer.includes(chartData.local_latency.cold_median_ms+' ms cold'));
+      assert.ok(footer.includes(chartData.local_latency.cached_median_ms+' ms cached'));
+      assert.ok(footer.includes('not an uncached ranking'));
+    }
     const chartStep=july?100:10;
-    const chartMax=Math.ceil(Math.max(...chartData.providers.map(provider=>provider.tokens))/chartStep)*chartStep;
-    const chartBaseline=chartData.providers.find(provider=>provider.id==='lsearch').tokens;
+    const chartMax=Math.ceil(Math.max(...chartData.providers.map(provider=>provider[metric]))/chartStep)*chartStep;
+    const chartBaseline=chartData.providers.find(provider=>provider.id==='lsearch')[metric];
     assert.equal(chartRows.length,chartData.providers.length);
     for(const [index,row] of chartRows.entries()){
       const provider=chartData.providers[index];
-      assert.equal(row.value,Number(provider.tokens.toFixed(1)));
-      assert.equal(row.ratio,provider.id==='lsearch'?'Baseline':(provider.tokens/chartBaseline).toFixed(1)+'× baseline');
-      assert.ok(Math.abs(row.width-provider.tokens/chartMax*100)<0.001);
+      assert.equal(row.value,Number(provider[metric].toFixed(1)));
+      assert.equal(row.ratio,latency?(provider.id==='lsearch'?'ms · mixed cache':'ms median'):provider.id==='lsearch'?'Baseline':(provider[metric]/chartBaseline).toFixed(1)+'× baseline');
+      assert.ok(Math.abs(row.width-provider[metric]/chartMax*100)<0.001);
       assert.ok(row.logo&&row.imagesDecoded,'Every chart provider needs a decoded logo');
     }
     const benchmark=await evaluate(`({width:document.documentElement.scrollWidth,height:document.documentElement.scrollHeight,footerBottom:document.querySelector('footer').getBoundingClientRect().bottom,font:document.fonts.check('24px Manrope')})`);
@@ -115,11 +125,11 @@ if(process.argv.includes('--serve')){
     if(process.argv.includes('--benchmark-only')){
       const data=JSON.parse(await readFile(path.join(root,`benchmarks/results/search-comparison-${chartDate}.json`),'utf8'));
       assert.deepEqual(await evaluate('CHART_DATA'),data);
-      await run('batch','--bail','set viewport 390 844',`screenshot --full ${path.join(output,july?'benchmark-july-mobile.png':'benchmark-mobile.png')}`);
+      await run('batch','--bail','set viewport 390 844',`screenshot --full ${path.join(output,chartMobileName+'.png')}`);
       const mobile=await evaluate('({width:document.documentElement.scrollWidth,viewport:innerWidth})');
       assert.equal(mobile.width,mobile.viewport);
       checks.push({name:'benchmark-mobile',...mobile});
-      await writeFile(path.join(output,july?'benchmark-july-checks.json':'benchmark-checks.json'),JSON.stringify({checks},null,2)+'\n');
+      await writeFile(path.join(output,chartChecksName+'.json'),JSON.stringify({checks},null,2)+'\n');
     }else{
     await writeFile(path.join(output,'chrome-demo-checks.json'),JSON.stringify({dimensions:[1280,720],gifDimensions:[960,540],fps,checks},null,2)+'\n');
     }

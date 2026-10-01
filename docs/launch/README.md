@@ -18,6 +18,8 @@ All exports live in `../../site/public/social/2026-09/`.
 | X post 6; September benchmark | benchmark-clean.png | Context per result across matched searches |
 | Narrow-screen benchmark | benchmark-mobile.png | Same chart with stacked, readable provider rows |
 | README benchmark | benchmark-july.png | July 21 recorded comparison, with different snippet lengths |
+| README speed benchmark | benchmark-july-speed.png | July medians, with local cold/cache breakdown |
+| Narrow-screen speed benchmark | benchmark-july-speed-mobile.png | Same latency chart with stacked provider rows |
 | Narrow-screen July benchmark | benchmark-july-mobile.png | Same historical chart with stacked provider rows |
 
 Desktop stills are 1280×720; the mobile chart is 390px wide. The looping GIF is 960×540. The terminal and browser
@@ -73,6 +75,8 @@ node scripts/render-chrome-demo.mjs
 Add `--stills` to render the three PNGs and layout checks without re-encoding.
 Use `--benchmark-only` to capture the desktop/mobile chart without changing the demo.
 Add `--july` to render the historical README chart to separate July exports.
+Use `--benchmark-only --latency` for July speed exports. The local overall
+median includes cold searches and cache hits, which the chart labels explicitly.
 Use `--serve` for an editable, looping preview. `?t=2.3` freezes results loading,
 `?t=4.2` shows the completed response, `?t=7.2` freezes reading, and `?t=10`
 shows the cover. Stop the preview server when done.
@@ -91,6 +95,11 @@ The README's July chart instead reads
 committed July report. Its provider-specific snippets and highlights have
 different lengths. The date and limitation stay visible in the chart; it must
 not be described as an equal-content test or a current measurement.
+
+The matching speed chart uses the same July report: local-search 148.7 ms,
+Exa 501.9 ms, Brave Search 322.0 ms, Tavily 1,184.4 ms, Firecrawl 1,520.8 ms.
+Local cold and cached medians are 384.5 ms and 6.5 ms. Do not call the overall
+comparison an uncached ranking or use it to claim current universal speed.
 
 ## Evidence and claims
 

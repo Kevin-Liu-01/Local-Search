@@ -5,11 +5,12 @@
   "metric": "Median normalized request-plus-response tokens per result; provider-specific snippet lengths",
   "scope": "12 queries · 24 requests per provider",
   "note": "Different snippet lengths. Not an equal-content comparison.",
+  "local_latency": {"cold_median_ms": 384.5, "cached_median_ms": 6.5},
   "providers": [
-    {"id": "lsearch", "label": "local-search", "tokens": 53.4},
-    {"id": "exa", "label": "Exa", "tokens": 881.2},
-    {"id": "brave", "label": "Brave Search", "tokens": 108.6},
-    {"id": "tavily", "label": "Tavily", "tokens": 259.5},
-    {"id": "firecrawl", "label": "Firecrawl", "tokens": 74.8}
+    {"id": "lsearch", "label": "local-search", "tokens": 53.4, "latency_ms": 148.7},
+    {"id": "exa", "label": "Exa", "tokens": 881.2, "latency_ms": 501.9},
+    {"id": "brave", "label": "Brave Search", "tokens": 108.6, "latency_ms": 322.0},
+    {"id": "tavily", "label": "Tavily", "tokens": 259.5, "latency_ms": 1184.4},
+    {"id": "firecrawl", "label": "Firecrawl", "tokens": 74.8, "latency_ms": 1520.8}
   ]
 }
