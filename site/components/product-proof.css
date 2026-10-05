@@ -138,10 +138,21 @@
 
 /* Shared-scale evidence, not a desktop table squeezed into a phone. */
 .benchmark-tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--page); }
-.benchmark-tabs button { position: relative; padding: 22px 28px; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; color: var(--muted); background: transparent; border: 0; text-align: left; }
-.benchmark-tabs button + button { border-left: 1px solid var(--line); }
-.benchmark-tabs button[aria-pressed="true"] { background: #e3f4f0; color: var(--accent-deep); }
-.benchmark-tabs button[aria-pressed="true"]::after { position: absolute; bottom: 0; right: 0; left: 0; height: 3px; background: var(--accent); content: ""; }
+.benchmark-controls { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 20px; font-size: 16px; color: var(--muted); }
+.benchmark-switch { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); padding: 4px; border: 1px solid var(--line); border-radius: 8px; background: var(--page); isolation: isolate; }
+.benchmark-switch > i { position: absolute; top: 4px; bottom: 4px; left: 4px; width: calc((100% - 8px) / 3); z-index: -1; border-radius: 5px; background: var(--accent-soft); transition: transform 420ms cubic-bezier(.22, 1, .36, 1); }
+.benchmark-switch button { min-height: 44px; min-width: 0; border: 0; border-radius: 5px; padding: 8px 22px; background: transparent; color: var(--muted); font-size: 16px; font-weight: 600; transition: color 180ms ease; }
+.benchmark-switch button[aria-pressed="true"] { color: var(--accent-deep); }
+.benchmark-switch button:focus-visible { outline-offset: -3px; }
+.benchmark-switch button:hover { color: var(--ink); }
+.benchmark-stat { position: relative; padding: 22px 28px; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; color: var(--muted); background: transparent; text-align: left; transition: background-color 180ms ease, color 180ms ease; }
+.benchmark-stat + .benchmark-stat { border-left: 1px solid var(--line); }
+.benchmark-stat[data-selected="true"] { background: #e3f4f0; color: var(--accent-deep); }
+.benchmark-heading-copy { display: grid; min-width: 0; }
+.benchmark-copy { grid-area: 1 / 1; visibility: hidden; }
+.benchmark-copy.is-active { visibility: visible; animation: benchmark-change 240ms ease; }
+.benchmark-change { animation: benchmark-change 240ms ease; }
+@keyframes benchmark-change { from { opacity: 0; } to { opacity: 1; } }
 .benchmark-tabs span { font-size: 16px; }
 .benchmark-tabs strong { font-size: clamp(30px, 3.6vw, 48px); line-height: 1.2; letter-spacing: -.04em; font-weight: 650; font-variant-numeric: tabular-nums; }
 .benchmark-chart-heading { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin: 36px 0 24px; }
@@ -156,7 +167,7 @@
 .benchmark-provider svg { width: 29px; height: 23px; }
 .benchmark-provider b { font-weight: 650; }
 .benchmark-track { position: relative; height: 24px; background: #f1f3ed; }
-.benchmark-track i { position: absolute; inset: 0; display: block; background: #99a497; transform-origin: left; transition: transform 250ms cubic-bezier(.22, 1, .36, 1); }
+.benchmark-track i { position: absolute; inset: 0; display: block; background: #99a497; transform-origin: left; transition: transform 420ms cubic-bezier(.22, 1, .36, 1); }
 .benchmark-row.is-local .benchmark-track { background: #d6e9e0; }
 .benchmark-row.is-local .benchmark-track i { background: var(--accent); }
 .benchmark-zero { position: absolute; left: 0; top: -3px; bottom: -3px; width: 2px; background: var(--accent); }
@@ -229,10 +240,12 @@
   .sim-search-results strong { font-size: 18px; }
   .sim-caption { gap: 14px; }
   .sim-supported { gap: 18px; }
-  .benchmark-tabs button { padding: 16px 10px; gap: 6px; }
+  .benchmark-controls { flex-direction: column; align-items: stretch; gap: 10px; }
+  .benchmark-switch button { padding-inline: 12px; }
+  .benchmark-stat { padding: 16px 10px; gap: 6px; }
   .benchmark-tabs strong { font-size: clamp(28px, 8vw, 38px); }
   .benchmark-tabs span { line-height: 1.4; }
-  .benchmark-tabs button > span:last-child { min-height: 45px; }
+  .benchmark-stat > span:last-child { min-height: 45px; }
   .benchmark-chart-heading { margin: 28px 0 20px; }
   .benchmark-chart-heading h3 { font-size: 24px; }
   .benchmark-axis { margin-inline: 12px; }
@@ -256,13 +269,15 @@
 }
 @media (max-width: 360px) {
   .sim-browser-footer { font-size: 16px; padding-inline: 12px; }
-  .benchmark-tabs button { padding-inline: 8px; }
+  .benchmark-stat { padding-inline: 8px; }
   .benchmark-tabs strong { font-size: 27px; }
   .benchmark-provider { gap: 6px; }
   .benchmark-provider b { max-width: 92px; }
   .benchmark-value > span { max-width: 118px; }
 }
 @media (prefers-reduced-motion: reduce) {
+  .benchmark-switch > i, .benchmark-switch button, .benchmark-stat { transition: none; }
+  .benchmark-copy.is-active, .benchmark-change { animation: none; }
   .sim-search-results a { animation: none; }
   .sim-transfer::before { animation: none; }
 }

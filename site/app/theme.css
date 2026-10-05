@@ -113,7 +113,7 @@
 .paired-agent-content--cursor { color-scheme: light; --line: #d7d7d1; --muted: #5e625c; --accent-deep: #0d6f74; }
 
 /* Every benchmark keeps the same scale, value, and contrast hierarchy. */
-:root[data-theme="dark"] .benchmark-tabs button[aria-pressed="true"],
+:root[data-theme="dark"] .benchmark-stat[data-selected="true"],
 :root[data-theme="dark"] .benchmark-row.is-local { background: #193d34; }
 :root[data-theme="dark"] .benchmark-row { border-bottom-color: var(--line); }
 :root[data-theme="dark"] .benchmark-row.is-local { border-color: #366357; }

@@ -345,8 +345,12 @@ Benchmarks are evidence, not decoration.
   distinction even if an older launch graphic calls them screenshots.
 - The hosted-provider comparison uses actual provider logos and exact provider
   names. Highlight local-search with the cyan field, not superlative badges.
-- Use three large metric selectors for Context, Latency, and API cost. Each shows
-  local-search's recorded value and unit. Below, show all five providers in one
+- Use one visible segmented toggle ordered API cost, Speed, Context above the
+  three recorded local-search statistics. API cost is selected on first load.
+  Its teal selection slides on input;
+  bar lengths transition while headings, units, and values fade into place.
+  Reserve the longest heading so switching metrics keeps the chart stationary.
+  Reduced motion updates immediately. Below, show all five providers in one
   shared-scale horizontal chart. Keep the white field, teal local-search row,
   and neutral provider bars; do not squeeze three metric columns into a phone.
 - A provider's value and its ratio to local-search sit beside the bar on desktop.

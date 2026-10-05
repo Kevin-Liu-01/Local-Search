@@ -10,18 +10,18 @@ const providers = [
   { name: "Exa", tokens: 881.2, latency: 501.9, cost: 0.324, costLabel: "$0.324", note: "", icon: ExaBrandIcon },
   { name: "Brave Search", tokens: 108.6, latency: 322.0, cost: 0.120, costLabel: "$0.120", note: "", icon: BraveBrandIcon },
   { name: "Tavily", tokens: 259.5, latency: 1184.4, cost: 0.192, costLabel: "$0.192†", note: "24 credits", icon: TavilyBrandIcon },
-  { name: "Firecrawl", tokens: 74.8, latency: 1520.8, cost: 0.154, costLabel: "≈$0.154‡", note: "48 credits · plan equivalent", icon: FirecrawlBrandIcon },
+  { name: "Firecrawl", tokens: 74.8, latency: 1520.8, cost: 0.154, costLabel: "≈$0.154‡", note: "48 credits", icon: FirecrawlBrandIcon },
 ];
 const metrics = {
-  tokens: { label: "Context", value: "53.4", unit: "tokens / result", title: "Less context per result.", description: "Normalized tokens per result. Lower is better.", max: 900, maxLabel: "900 tokens", valueUnit: "tokens" },
-  latency: { label: "Latency", value: "148.7", unit: "ms median", title: "Search response time.", description: "Median response time. Lower is better.", max: 1600, maxLabel: "1,600 ms", valueUnit: "ms" },
   cost: { label: "API cost", value: "$0", unit: "for 24 requests", title: "Search without the API bill.", description: "API cost across 24 requests.", max: 0.35, maxLabel: "$0.35", valueUnit: "" },
+  latency: { label: "Speed", value: "148.7", unit: "ms median", title: "Search response time.", description: "Median response time. Lower is better.", max: 1600, maxLabel: "1,600 ms", valueUnit: "ms" },
+  tokens: { label: "Context", value: "53.4", unit: "tokens / result", title: "Less context per result.", description: "Normalized tokens per result. Lower is better.", max: 900, maxLabel: "900 tokens", valueUnit: "tokens" },
 };
 type Metric = keyof typeof metrics;
 const decimal = new Intl.NumberFormat("en-US", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 
 export function BenchmarkComparison() {
-  const [metric, setMetric] = useState<Metric>("tokens");
+  const [metric, setMetric] = useState<Metric>("cost");
   const selected = metrics[metric];
   return (
     <section className="content-section evidence-section" id="benchmarks" aria-labelledby="evidence-title">
@@ -31,14 +31,21 @@ export function BenchmarkComparison() {
       </header>
 
       <div className="benchmark-dashboard" id="compare">
-        <div className="benchmark-tabs" role="group" aria-label="Choose a benchmark metric">
-          {(Object.keys(metrics) as Metric[]).map((key) => <button key={key} type="button" aria-pressed={metric === key} aria-controls="benchmark-chart" onClick={() => setMetric(key)}><span>{metrics[key].label}</span><strong>{metrics[key].value}</strong><span>{metrics[key].unit}</span></button>)}
+        <div className="benchmark-controls">
+          <span>Compare metrics</span>
+          <div className="benchmark-switch" role="group" aria-label="Choose a benchmark metric">
+            <i aria-hidden="true" style={{ transform: `translateX(${(Object.keys(metrics) as Metric[]).indexOf(metric) * 100}%)` }} />
+            {(Object.keys(metrics) as Metric[]).map((key) => <button key={key} type="button" aria-pressed={metric === key} aria-controls="benchmark-chart" onClick={() => setMetric(key)}>{metrics[key].label}</button>)}
+          </div>
+        </div>
+        <div className="benchmark-tabs">
+          {(Object.keys(metrics) as Metric[]).map((key) => <div className="benchmark-stat" key={key} data-selected={metric === key}><span>{metrics[key].label}</span><strong>{metrics[key].value}</strong><span>{metrics[key].unit}</span></div>)}
         </div>
         <div className="benchmark-chart-heading">
-          <div><h3>{selected.title}</h3><p>{selected.description}</p></div>
+          <div className="benchmark-heading-copy">{(Object.keys(metrics) as Metric[]).map((key) => <div key={key} aria-hidden={key !== metric} className={key === metric ? "benchmark-copy is-active" : "benchmark-copy"}><h3>{metrics[key].title}</h3><p>{metrics[key].description}</p></div>)}</div>
           <span className="benchmark-sample">12 queries · 24 requests / provider</span>
         </div>
-        <div className="benchmark-axis" aria-hidden="true"><span>0</span><span>{selected.maxLabel}</span></div>
+        <div className="benchmark-axis" aria-hidden="true"><span>0</span><span className="benchmark-change" key={metric}>{selected.maxLabel}</span></div>
         <ol className="benchmark-bars" id="benchmark-chart" aria-label={selected.description}>
           {providers.map((provider, index) => {
             const Icon = provider.icon;
@@ -48,7 +55,7 @@ export function BenchmarkComparison() {
               <li key={provider.name} className={index === 0 ? "benchmark-row is-local" : "benchmark-row"}>
                 <span className="benchmark-provider">{Icon ? <Icon size={26} /> : <LocalSearchLogo />}<b>{provider.name}</b></span>
                 <div className="benchmark-track" aria-hidden="true"><i style={{ transform: `scaleX(${provider[metric] / selected.max})` }} />{provider[metric] === 0 && <span className="benchmark-zero" />}</div>
-                <div className="benchmark-value"><strong>{value}<span className="sr-only"> {selected.valueUnit}</span></strong>{comparison && <span>{comparison}</span>}</div>
+                <div className="benchmark-value"><strong className="benchmark-change" key={metric}>{value}<span className="sr-only"> {selected.valueUnit}</span></strong><span className="benchmark-change" key={metric + "-comparison"}>{comparison || "\u00a0"}</span></div>
               </li>
             );
           })}
