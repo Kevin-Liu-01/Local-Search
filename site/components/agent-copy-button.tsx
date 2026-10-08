@@ -20,8 +20,8 @@ lsearch connect --managed
 lsearch "<query>" --engine google --limit 5 --json
 lsearch read "<url>" --format json
 
-Agent reference: https://www.lsearch.dev/docs-assets/skill.md
-Illustrated guide: https://www.lsearch.dev/docs`;
+Agent reference: https://localsearch.kevinliu.studio/docs-assets/skill.md
+Illustrated guide: https://localsearch.kevinliu.studio/docs`;
 
 export function AgentCopyButton() {
   const [copied, setCopied] = useState(false);
