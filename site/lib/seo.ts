@@ -1,4 +1,4 @@
-const configuredSiteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.lsearch.dev";
+const configuredSiteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://localsearch.kevinliu.studio";
 
 export const SITE_URL = configuredSiteUrl.replace(/\/$/, "");
 export const SITE_LAST_UPDATED = "2026-09-25";
@@ -12,7 +12,7 @@ export const SOCIAL_IMAGE_ALT = "local-search connects AI agents to a browser on
 export const REPOSITORY_URL = "https://github.com/Kevin-Liu-01/Local-Search";
 export const CRATE_URL = "https://crates.io/crates/local-search";
 export const NPM_URL = "https://www.npmjs.com/package/@kevinliu01/localsearch";
-export const AUTHOR_URL = "https://www.kevin-liu.tech/";
+export const AUTHOR_URL = "https://www.kevinliu.studio/";
 export const AUTHOR_GITHUB_URL = "https://github.com/Kevin-Liu-01";
 export const AUTHOR_X_URL = "https://x.com/kevskgs";
 

@@ -6,7 +6,7 @@ autobins = false
 description = "A local browser API for agents: search, read, extract, and use Chrome sessions"
 license = "MIT"
 repository = "https://github.com/Kevin-Liu-01/local-search"
-homepage = "https://lsearch.dev"
+homepage = "https://localsearch.kevinliu.studio"
 readme = "README.md"
 exclude = [
   ".agent-docs/",

@@ -531,7 +531,7 @@ Performance graphics stay separate and retain workload scope and regressions.
 - Twitterbot is explicitly allowed to fetch `/api/og`, `/api/og-home`,
   `/opengraph-image`, and `/twitter-image`. Preserve that rule when changing
   crawler policy.
-- Metadata and structured data must use the production `lsearch.dev` identity
+- Metadata and structured data must use the production `localsearch.kevinliu.studio` identity
   and the same package names, claims, measurements, and links as the page.
 
 ## Performance contract

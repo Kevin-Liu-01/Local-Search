@@ -6,9 +6,9 @@ Search the web, read pages, and use signed-in sites through one small Rust CLI.
 Choose your existing Chrome or a separate profile. Your agent gets compact JSON
 or readable text, without a hosted browser service or a search API key.
 
-[Documentation](https://lsearch.dev/docs) · [Agent reference](https://github.com/Kevin-Liu-01/Local-Search/blob/main/SKILL.md) · [crates.io](https://crates.io/crates/local-search) · [npm](https://www.npmjs.com/package/@kevinliu01/localsearch)
+[Documentation](https://localsearch.kevinliu.studio/docs) · [Agent reference](https://github.com/Kevin-Liu-01/Local-Search/blob/main/SKILL.md) · [crates.io](https://crates.io/crates/local-search) · [npm](https://www.npmjs.com/package/@kevinliu01/localsearch)
 
-<a href="https://lsearch.dev"><img src="https://raw.githubusercontent.com/Kevin-Liu-01/Local-Search/main/site/public/social/2026-09/chrome-demo.gif?v=2026-09-30-clean" alt="Demo: an agent runs lsearch, Chrome loads search results, and structured results return to the terminal" width="100%"></a>
+<a href="https://localsearch.kevinliu.studio"><img src="https://raw.githubusercontent.com/Kevin-Liu-01/Local-Search/main/site/public/social/2026-09/chrome-demo.gif?v=2026-09-30-clean" alt="Demo: an agent runs lsearch, Chrome loads search results, and structured results return to the terminal" width="100%"></a>
 
 *Illustrated demo, not a timing measurement. [Download video](https://raw.githubusercontent.com/Kevin-Liu-01/Local-Search/main/site/public/social/2026-09/chrome-demo.mp4).*
 
