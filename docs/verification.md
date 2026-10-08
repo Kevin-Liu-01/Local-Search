@@ -80,3 +80,9 @@ The three signed-in sites were not rechecked for publication. Recheck them with
 permission before claiming newly recorded results. Site-specific access,
 selectors, and account permissions can change. These checks do not establish
 universal site compatibility. No external social posts were made.
+
+## October 8, 2026 patch release
+
+Native `local-search` 0.2.1 and npm `@kevinliu01/localsearch` 0.2.1 are published.
+Both passed fresh registry installations, binary alias checks, and isolated-config
+smoke checks. npm `latest` points to 0.2.1 and pins native 0.2.1. See [the 0.2.1 release evidence](releases/0.2.1.md).

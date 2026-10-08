@@ -33,7 +33,7 @@
 - Hosted local-search API key: not required
 - Metered local-search API bill: none
 - Version 0.2.1 arm64 macOS binary: 1,272,432 bytes (1.27 MB), measured October 8, 2026 with Rust 1.98.1
-- Version 0.2.0 compressed crate: 80,937 bytes (79.0 KiB)
+- Version 0.2.1 compressed crate: 82,944 bytes (81.0 KiB)
 - Historical July 27, 2026 median warm CLI startup: 4.61 ms across 200 alternating process launches; not remeasured for 0.2.1
 
 ## Install and search
