@@ -1,8 +1,8 @@
 # local-search full reference
 
-Illustrated documentation: https://www.lsearch.dev/docs
-Markdown walkthrough: https://www.lsearch.dev/docs-assets/agent-guide.md
-Complete command reference: https://www.lsearch.dev/docs-assets/skill.md
+Illustrated documentation: https://localsearch.kevinliu.studio/docs
+Markdown walkthrough: https://localsearch.kevinliu.studio/docs-assets/agent-guide.md
+Complete command reference: https://localsearch.kevinliu.studio/docs-assets/skill.md
 
 ## What local-search is
 
@@ -155,7 +155,7 @@ A separate release audit was recorded on July 27, 2026 using Rust 1.97.1 on arm6
 - Startup sample: 200 alternating warm launches for each binary.
 - Compressed `local-search` 0.1.4 crate package: 50.3 KiB.
 
-These measurements describe CLI process startup and native distribution size, not browser or search-engine latency. Machine-readable results are published at https://www.lsearch.dev/benchmarks.json.
+These measurements describe CLI process startup and native distribution size, not browser or search-engine latency. Machine-readable results are published at https://localsearch.kevinliu.studio/benchmarks.json.
 
 ## Privacy and network boundary
 
@@ -173,7 +173,7 @@ local-search has no hosted service. It controls the explicitly chosen local brow
 - Source: https://github.com/Kevin-Liu-01/Local-Search
 - npm package: https://www.npmjs.com/package/@kevinliu01/localsearch
 - Cargo package: https://crates.io/crates/local-search
-- Author site: https://www.kevin-liu.tech/
+- Author site: https://www.kevinliu.studio/
 
 ## Frequently asked questions
 

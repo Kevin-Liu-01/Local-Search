@@ -39,7 +39,7 @@ npm rebuild @kevinliu01/localsearch
 ```
 
 See the [full documentation](https://github.com/Kevin-Liu-01/Local-Search#readme)
-and [website](https://lsearch.dev).
+and [website](https://localsearch.kevinliu.studio).
 
 ## License
 
