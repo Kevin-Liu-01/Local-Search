@@ -14,7 +14,7 @@ lsearch "rust browser automation" --engine google --limit 5 --json
 
 ## How it works
 
-Version 0.2.0 installs native `local-search` 0.2.0. Existing Chrome requires
+Version 0.2.1 installs native `local-search` 0.2.1. Existing Chrome requires
 Chrome 144+ on macOS or Linux: enable `chrome://inspect/#remote-debugging`,
 then approve the connection. Commands reuse that approved connection until
 `lsearch disconnect` or a connection loss. Upgrading an older existing-browser

@@ -24,6 +24,9 @@ Or use npm (requires Node.js 18+ and Rust/Cargo):
 npm install -g @kevinliu01/localsearch
 ```
 
+Current release: **0.2.1** on Cargo and npm. The arm64 macOS release binary
+measures 1,272,432 bytes (1.27 MB), built with Rust 1.98.1 on October 8, 2026.
+
 Both install the same native Rust CLI. Chrome or Chromium is required.
 `local-search` and `local-browser` remain aliases for `lsearch`.
 

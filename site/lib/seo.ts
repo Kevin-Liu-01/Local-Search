@@ -57,7 +57,7 @@ export const FAQS = [
   },
   {
     question: "How small and fast is it?",
-    answer: `Version 0.2.0 measured 1.26 MB on arm64 macOS on September 25, 2026. An earlier July build measured ${RELEASE_AUDIT.startupMedianMs.toFixed(2)} ms median warm startup over ${RELEASE_AUDIT.startupSamples} launches. Startup has not been remeasured for 0.2.0. Results vary by build and machine.`,
+    answer: `Version 0.2.1 measured 1.27 MB on arm64 macOS on October 8, 2026. An earlier July build measured ${RELEASE_AUDIT.startupMedianMs.toFixed(2)} ms median warm startup over ${RELEASE_AUDIT.startupSamples} launches. Startup has not been remeasured for 0.2.1. Results vary by build and machine.`,
   },
   {
     question: "Is it free and open source?",
@@ -141,7 +141,7 @@ export const STRUCTURED_DATA = {
       description: SITE_DESCRIPTION,
       applicationCategory: "DeveloperApplication",
       applicationSubCategory: "Local browser API for AI agents",
-      softwareVersion: "0.2.0",
+      softwareVersion: "0.2.1",
       operatingSystem: "macOS, Linux, and Windows with Chrome or Chromium",
       runtimePlatform: "Chrome or Chromium",
       downloadUrl: [CRATE_URL, NPM_URL],
@@ -195,7 +195,7 @@ export const STRUCTURED_DATA = {
       codeRepository: REPOSITORY_URL,
       programmingLanguage: "Rust",
       runtimePlatform: "Chrome or Chromium",
-      version: "0.2.0",
+      version: "0.2.1",
       dateModified: SITE_LAST_UPDATED,
       license: "https://opensource.org/license/mit",
       author: { "@id": `${SITE_URL}/#author` },

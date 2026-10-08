@@ -1,8 +1,8 @@
 {
   "name": "@kevinliu01/localsearch",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "config": {
-    "nativeVersion": "0.2.0"
+    "nativeVersion": "0.2.1"
   },
   "description": "A local browser API for agents: search, read, extract, and use Chrome sessions",
   "keywords": [
