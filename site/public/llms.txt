@@ -30,16 +30,17 @@
 - Browser: Chrome 144+ existing sessions with Chrome approval, or a separate persistent Chrome/Chromium profile
 - On macOS/Linux, one approved existing-Chrome connection is reused across commands. lsearch disconnect ends access without closing Chrome. Lost connections return an error; explicit reconnection requires approval again. No profile fallback.
 - Browser capabilities: search, read, extract, map, interact, request, tabs, cookies, and local artifacts
+- Agent boundaries (0.3.0+): named browser profiles (lsearch profile), per-profile site blocklists and allowlists (lsearch policy), and an opt-in own-tabs-only mode; browser and extension pages are always off limits
 - Hosted local-search API key: not required
 - Metered local-search API bill: none
-- Version 0.2.1 arm64 macOS binary: 1,272,432 bytes (1.27 MB), measured October 8, 2026 with Rust 1.98.1
-- Version 0.2.1 compressed crate: 82,944 bytes (81.0 KiB)
-- Historical July 27, 2026 median warm CLI startup: 4.61 ms across 200 alternating process launches; not remeasured for 0.2.1
+- Version 0.3.0 arm64 macOS binary: 1,355,744 bytes (1.36 MB), measured October 14, 2026 with Rust 1.98.1
+- Version 0.3.0 compressed crate: 99,691 bytes (97.4 KiB)
+- Historical July 27, 2026 median warm CLI startup: 4.61 ms across 200 alternating process launches; not remeasured for 0.3.0
 
 ## Install and search
 
 Persistent existing-browser sessions require local-search 0.2.0 or newer on
-macOS/Linux. npm bridge 0.2.1 installs native crate 0.2.1. Check lsearch
+macOS/Linux. npm bridge 0.3.0 installs native crate 0.3.0. Check lsearch
 --version; upgrading an older existing-browser setup requires one explicit reconnect.
 
 ```sh
