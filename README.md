@@ -120,6 +120,31 @@ not an equal-content or search-quality comparison.
 [July results and settings](https://github.com/Kevin-Liu-01/Local-Search/blob/main/benchmarks/hosted-search-2026-07-21.md)
 · [September comparison with a shared 120-character snippet cap](https://github.com/Kevin-Liu-01/Local-Search/blob/main/benchmarks/search-2026-09-29.md)
 
+## Profiles and boundaries
+
+Keep agents to the browser, sites, and tabs you mean them to use.
+
+```sh
+# A separate profile is real isolation: its own logins, history, and cookies
+lsearch profile create research
+lsearch profile use research
+
+# Never open or read some sites, or allow only a few
+lsearch policy block bank.com mail.google.com/mail
+lsearch policy allow docs.rs github.com
+
+# In your everyday Chrome, let agents use only the tabs they open
+lsearch policy tabs own
+lsearch tabs grant TARGET_ID     # hand over one tab yourself
+```
+
+Each profile (`everyday`, `agent`, and any you create) keeps its own rules.
+Blocked sites return `site_blocked`, checked before every navigation, after
+redirects, and before any command reads the current page; other tabs return
+`tab_not_allowed`, and `tabs list` only counts them. Browser pages such as
+`chrome://settings` are always off limits. These are guardrails for agents you
+trust, not a sandbox; see the [security model](https://github.com/Kevin-Liu-01/Local-Search/blob/main/SECURITY.md).
+
 ## Access and privacy
 
 Browser work happens on your machine. Existing-browser approval gives broad

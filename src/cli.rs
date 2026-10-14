@@ -112,6 +112,12 @@ pub enum Command {
     /// Inspect or control tabs.
     #[command(subcommand)]
     Tabs(TabsCommand),
+    /// List, create, and switch between named browser profiles.
+    #[command(subcommand)]
+    Profile(ProfileCommand),
+    /// Limit the sites and tabs agents may use in a profile.
+    #[command(subcommand)]
+    Policy(PolicyCommand),
     /// Inspect or modify browser cookies.
     #[command(subcommand)]
     Cookies(CookiesCommand),
@@ -373,10 +379,92 @@ pub struct RecordArgs {
 
 #[derive(Debug, Subcommand)]
 pub enum TabsCommand {
+    /// List tabs agents may use, and count the tabs hidden by the profile's policy.
     List,
+    /// Open a background tab that agents may use.
     New { url: Option<String> },
+    /// Make a tab the default for page commands.
     Use { target_id: String },
+    /// Close a tab.
     Close { target_id: Option<String> },
+    /// Hand one of your tabs to agents in a profile that only allows their own tabs.
+    Grant { target_id: String },
+    /// Take back a tab you granted.
+    Revoke { target_id: String },
+}
+
+#[derive(Debug, Subcommand)]
+pub enum ProfileCommand {
+    /// List profiles and show which one is active.
+    List,
+    /// Add a separate persistent Chrome profile, or another existing Chrome data directory.
+    Create(ProfileCreateArgs),
+    /// Switch to a profile: start or reuse its Chrome, or approve your everyday Chrome.
+    Use {
+        /// Profile name, such as everyday, agent, or one you created.
+        name: String,
+    },
+    /// Forget a profile you created. Its Chrome data directory stays on disk.
+    Remove { name: String },
+}
+
+#[derive(Debug, Args)]
+pub struct ProfileCreateArgs {
+    /// Lowercase letters, digits, - or _.
+    pub name: String,
+
+    /// Use an existing Chrome user-data directory (with Chrome approval) instead of a separate profile.
+    #[arg(long, requires = "dir")]
+    pub existing: bool,
+
+    /// Chrome user-data directory. Defaults to a new directory under the local-search config dir.
+    #[arg(long)]
+    pub dir: Option<PathBuf>,
+
+    /// CDP port for a separate profile. Defaults to the next free port after 9322.
+    #[arg(long, value_parser = clap::value_parser!(u16).range(1..), conflicts_with = "existing")]
+    pub port: Option<u16>,
+
+    /// Chrome executable for a separate profile.
+    #[arg(long, conflicts_with = "existing")]
+    pub browser_path: Option<PathBuf>,
+}
+
+#[derive(Debug, Subcommand)]
+pub enum PolicyCommand {
+    /// Show a profile's site rules and tab access.
+    Show(PolicyProfile),
+    /// Never let agents open or read these sites: example.com (and subdomains), *.example.com, or example.com/path.
+    Block(PolicyRules),
+    /// Let agents open or read only these sites (plus search engines for `search`).
+    Allow(PolicyRules),
+    /// Remove sites from the allowlist and the blocklist.
+    Remove(PolicyRules),
+    /// Choose which tabs agents may control: all tabs, or only their own and ones you grant.
+    Tabs {
+        #[arg(value_enum)]
+        access: crate::policy::TabAccess,
+        #[command(flatten)]
+        profile: PolicyProfile,
+    },
+    /// Clear a profile's site rules and allow all tabs again.
+    Reset(PolicyProfile),
+}
+
+#[derive(Debug, Args)]
+pub struct PolicyProfile {
+    /// Profile to change. Defaults to the active profile.
+    #[arg(long)]
+    pub profile: Option<String>,
+}
+
+#[derive(Debug, Args)]
+pub struct PolicyRules {
+    /// Site rules such as bank.com, *.example.com or mail.google.com/mail.
+    #[arg(required = true, value_name = "SITE")]
+    pub sites: Vec<String>,
+    #[command(flatten)]
+    pub profile: PolicyProfile,
 }
 
 #[derive(Debug, Subcommand)]

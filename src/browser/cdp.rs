@@ -251,6 +251,23 @@ impl CdpClient {
         self.target_id.as_deref()
     }
 
+    /// The attached tab's committed URL, read from Chrome's target record rather
+    /// than the page, so a page script cannot misreport it.
+    pub async fn current_url(&mut self) -> Result<String> {
+        let target_id = self
+            .target_id
+            .clone()
+            .ok_or_else(|| Error::TargetNotFound("no attached tab".to_owned()))?;
+        let info = self
+            .send_browser("Target.getTargetInfo", json!({ "targetId": target_id }))
+            .await?;
+        Ok(info
+            .pointer("/targetInfo/url")
+            .and_then(Value::as_str)
+            .unwrap_or_default()
+            .to_owned())
+    }
+
     pub async fn attach(&mut self, target_id: &str) -> Result<()> {
         let result = self
             .send_browser(

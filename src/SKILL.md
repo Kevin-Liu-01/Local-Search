@@ -25,6 +25,10 @@ typed errors, browser control, and output rendering.
   registry failures are advisory, never an implicit install or browser fallback.
 - `error.rs` keeps operator-facing messages and machine-readable error codes in
   one place.
+- `policy.rs` decides whether a URL or tab is off limits; `profiles.rs` stores
+  named profiles and the agent's tab record. `commands::Boundary` applies them:
+  attach checks tab access, page commands check the current URL, and navigation
+  helpers check the destination and where it lands.
 
 ## Patterns to follow / invariants
 - Keep command handlers thin enough to read from top to bottom.

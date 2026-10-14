@@ -20,7 +20,7 @@ pub struct BrowserSession {
     pub endpoint: String,
 }
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, PartialEq, Eq)]
 #[serde(tag = "mode", rename_all = "snake_case")]
 pub enum Connection {
     Existing {

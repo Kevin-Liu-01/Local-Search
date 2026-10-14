@@ -81,6 +81,11 @@ The Cargo package is `local-search`. The preferred executable is `lsearch`.
   for snapshots, search normalization, readable extraction, interactions,
   mapping, and authenticated requests.
 - `src/config.rs` owns config/cache/profile/PID/endpoint paths and local state.
+- `src/policy.rs` owns site rules and tab access: rule parsing, matching, and the
+  `site_blocked` decision. Keep it pure and unit-tested.
+- `src/profiles.rs` owns named profiles (`profiles.json`) and the record of tabs
+  lsearch opened or a person granted (`tabs.json`, reset per browser session).
+  Keep both out of `config.json` so connecting never rewrites them.
 - `src/output.rs` owns stable success and error envelopes.
 - `src/ui.rs` owns interactive human presentation: welcome text, progress,
   colors, hyperlinks, and ranked search rendering.
@@ -166,6 +171,12 @@ program -> normalized Rust value -> stable stdout envelope
   Check connection even for cache hits. Do not reuse results across profiles or
   restarted browser sessions. Default work tabs are background tabs, not a
   personal tab; explicit `--target` / `tabs use` may select a personal tab.
+- Profile rules are guardrails, not a sandbox. Check the active profile's
+  policy before every navigation and after it settles, and before any command
+  reads or acts on the current page; never return content from a blocked site.
+  `tabs own` limits commands to recorded or granted tabs; record every tab
+  lsearch creates, even under `tabs all`. Errors and listings must not reveal a
+  hidden tab's title or a blocked page's path.
 - `snapshot` refs such as `@e3` are temporary document-local handles. They must
   be regenerated after navigation or substantial DOM replacement.
 - `request` runs fetch in a temporary tab at the request origin so ambient

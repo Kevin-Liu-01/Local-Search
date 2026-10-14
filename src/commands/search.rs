@@ -1,4 +1,4 @@
-use super::{attach_client, selected_client, urlencoding, verify_selection};
+use super::{Boundary, attach_client, selected_client, urlencoding, verify_selection};
 use crate::{
     browser::{CdpClient, scripts},
     cli::{Cli, SearchArgs, SearchEngine, SearchFormat},
@@ -19,15 +19,20 @@ pub(super) async fn search_command(cli: &Cli, args: &SearchArgs) -> Result<()> {
     // Verify the live browser, but defer page attachment until we need a page.
     let (endpoint, mut client) = selected_client(cli).await?;
     if let Some(mut value) = load_search_cache(args, &client.cache_scope).await {
-        if args.with_content || cli.target.is_some() {
-            client = attach_client(cli, endpoint, client).await?;
+        let boundary = if args.with_content || cli.target.is_some() {
+            let (attached, boundary) = attach_client(cli, endpoint, client).await?;
+            client = attached;
+            Some(boundary)
         } else {
             let _selection = config::selection_lock()?;
             verify_selection(cli, &endpoint).await?;
-        }
+            None
+        };
         prepare_search_results(&mut value, args);
-        if args.with_content {
-            enrich_search_results(&mut client, &mut value, args.content_chars).await?;
+        if args.with_content
+            && let Some(boundary) = &boundary
+        {
+            enrich_search_results(&mut client, boundary, &mut value, args.content_chars).await?;
         }
         let result_count = value
             .get("results")
@@ -41,20 +46,24 @@ pub(super) async fn search_command(cli: &Cli, args: &SearchArgs) -> Result<()> {
 
     let engine = search_engine_label(args.engine);
     let spinner = Spinner::start(format!("Searching {engine} through your local browser"));
-    let mut client = attach_client(cli, endpoint, client).await?;
-    search(cli, &mut client, args, spinner).await
+    let (mut client, boundary) = attach_client(cli, endpoint, client).await?;
+    search(cli, &mut client, &boundary, args, spinner).await
 }
 
 async fn search(
     cli: &Cli,
     client: &mut CdpClient,
+    boundary: &Boundary,
     args: &SearchArgs,
     spinner: Spinner,
 ) -> Result<()> {
     let engine = search_engine_label(args.engine);
     let url = search_engine_url(args.engine, &args.query);
+    // The engine is how search works, so only an explicit block stops it.
+    boundary.policy.check_search_engine(&url)?;
     if args.new_tab {
         let target = client.create_target("about:blank").await?;
+        boundary.record_owned(&target.target_id)?;
         client.attach(&target.target_id).await?;
     }
     client.start_navigation(&url).await?;
@@ -66,7 +75,7 @@ async fn search(
     save_search_cache(args, &value, &client.cache_scope).await;
     prepare_search_results(&mut value, args);
     if args.with_content {
-        enrich_search_results(client, &mut value, args.content_chars).await?;
+        enrich_search_results(client, boundary, &mut value, args.content_chars).await?;
     }
     let result_count = value
         .get("results")
@@ -236,6 +245,7 @@ fn truncate_search_snippets(results: &mut [Value], max_chars: usize) {
 
 async fn enrich_search_results(
     client: &mut CdpClient,
+    boundary: &Boundary,
     search: &mut Value,
     content_chars: usize,
 ) -> Result<()> {
@@ -249,7 +259,7 @@ async fn enrich_search_results(
                 .collect::<Vec<_>>()
         })
         .unwrap_or_default();
-    let mut contents = read_search_results(client, &urls).await?;
+    let mut contents = read_search_results(client, boundary, &urls).await?;
     for page in &mut contents {
         if let Some(text) = page.get("text").and_then(Value::as_str) {
             page["text"] = json!(text.chars().take(content_chars).collect::<String>());
@@ -259,7 +269,11 @@ async fn enrich_search_results(
     Ok(())
 }
 
-async fn read_search_results(client: &mut CdpClient, urls: &[String]) -> Result<Vec<Value>> {
+async fn read_search_results(
+    client: &mut CdpClient,
+    boundary: &Boundary,
+    urls: &[String],
+) -> Result<Vec<Value>> {
     if urls.is_empty() {
         return Ok(Vec::new());
     }
@@ -268,9 +282,18 @@ async fn read_search_results(client: &mut CdpClient, urls: &[String]) -> Result<
         client.attach(&target.target_id).await?;
         let mut pages = Vec::with_capacity(urls.len());
         for url in urls {
+            // Results on blocked sites keep their place in the list, with no content.
+            if !boundary.policy.allows(url) {
+                pages.push(json!({ "url": url, "blocked": true, "text": "" }));
+                continue;
+            }
             // navigate now waits for the new document, not the previous page's
             // readyState. Do not replay an entire batch after genuine failures.
             client.navigate(url).await?;
+            if boundary.leave_if_blocked(client).await.is_err() {
+                pages.push(json!({ "url": url, "blocked": true, "text": "" }));
+                continue;
+            }
             let page = client.evaluate(scripts::readable(), true).await?;
             validate_content_page(&page, url)?;
             pages.push(page);

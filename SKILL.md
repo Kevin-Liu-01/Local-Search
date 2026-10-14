@@ -63,6 +63,10 @@ minimum needed; never place signed-in content in public logs, examples, or commi
    browser. Add `--kill` only when stopping it is requested or appropriate.
 6. Do not introduce or call a paid search API as a substitute. Search through
    the selected public search engine in the local browser.
+7. Respect the profile's boundaries. On `site_blocked` or `tab_not_allowed`,
+   stop and tell the user; do not reach the site or tab another way (another
+   tab, `request`, `eval`, a different profile). Change `lsearch policy`,
+   `lsearch profile`, or `lsearch tabs grant` only when the user asks.
 
 ## Install and verify
 
@@ -460,6 +464,48 @@ lsearch forward
 lsearch reload
 ```
 
+## Profiles and agent boundaries
+
+A profile is a named browser choice with its own rules. `everyday` is your
+existing Chrome (`connect --existing`), `agent` is the default separate profile
+(`connect --managed`), and `custom` is an explicit endpoint. Create more separate
+profiles to keep work, research, or client logins apart:
+
+```bash
+lsearch profile list --pretty
+lsearch profile create research            # separate persistent Chrome, next free port
+lsearch profile use research               # start or reuse it; this becomes the choice
+lsearch profile use everyday               # back to existing Chrome (Chrome approval)
+lsearch profile remove research            # forget it; its data directory stays on disk
+```
+
+Each profile has a site policy and a tab rule:
+
+```bash
+lsearch policy show --pretty
+lsearch policy block bank.com mail.google.com/mail    # never open or read these
+lsearch policy allow docs.rs github.com               # only these (search engines still work for search)
+lsearch policy remove github.com
+lsearch policy tabs own                               # only tabs lsearch opened or a person granted
+lsearch policy tabs all
+lsearch policy reset
+```
+
+`--profile NAME` changes another profile; otherwise the active one changes. A rule
+is a domain with its subdomains (`bank.com`), only subdomains (`*.bank.com`), or a
+path within a site (`mail.google.com/mail`). Blocks win over the allowlist, and
+browser pages (`chrome://`, extensions, DevTools) are always off limits.
+
+The rules are checked before every navigation and again where a navigation ends
+(redirects, history), before any command reads or acts on the current page, for
+`request` destinations and their final redirect, for `map` links, for
+`search --with-content` result pages (blocked ones return `"blocked": true` with no
+text), and for cookies. Errors name the site, never its path or query.
+
+These rules keep a cooperating agent on task and stop mistaken or injected
+commands; they are not a sandbox against a hostile local process. A separate
+profile is the isolation boundary: sign in there only to accounts the agent needs.
+
 ## Control tabs and targets
 
 List, create, select, and close page targets:
@@ -475,6 +521,16 @@ lsearch --target TARGET_ID tabs close
 
 `tabs new` creates a background target without stealing focus. `tabs use`
 persists the default; global `--target TARGET_ID` overrides it for one command.
+
+`tabs list` returns only the tabs agents may use, plus `hiddenTabs`: the number of
+tabs on blocked sites or, in a `tabs own` profile, tabs agents did not open. Hidden
+tabs are never described. In a `tabs own` profile, a person can hand one tab over,
+and take it back:
+
+```bash
+lsearch tabs grant TARGET_ID
+lsearch tabs revoke TARGET_ID
+```
 
 Without an explicit or saved target, `lsearch` creates and remembers a background
 `about:blank` tab for its work, not an arbitrary personal tab. If that tab disappears,
@@ -598,6 +654,11 @@ lsearch cleanup --port 9444 --profile /path/to/profile --pretty
   `LOCAL_SEARCH_CHROME`.
 - If a page target is stale, run `lsearch tabs list`, select one with `tabs use`,
   or omit the saved target and let `lsearch` attach/create automatically.
+- `site_blocked`: the profile's policy forbids that site. Report it to the user;
+  do not retry through another command, tab, or profile.
+- `tab_not_allowed`: the profile only allows the agent's own tabs. Use
+  `lsearch tabs new`, or ask the user to `lsearch tabs grant TARGET_ID`.
+- `profile_not_found`: run `lsearch profile list` and use an existing name.
 - If a search reports `blocked: true`, use the managed visible browser to clear
   the search engine's verification page or switch engines; do not bypass access
   controls.

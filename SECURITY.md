@@ -48,6 +48,33 @@ signed-in page data goes to the calling agent and may be sent to its model provi
 Only connect accounts you trust that agent with; keep tasks within your authority.
 Disable remote debugging in Chrome to revoke future existing-browser connections.
 
+## Profiles and agent boundaries
+
+Named profiles (`lsearch profile`) separate browser choices. A separate profile
+is the isolation boundary: an agent connected to it cannot see your everyday
+Chrome's tabs, cookies, or history. Sign in there only to accounts it needs.
+
+Within a profile, `lsearch policy` sets guardrails:
+
+- **Site rules.** A blocklist, and an optional allowlist, of domains or paths.
+  They are checked before each navigation and again where it ends (redirects
+  and history moves leave a blocked page for `about:blank`), before any command
+  reads or acts on the current page, on `request` destinations and final
+  redirects, on `map` links, on `search --with-content` pages, and on cookies.
+  Browser pages (`chrome://`, extensions, DevTools, `view-source:`) are always
+  off limits. Errors name the site, never its path or query.
+- **Tab access.** With `policy tabs own`, commands may use only tabs lsearch
+  opened and tabs a person handed over with `tabs grant`; `tabs list` counts
+  other tabs without describing them. The default remains access to all tabs.
+
+These rules keep a cooperating agent within its task and stop mistaken or
+prompt-injected commands. They are not a sandbox. Chrome's approval grants the
+whole browser, and any process running as your OS user, including an agent with
+shell access, can edit the rules or reach the browser directly. Use a separate
+profile when an agent must not reach an account at all. Rules live in
+`profiles.json` and tab records in `tabs.json` in the local-search config
+directory; neither stores page content.
+
 ## Persistent helper boundary
 
 The helper accepts no TCP/HTTP connections. Its Unix sockets are mode 0600 inside

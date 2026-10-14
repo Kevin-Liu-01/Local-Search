@@ -14,6 +14,8 @@ pub mod commands;
 pub mod config;
 pub mod error;
 pub mod output;
+pub mod policy;
+pub mod profiles;
 pub mod ui;
 mod updates;
 
