@@ -15,6 +15,11 @@ updates:
     groups:
       site-dependencies:
         patterns: ["*"]
+    ignore:
+      # typescript-eslint supports TypeScript below 6.1; TypeScript 7 fails pnpm lint.
+      # Bump the major by hand once typescript-eslint supports it.
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: github-actions
     directory: /
