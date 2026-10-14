@@ -32,3 +32,7 @@ updates:
     groups:
       actions:
         patterns: ["*"]
+    ignore:
+      # Its refs name Rust toolchains, including branches for releases that do not exist yet
+      # (Dependabot proposed 1.120.0). Bump it by hand to a released Rust version.
+      - dependency-name: "dtolnay/rust-toolchain"
