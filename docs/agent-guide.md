@@ -9,8 +9,8 @@ This guide is for Claude Code, Codex, Cursor, OpenClaw, and other agents that
 can run shell commands. You choose the browser and approve access. The agent
 handles the commands within your requested task.
 
-**Version:** use local-search 0.2.0 or newer. npm bridge 0.2.1 installs
-native crate 0.2.1. Persistent existing-Chrome sessions require macOS or Linux;
+**Version:** use local-search 0.2.0 or newer. npm bridge 0.3.0 installs
+native crate 0.3.0. Persistent existing-Chrome sessions require macOS or Linux;
 use a separate profile on Windows. After upgrading an older existing-browser
 setup, run `lsearch connect --existing` once and approve again.
 

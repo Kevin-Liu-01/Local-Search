@@ -86,3 +86,9 @@ universal site compatibility. No external social posts were made.
 Native `local-search` 0.2.1 and npm `@kevinliu01/localsearch` 0.2.1 are published.
 Both passed fresh registry installations, binary alias checks, and isolated-config
 smoke checks. npm `latest` points to 0.2.1 and pins native 0.2.1. See [the 0.2.1 release evidence](releases/0.2.1.md).
+
+## October 14, 2026 minor release
+
+Native `local-search` 0.3.0 and npm `@kevinliu01/localsearch` 0.3.0 add named
+browser profiles, per-profile site allowlists and blocklists, and an opt-in
+own-tabs-only mode. See [the 0.3.0 release evidence](releases/0.3.0.md).

@@ -18,7 +18,7 @@ hosted browser, or transparent network tunnel.
 For a human-readable walkthrough with screenshots, see
 [the illustrated agent guide](docs/agent-guide.md). The retained existing-Chrome
 connection requires local-search 0.2.0 or newer on macOS/Linux. The npm bridge
-0.2.1 installs native release 0.2.1. Check `lsearch --version` before setup;
+0.3.0 installs native release 0.3.0. Check `lsearch --version` before setup;
 older existing-browser configurations require one explicit reconnect after upgrading.
 
 ## Agent-first decision loop
