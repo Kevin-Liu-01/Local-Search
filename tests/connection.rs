@@ -82,6 +82,11 @@ impl Browser {
                             }
                             "Target.createTarget" => { has_agent_tab = true; json!({"targetId":"agent-tab"}) }
                             "Target.attachToTarget" => json!({"sessionId":"fixture-session"}),
+                            "Target.getTargetInfo" => {
+                                let id = call["params"]["targetId"].as_str().unwrap_or_default();
+                                let url = if id == "personal-tab" { "https://example.com/" } else { "about:blank" };
+                                json!({"targetInfo":{"targetId":id,"type":"page","title":"","url":url}})
+                            }
                             "Runtime.evaluate" => json!({"result":{"value":{"fixture":true}}}),
                             _ => json!({}),
                         };
@@ -859,4 +864,232 @@ fn abandoned_attach_reply_is_detached_without_reaching_the_next_lease() {
     }));
     assert_eq!(browser.connections.load(Ordering::SeqCst), 1);
     cli(dir.path()).arg("disconnect").assert().success();
+}
+
+fn stdout_json(output: &std::process::Output) -> Value {
+    serde_json::from_slice(&output.stdout).unwrap()
+}
+
+#[test]
+fn own_tab_profiles_keep_agents_out_of_personal_tabs_until_granted() {
+    let dir = TempDir::new().unwrap();
+    let browser = Browser::start(true);
+    cli(dir.path())
+        .args(["connect", &browser.endpoint])
+        .assert()
+        .success();
+    cli(dir.path())
+        .args(["policy", "tabs", "own"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains(r#""tabs":"own""#));
+
+    cli(dir.path())
+        .args(["--target", "personal-tab", "eval", "1"])
+        .assert()
+        .failure()
+        .stderr(predicate::str::contains("tab_not_allowed"));
+    let listed = cli(dir.path()).args(["tabs", "list"]).output().unwrap();
+    let listed = stdout_json(&listed);
+    assert_eq!(listed["hiddenTabs"], 1);
+    assert!(!listed.to_string().contains("example.com"));
+
+    // The agent's own background tab is created, recorded and usable.
+    cli(dir.path()).args(["eval", "1"]).assert().success();
+    let listed = stdout_json(&cli(dir.path()).args(["tabs", "list"]).output().unwrap());
+    assert_eq!(listed["tabs"][0]["targetId"], "agent-tab");
+
+    cli(dir.path())
+        .args(["tabs", "grant", "personal-tab"])
+        .assert()
+        .success();
+    cli(dir.path())
+        .args(["--target", "personal-tab", "eval", "1"])
+        .assert()
+        .success();
+    cli(dir.path())
+        .args(["tabs", "revoke", "personal-tab"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains(r#""revoked":true"#));
+    cli(dir.path())
+        .args(["--target", "personal-tab", "eval", "1"])
+        .assert()
+        .failure()
+        .stderr(predicate::str::contains("tab_not_allowed"));
+}
+
+#[test]
+fn blocked_sites_are_never_read_or_opened() {
+    let dir = TempDir::new().unwrap();
+    let browser = Browser::start(true);
+    cli(dir.path())
+        .args(["connect", &browser.endpoint])
+        .assert()
+        .success();
+    cli(dir.path())
+        .args(["policy", "block", "example.com"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains(r#""added":["example.com"]"#));
+
+    // A personal tab on a blocked site cannot be read, even with any-tab access.
+    cli(dir.path())
+        .args(["--target", "personal-tab", "snapshot"])
+        .assert()
+        .failure()
+        .stderr(predicate::str::contains("site_blocked"))
+        .stderr(predicate::str::contains("example.com"));
+    // Opening a blocked site fails before the browser is asked to navigate.
+    cli(dir.path())
+        .args(["open", "https://www.example.com/private?id=7"])
+        .assert()
+        .failure()
+        .stderr(predicate::str::contains("site_blocked"))
+        .stderr(predicate::str::contains("private").not());
+    assert!(
+        browser
+            .calls
+            .lock()
+            .unwrap()
+            .iter()
+            .all(|call| call["method"] != "Page.navigate")
+    );
+    // Tabs on blocked sites are counted, never described.
+    let listed = stdout_json(&cli(dir.path()).args(["tabs", "list"]).output().unwrap());
+    assert_eq!(listed["hiddenTabs"], 1);
+    assert!(!listed.to_string().contains("example.com"));
+    // Browser pages stay off limits whatever the rules say.
+    cli(dir.path())
+        .args(["open", "chrome://settings/passwords"])
+        .assert()
+        .failure()
+        .stderr(predicate::str::contains("site_blocked"));
+}
+
+#[test]
+fn policies_belong_to_named_profiles_and_validate_their_rules() {
+    let dir = TempDir::new().unwrap();
+    cli(dir.path())
+        .args(["policy", "show"])
+        .assert()
+        .failure()
+        .stderr(predicate::str::contains("invalid_argument"));
+    cli(dir.path())
+        .args([
+            "policy",
+            "block",
+            "https://Bank.com/",
+            "*.bank.com",
+            "--profile",
+            "everyday",
+        ])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains(
+            r#""added":["bank.com","*.bank.com"]"#,
+        ));
+    cli(dir.path())
+        .args(["policy", "allow", "docs.rs", "--profile", "agent"])
+        .assert()
+        .success();
+    let everyday = stdout_json(
+        &cli(dir.path())
+            .args(["policy", "show", "--profile", "everyday"])
+            .output()
+            .unwrap(),
+    );
+    assert_eq!(
+        everyday["policy"]["block"],
+        json!(["bank.com", "*.bank.com"])
+    );
+    assert!(everyday["policy"].get("allow").is_none());
+    cli(dir.path())
+        .args(["policy", "block", "ex*mple.com", "--profile", "agent"])
+        .assert()
+        .failure()
+        .stderr(predicate::str::contains("invalid_argument"));
+    cli(dir.path())
+        .args(["policy", "block", "x.com", "--profile", "nope"])
+        .assert()
+        .failure()
+        .stderr(predicate::str::contains("profile_not_found"));
+    cli(dir.path())
+        .args(["policy", "remove", "bank.com", "--profile", "everyday"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains(r#""removed":["bank.com"]"#));
+    cli(dir.path())
+        .args(["policy", "reset", "--profile", "agent"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains(r#""policy":{"tabs":"all"}"#));
+}
+
+#[test]
+fn profiles_are_created_listed_and_removed_without_starting_chrome() {
+    let dir = TempDir::new().unwrap();
+    let created = stdout_json(
+        &cli(dir.path())
+            .args(["profile", "create", "research"])
+            .output()
+            .unwrap(),
+    );
+    assert_eq!(created["profile"]["kind"], "managed");
+    assert_eq!(created["profile"]["port"], 9323);
+    assert!(
+        created["profile"]["dir"]
+            .as_str()
+            .unwrap()
+            .ends_with("profiles/research")
+    );
+    let second = stdout_json(
+        &cli(dir.path())
+            .args(["profile", "create", "work", "--port", "9500"])
+            .output()
+            .unwrap(),
+    );
+    assert_eq!(second["profile"]["port"], 9500);
+    cli(dir.path())
+        .args(["profile", "create", "research"])
+        .assert()
+        .failure()
+        .stderr(predicate::str::contains("already exists"));
+    cli(dir.path())
+        .args(["profile", "create", "Bad Name"])
+        .assert()
+        .failure()
+        .stderr(predicate::str::contains("invalid_argument"));
+    cli(dir.path())
+        .args(["profile", "create", "agent"])
+        .assert()
+        .failure()
+        .stderr(predicate::str::contains("built-in"));
+
+    let listed = stdout_json(&cli(dir.path()).args(["profile", "list"]).output().unwrap());
+    let names: Vec<&str> = listed["profiles"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .map(|profile| profile["name"].as_str().unwrap())
+        .collect();
+    assert_eq!(names, ["everyday", "agent", "research", "work"]);
+    assert_eq!(listed["active"], Value::Null);
+
+    cli(dir.path())
+        .args(["profile", "remove", "research"])
+        .assert()
+        .success();
+    cli(dir.path())
+        .args(["profile", "remove", "agent"])
+        .assert()
+        .failure()
+        .stderr(predicate::str::contains("built in"));
+    cli(dir.path())
+        .args(["profile", "use", "research"])
+        .assert()
+        .failure()
+        .stderr(predicate::str::contains("profile_not_found"));
+    // Creating a profile never launches Chrome or changes the browser choice.
+    assert!(!dir.path().join("config.json").exists());
 }

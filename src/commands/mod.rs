@@ -12,12 +12,15 @@ use crate::{
     browser::{BrowserEndpoint, CdpClient, discovery, scripts, session},
     cli::{
         BrowserKind, Cli, Command, ConnectArgs, CookiesCommand, LaunchArgs, MapArgs, OpenArgs,
-        OptionalPathArgs, PathArgs, ReadArgs, ReadFormat, RecordArgs, RequestArgs, ScreenshotArgs,
+        OptionalPathArgs, PathArgs, PolicyCommand, PolicyProfile, ProfileCommand,
+        ProfileCreateArgs, ReadArgs, ReadFormat, RecordArgs, RequestArgs, ScreenshotArgs,
         ScrollDirection, SearchArgs, SearchEngine, SearchFormat, TabsCommand, WaitArgs,
     },
     config::{self, Config, Connection},
     error::{Error, IoContext, Result},
     output::print_json,
+    policy::{Policy, TabAccess},
+    profiles::{self, Browser},
     ui::{self, Spinner},
 };
 
@@ -53,13 +56,18 @@ pub async fn run(cli: Cli) -> Result<()> {
         Some(Command::Launch(args)) => launch(&cli, args).await,
         Some(Command::Cleanup(args)) => cleanup(&cli, args).await,
         Some(Command::Tabs(command)) => tabs(&cli, command).await,
+        Some(Command::Profile(command)) => profile(&cli, command).await,
+        Some(Command::Policy(command)) => policy(&cli, command).await,
         Some(Command::Search(args)) => search_command(&cli, args).await,
         Some(command) => {
-            let mut client = cdp_client(&cli).await?;
+            let (mut client, boundary) = cdp_client(&cli).await?;
+            if reads_current_page(command) {
+                boundary.ensure_page(&mut client).await?;
+            }
             match command {
-                Command::Map(args) => map(&cli, &mut client, args).await,
-                Command::Open(args) => open(&cli, &mut client, args).await,
-                Command::Read(args) => read(&cli, &mut client, args).await,
+                Command::Map(args) => map(&cli, &mut client, &boundary, args).await,
+                Command::Open(args) => open(&cli, &mut client, &boundary, args).await,
+                Command::Read(args) => read(&cli, &mut client, &boundary, args).await,
                 Command::Snapshot(args) => {
                     let value = client
                         .evaluate(&scripts::snapshot(args.all, args.limit), true)
@@ -131,21 +139,23 @@ pub async fn run(cli: Cli) -> Result<()> {
                 Command::Pdf(args) => pdf(&cli, &mut client, args).await,
                 Command::Mhtml(args) => mhtml(&cli, &mut client, args).await,
                 Command::Html(args) => html(&cli, &mut client, args).await,
-                Command::Request(args) => request(&cli, &mut client, args).await,
-                Command::Record(args) => record(&cli, &mut client, args).await,
+                Command::Request(args) => request(&cli, &mut client, &boundary, args).await,
+                Command::Record(args) => record(&cli, &mut client, &boundary, args).await,
                 Command::Back => {
                     let value = client.history(-1).await?;
+                    boundary.leave_if_blocked(&mut client).await?;
                     print_json(&json!({ "ok": true, "page": value }), cli.pretty)
                 }
                 Command::Forward => {
                     let value = client.history(1).await?;
+                    boundary.leave_if_blocked(&mut client).await?;
                     print_json(&json!({ "ok": true, "page": value }), cli.pretty)
                 }
                 Command::Reload => {
                     let value = client.reload().await?;
                     print_json(&json!({ "ok": true, "page": value }), cli.pretty)
                 }
-                Command::Cookies(command) => cookies(&cli, &mut client, command).await,
+                Command::Cookies(command) => cookies(&cli, &mut client, &boundary, command).await,
                 Command::UpdateCheck
                 | Command::Doctor
                 | Command::Connect(_)
@@ -154,13 +164,20 @@ pub async fn run(cli: Cli) -> Result<()> {
                 | Command::Launch(_)
                 | Command::Cleanup(_)
                 | Command::Search(_)
-                | Command::Tabs(_) => unreachable!("handled before cdp attach"),
+                | Command::Tabs(_)
+                | Command::Profile(_)
+                | Command::Policy(_) => unreachable!("handled before cdp attach"),
             }
         }
     }
 }
 
 async fn connect(cli: &Cli, args: &ConnectArgs) -> Result<()> {
+    let value = connect_value(cli, args).await?;
+    print_json(&value, cli.pretty)
+}
+
+async fn connect_value(cli: &Cli, args: &ConnectArgs) -> Result<Value> {
     if (args.existing || args.managed) && cli.cdp.is_some() {
         return Err(Error::InvalidArgument(
             "choose either --existing/--managed or --cdp, not both (also check LOCAL_SEARCH_CDP)"
@@ -174,7 +191,7 @@ async fn connect(cli: &Cli, args: &ConnectArgs) -> Result<()> {
         });
     }
     if args.managed {
-        return launch(cli, &default_launch_args()).await;
+        return launch_value(cli, &default_launch_args()).await;
     }
     let _selection = config::selection_lock()?;
     // Never overwrite a malformed selection as a side effect of connecting.
@@ -265,10 +282,22 @@ async fn connect(cli: &Cli, args: &ConnectArgs) -> Result<()> {
     {
         session::stop(previous).await?;
     }
+    if matches!(next.connection, Some(Connection::Endpoint))
+        && let Some(value) = args.endpoint.as_deref().or(cli.cdp.as_deref())
+    {
+        // Remember how to reach this endpoint, so `profile use custom` can reconnect.
+        profiles::update(|registry| {
+            registry
+                .profiles
+                .entry(profiles::CUSTOM.to_owned())
+                .or_default()
+                .endpoint = Some(value.to_owned());
+            Ok(())
+        })?;
+    }
     spinner.success("Browser connected");
-    print_json(
-        &json!({ "ok": true, "endpoint": endpoint, "connection": config::load().await?.connection, "config": path.display().to_string() }),
-        cli.pretty,
+    Ok(
+        json!({ "ok": true, "endpoint": endpoint, "connection": config::load().await?.connection, "config": path.display().to_string() }),
     )
 }
 
@@ -294,6 +323,11 @@ async fn disconnect(cli: &Cli) -> Result<()> {
 }
 
 async fn launch(cli: &Cli, args: &LaunchArgs) -> Result<()> {
+    let value = launch_value(cli, args).await?;
+    print_json(&value, cli.pretty)
+}
+
+async fn launch_value(cli: &Cli, args: &LaunchArgs) -> Result<Value> {
     let _selection = config::selection_lock()?;
     let saved = config::load().await?;
     let args = remembered_launch_args(args, &saved);
@@ -311,18 +345,15 @@ async fn launch(cli: &Cli, args: &LaunchArgs) -> Result<()> {
     } else {
         "Managed Chrome started"
     });
-    print_json(
-        &json!({
-            "ok": true,
-            "alreadyRunning": launched.already_running,
-            "pid": launched.pid,
-            "profile": launched.profile.display().to_string(),
-            "endpoint": launched.endpoint,
-            "persisted": !args.no_persist,
-            "mode": "managed",
-        }),
-        cli.pretty,
-    )
+    Ok(json!({
+        "ok": true,
+        "alreadyRunning": launched.already_running,
+        "pid": launched.pid,
+        "profile": launched.profile.display().to_string(),
+        "endpoint": launched.endpoint,
+        "persisted": !args.no_persist,
+        "mode": "managed",
+    }))
 }
 
 fn remembered_launch_args(args: &LaunchArgs, saved: &Config) -> LaunchArgs {
@@ -736,7 +767,7 @@ fn chrome_command(browser_path: &Path, chrome_args: &[String]) -> std::process::
     command
 }
 
-async fn cdp_client(cli: &Cli) -> Result<CdpClient> {
+async fn cdp_client(cli: &Cli) -> Result<(CdpClient, Boundary)> {
     if !matches!(cli.browser, BrowserKind::Auto | BrowserKind::Chromium) {
         return Err(Error::Unsupported {
             backend: "safari".to_owned(),
@@ -762,9 +793,11 @@ async fn attach_client(
     cli: &Cli,
     endpoint: BrowserEndpoint,
     mut client: CdpClient,
-) -> Result<CdpClient> {
+) -> Result<(CdpClient, Boundary)> {
     let _selection = config::selection_lock()?;
     let mut saved = verify_selection(cli, &endpoint).await?;
+    let boundary = Boundary::for_endpoint(cli, &saved, &endpoint.websocket_url)?;
+    let ledger = profiles::tabs_for(&endpoint.websocket_url)?;
     let stored = if cli.cdp.is_none()
         && saved.endpoint.as_deref() == Some(endpoint.websocket_url.as_str())
     {
@@ -773,12 +806,19 @@ async fn attach_client(
         None
     };
     if let Some(target_id) = cli.target.as_deref() {
+        if !boundary.allows_tab(&ledger, target_id) {
+            return Err(Error::TabNotAllowed(target_id.to_owned()));
+        }
         client.attach_or_create(Some(target_id)).await?;
-    } else if let Some(target_id) = stored.as_deref() {
+    } else if let Some(target_id) = stored
+        .as_deref()
+        .filter(|target_id| boundary.allows_tab(&ledger, target_id))
+    {
         match client.attach_or_create(Some(target_id)).await {
             Ok(_) => {}
             Err(Error::TargetNotFound(_)) => {
                 let target = client.create_target("about:blank").await?;
+                boundary.record_owned(&target.target_id)?;
                 client.attach(&target.target_id).await?;
                 saved.endpoint = Some(endpoint.websocket_url);
                 saved.target_id = Some(target.target_id);
@@ -788,7 +828,9 @@ async fn attach_client(
         }
     } else {
         // Work in a background tab, never navigate the user's arbitrary first tab.
+        // This also replaces a saved personal tab once a profile allows only its own tabs.
         let target = client.create_target("about:blank").await?;
+        boundary.record_owned(&target.target_id)?;
         client.attach(&target.target_id).await?;
         if cli.cdp.is_none() {
             saved.endpoint = Some(endpoint.websocket_url);
@@ -796,7 +838,85 @@ async fn attach_client(
             config::save(&saved).await?;
         }
     }
-    Ok(client)
+    Ok((client, boundary))
+}
+
+/// The rules for one command: the active profile's site policy, and the browser
+/// session whose tab record decides which tabs are the agent's own.
+pub(super) struct Boundary {
+    pub(super) profile: Option<String>,
+    pub(super) policy: Policy,
+    endpoint: String,
+}
+
+impl Boundary {
+    fn for_endpoint(cli: &Cli, saved: &Config, endpoint: &str) -> Result<Self> {
+        let registry = profiles::load()?;
+        let (profile, policy) = profiles::active(&registry, saved, cli.cdp.is_some());
+        Ok(Self {
+            profile,
+            policy,
+            endpoint: endpoint.to_owned(),
+        })
+    }
+
+    fn allows_tab(&self, ledger: &profiles::TabLedger, target_id: &str) -> bool {
+        self.policy.tabs == TabAccess::All || ledger.allows(target_id)
+    }
+
+    /// Every tab lsearch opens is recorded, so tightening to `tabs own` later keeps it usable.
+    pub(super) fn record_owned(&self, target_id: &str) -> Result<()> {
+        profiles::record_owned(&self.endpoint, target_id)
+    }
+
+    /// Fails when the attached tab shows a site the profile does not allow.
+    pub(super) async fn ensure_page(&self, client: &mut CdpClient) -> Result<()> {
+        let url = client.current_url().await?;
+        self.policy.check_url(&url)
+    }
+
+    /// After a navigation (including redirects and history moves), leaves a
+    /// blocked page for about:blank and fails, so nothing from it is returned.
+    pub(super) async fn leave_if_blocked(&self, client: &mut CdpClient) -> Result<()> {
+        let url = client.current_url().await?;
+        if let Err(error) = self.policy.check_url(&url) {
+            let _ = client.navigate("about:blank").await;
+            return Err(error);
+        }
+        Ok(())
+    }
+
+    /// Checks the destination, navigates, then checks where the tab ended up.
+    pub(super) async fn navigate(&self, client: &mut CdpClient, url: &str) -> Result<()> {
+        self.policy.check_url(url)?;
+        client.navigate(url).await?;
+        self.leave_if_blocked(client).await
+    }
+}
+
+/// Commands that read or act on whatever the attached tab currently shows.
+fn reads_current_page(command: &Command) -> bool {
+    matches!(
+        command,
+        Command::Snapshot(_)
+            | Command::Extract(_)
+            | Command::Eval(_)
+            | Command::Click(_)
+            | Command::Fill(_)
+            | Command::Type(_)
+            | Command::Press(_)
+            | Command::Hover(_)
+            | Command::Select(_)
+            | Command::Scroll(_)
+            | Command::Wait(_)
+            | Command::Screenshot(_)
+            | Command::Pdf(_)
+            | Command::Mhtml(_)
+            | Command::Html(_)
+            | Command::Reload
+            | Command::Read(ReadArgs { url: None, .. })
+            | Command::Cookies(CookiesCommand::List { url: None, .. })
+    )
 }
 
 async fn selected_client(cli: &Cli) -> Result<(BrowserEndpoint, CdpClient)> {
@@ -912,13 +1032,19 @@ async fn verify_connection(endpoint: &BrowserEndpoint, timeout: u64) -> Result<C
     Ok(client)
 }
 
-async fn open(cli: &Cli, client: &mut CdpClient, args: &OpenArgs) -> Result<()> {
+async fn open(
+    cli: &Cli,
+    client: &mut CdpClient,
+    boundary: &Boundary,
+    args: &OpenArgs,
+) -> Result<()> {
+    boundary.policy.check_url(&args.url)?;
     if args.new_tab {
-        let target = client.create_target(&args.url).await?;
+        let target = client.create_target("about:blank").await?;
+        boundary.record_owned(&target.target_id)?;
         client.attach(&target.target_id).await?;
-    } else {
-        client.navigate(&args.url).await?;
     }
+    boundary.navigate(client, &args.url).await?;
     let page = client.page_info().await?;
     print_json(
         &json!({ "ok": true, "page": page, "targetId": client.target_id() }),
@@ -926,18 +1052,29 @@ async fn open(cli: &Cli, client: &mut CdpClient, args: &OpenArgs) -> Result<()> 
     )
 }
 
-async fn map(cli: &Cli, client: &mut CdpClient, args: &MapArgs) -> Result<()> {
+async fn map(cli: &Cli, client: &mut CdpClient, boundary: &Boundary, args: &MapArgs) -> Result<()> {
+    boundary.policy.check_url(&args.url)?;
     let start = url::Url::parse(&args.url)?;
     let origin = start.origin().unicode_serialization();
     let mut seen = BTreeSet::new();
     let mut queue = VecDeque::from([(start.to_string(), 0_usize)]);
     let mut pages = Vec::new();
+    let mut blocked_pages = 0_usize;
 
     while let Some((url, depth)) = queue.pop_front() {
         if pages.len() >= args.limit || !seen.insert(url.clone()) {
             continue;
         }
+        // Blocked links (or redirects into blocked sites) are skipped, not read.
+        if !boundary.policy.allows(&url) {
+            blocked_pages += 1;
+            continue;
+        }
         client.navigate(&url).await?;
+        if boundary.leave_if_blocked(client).await.is_err() {
+            blocked_pages += 1;
+            continue;
+        }
         let page = client.evaluate(scripts::map_links(), true).await?;
         if depth < args.depth
             && let Some(links) = page.get("links").and_then(Value::as_array)
@@ -961,14 +1098,19 @@ async fn map(cli: &Cli, client: &mut CdpClient, args: &MapArgs) -> Result<()> {
     }
 
     print_json(
-        &json!({ "ok": true, "url": args.url, "origin": origin, "pages": pages }),
+        &json!({ "ok": true, "url": args.url, "origin": origin, "pages": pages, "blockedPages": blocked_pages }),
         cli.pretty,
     )
 }
 
-async fn read(cli: &Cli, client: &mut CdpClient, args: &ReadArgs) -> Result<()> {
+async fn read(
+    cli: &Cli,
+    client: &mut CdpClient,
+    boundary: &Boundary,
+    args: &ReadArgs,
+) -> Result<()> {
     if let Some(url) = &args.url {
-        client.navigate(url).await?;
+        boundary.navigate(client, url).await?;
     }
     let value = client.evaluate(scripts::readable(), true).await?;
     match args.format {
@@ -1061,7 +1203,13 @@ async fn html(cli: &Cli, client: &mut CdpClient, args: &OptionalPathArgs) -> Res
     }
 }
 
-async fn request(cli: &Cli, client: &mut CdpClient, args: &RequestArgs) -> Result<()> {
+async fn request(
+    cli: &Cli,
+    client: &mut CdpClient,
+    boundary: &Boundary,
+    args: &RequestArgs,
+) -> Result<()> {
+    boundary.policy.check_url(&args.url)?;
     let headers = parse_headers(&args.headers)?;
     let url = url::Url::parse(&args.url)?;
     let temp_target = client
@@ -1081,12 +1229,22 @@ async fn request(cli: &Cli, client: &mut CdpClient, args: &RequestArgs) -> Resul
         )
         .await?;
     client.close_target(&temp_target.target_id).await?;
+    // fetch follows redirects; never return a body that came from a blocked site.
+    if let Some(final_url) = value.get("url").and_then(Value::as_str) {
+        boundary.policy.check_url(final_url)?;
+    }
     print_json(&json!({ "ok": true, "response": value }), cli.pretty)
 }
 
-async fn record(cli: &Cli, client: &mut CdpClient, args: &RecordArgs) -> Result<()> {
+async fn record(
+    cli: &Cli,
+    client: &mut CdpClient,
+    boundary: &Boundary,
+    args: &RecordArgs,
+) -> Result<()> {
+    boundary.policy.check_url(&args.url)?;
     client.enable_recording().await?;
-    client.navigate(&args.url).await?;
+    boundary.navigate(client, &args.url).await?;
     let events = client
         .drain_events_for(Duration::from_millis(args.duration))
         .await;
@@ -1104,15 +1262,56 @@ async fn record(cli: &Cli, client: &mut CdpClient, args: &RecordArgs) -> Result<
 
 async fn tabs(cli: &Cli, command: &TabsCommand) -> Result<()> {
     let (endpoint, mut client) = selected_client(cli).await?;
+    let saved = config::load().await?;
+    let boundary = Boundary::for_endpoint(cli, &saved, &endpoint.websocket_url)?;
+    let ledger = profiles::tabs_for(&endpoint.websocket_url)?;
     match command {
         TabsCommand::List => {
             let targets = client.targets().await?;
-            print_json(&json!({ "ok": true, "tabs": targets }), cli.pretty)
+            // Forget records of tabs that have since closed.
+            let live: BTreeSet<&str> = targets
+                .iter()
+                .map(|target| target.target_id.as_str())
+                .collect();
+            if ledger
+                .owned
+                .iter()
+                .chain(&ledger.granted)
+                .any(|id| !live.contains(id.as_str()))
+            {
+                profiles::update_tabs(&endpoint.websocket_url, |ledger| {
+                    ledger.owned.retain(|id| live.contains(id.as_str()));
+                    ledger.granted.retain(|id| live.contains(id.as_str()));
+                })?;
+            }
+            // Tabs on blocked sites, and other people's tabs in a `tabs own` profile,
+            // are counted but never described: titles and URLs can be private.
+            // Browser UI and extension workers are not tabs and are left out uncounted.
+            let mut hidden_tabs = 0_usize;
+            let visible: Vec<_> = targets
+                .into_iter()
+                .filter(|target| {
+                    let usable = boundary.allows_tab(&ledger, &target.target_id)
+                        && boundary.policy.allows(&target.url);
+                    if !usable && target.target_type == "page" {
+                        hidden_tabs += 1;
+                    }
+                    usable
+                })
+                .collect();
+            print_json(
+                &json!({ "ok": true, "tabs": visible, "hiddenTabs": hidden_tabs, "profile": boundary.profile }),
+                cli.pretty,
+            )
         }
         TabsCommand::New { url } => {
+            if let Some(url) = url {
+                boundary.policy.check_url(url)?;
+            }
             let target = client
                 .create_target(url.as_deref().unwrap_or("about:blank"))
                 .await?;
+            boundary.record_owned(&target.target_id)?;
             print_json(&json!({ "ok": true, "tab": target }), cli.pretty)
         }
         TabsCommand::Use { target_id } => {
@@ -1120,14 +1319,16 @@ async fn tabs(cli: &Cli, command: &TabsCommand) -> Result<()> {
             if cli.cdp.is_some() {
                 return Err(Error::InvalidArgument("--cdp is a one-command override; use connect <endpoint> before saving a tab, or pass --target for this command".to_owned()));
             }
-            if !client
+            let target = client
                 .targets()
                 .await?
-                .iter()
-                .any(|target| &target.target_id == target_id)
-            {
-                return Err(Error::TargetNotFound(target_id.clone()));
+                .into_iter()
+                .find(|target| &target.target_id == target_id)
+                .ok_or_else(|| Error::TargetNotFound(target_id.clone()))?;
+            if !boundary.allows_tab(&ledger, target_id) {
+                return Err(Error::TabNotAllowed(target_id.clone()));
             }
+            boundary.policy.check_url(&target.url)?;
             let mut saved = config::load().await?;
             if saved.endpoint.as_deref() != Some(endpoint.websocket_url.as_str()) {
                 return Err(Error::BrowserDisconnected(
@@ -1146,19 +1347,352 @@ async fn tabs(cli: &Cli, command: &TabsCommand) -> Result<()> {
                 .ok_or_else(|| {
                     Error::InvalidArgument("close needs target id or --target".to_owned())
                 })?;
+            if !boundary.allows_tab(&ledger, id) {
+                return Err(Error::TabNotAllowed(id.to_owned()));
+            }
             let value = client.close_target(id).await?;
+            profiles::update_tabs(&endpoint.websocket_url, |ledger| {
+                ledger.owned.remove(id);
+                ledger.granted.remove(id);
+            })?;
             print_json(&json!({ "ok": true, "result": value }), cli.pretty)
+        }
+        TabsCommand::Grant { target_id } => {
+            let target = client
+                .targets()
+                .await?
+                .into_iter()
+                .find(|target| &target.target_id == target_id && target.target_type == "page")
+                .ok_or_else(|| Error::TargetNotFound(target_id.clone()))?;
+            profiles::update_tabs(&endpoint.websocket_url, |ledger| {
+                ledger.granted.insert(target.target_id.clone());
+            })?;
+            // Site rules still apply to a granted tab's pages.
+            print_json(
+                &json!({ "ok": true, "granted": target.target_id, "siteAllowed": boundary.policy.allows(&target.url) }),
+                cli.pretty,
+            )
+        }
+        TabsCommand::Revoke { target_id } => {
+            let revoked = profiles::update_tabs(&endpoint.websocket_url, |ledger| {
+                ledger.granted.remove(target_id.as_str())
+            })?;
+            print_json(
+                &json!({ "ok": true, "revoked": revoked, "targetId": target_id }),
+                cli.pretty,
+            )
         }
     }
 }
 
-async fn cookies(cli: &Cli, client: &mut CdpClient, command: &CookiesCommand) -> Result<()> {
+async fn profile(cli: &Cli, command: &ProfileCommand) -> Result<()> {
+    match command {
+        ProfileCommand::List => {
+            let registry = profiles::load()?;
+            let saved = config::load().await?;
+            let active = profiles::name_for(&registry, saved.connection.as_ref());
+            let mut names: Vec<String> = [profiles::EVERYDAY, profiles::AGENT]
+                .iter()
+                .map(|name| (*name).to_owned())
+                .collect();
+            for name in registry.profiles.keys() {
+                if !names.contains(name)
+                    && (name != profiles::CUSTOM || registry.profiles[name].endpoint.is_some())
+                {
+                    names.push(name.clone());
+                }
+            }
+            let mut list = Vec::with_capacity(names.len());
+            for name in names {
+                let browser = profiles::browser_of(&registry, &name)?;
+                let mut entry = describe_browser(browser.as_ref());
+                entry["name"] = json!(name);
+                entry["active"] = json!(active.as_deref() == Some(name.as_str()));
+                entry["policy"] = json!(
+                    registry
+                        .profiles
+                        .get(&name)
+                        .map(|profile| profile.policy.clone())
+                        .unwrap_or_default()
+                );
+                list.push(entry);
+            }
+            print_json(
+                &json!({ "ok": true, "active": active, "profiles": list }),
+                cli.pretty,
+            )
+        }
+        ProfileCommand::Create(args) => {
+            let created = create_profile(args)?;
+            print_json(&json!({ "ok": true, "profile": created }), cli.pretty)
+        }
+        ProfileCommand::Use { name } => {
+            let registry = profiles::load()?;
+            let browser = profiles::browser_of(&registry, name)?
+                .ok_or_else(|| Error::ProfileNotFound(name.clone()))?;
+            let mut value = match browser {
+                Browser::Existing(dir) => {
+                    connect_value(
+                        cli,
+                        &ConnectArgs {
+                            endpoint: None,
+                            existing: true,
+                            managed: false,
+                            profile: dir,
+                        },
+                    )
+                    .await?
+                }
+                Browser::Managed {
+                    dir,
+                    port,
+                    browser_path,
+                } => {
+                    launch_value(
+                        cli,
+                        &LaunchArgs {
+                            port: Some(port),
+                            profile: Some(dir),
+                            browser_path,
+                            headless: false,
+                            url: "about:blank".to_owned(),
+                            no_persist: false,
+                        },
+                    )
+                    .await?
+                }
+                Browser::Endpoint(Some(endpoint)) => {
+                    connect_value(
+                        cli,
+                        &ConnectArgs {
+                            endpoint: Some(endpoint),
+                            existing: false,
+                            managed: false,
+                            profile: None,
+                        },
+                    )
+                    .await?
+                }
+                Browser::Endpoint(None) => {
+                    return Err(Error::InvalidArgument(
+                        "the custom profile has no endpoint yet; run lsearch connect <endpoint>"
+                            .to_owned(),
+                    ));
+                }
+            };
+            value["profile"] = json!(name);
+            print_json(&value, cli.pretty)
+        }
+        ProfileCommand::Remove { name } => {
+            if [profiles::EVERYDAY, profiles::AGENT, profiles::CUSTOM].contains(&name.as_str()) {
+                return Err(Error::InvalidArgument(format!(
+                    "{name} is built in and cannot be removed; use lsearch policy reset --profile {name} to clear its rules"
+                )));
+            }
+            let saved = config::load().await?;
+            let removed = profiles::update(|registry| {
+                if profiles::name_for(registry, saved.connection.as_ref()).as_deref()
+                    == Some(name.as_str())
+                {
+                    return Err(Error::InvalidArgument(format!(
+                        "{name} is the active profile; switch with lsearch profile use <other> first"
+                    )));
+                }
+                registry
+                    .profiles
+                    .remove(name)
+                    .ok_or_else(|| Error::ProfileNotFound(name.clone()))
+            })?;
+            // Only the registry entry goes; the Chrome data directory is the person's to delete.
+            let kept_on_disk = match removed.connection {
+                Some(Connection::Existing { profile } | Connection::Managed { profile, .. }) => {
+                    Some(profile.display().to_string())
+                }
+                Some(Connection::Endpoint) | None => None,
+            };
+            print_json(
+                &json!({ "ok": true, "removed": name, "keptOnDisk": kept_on_disk }),
+                cli.pretty,
+            )
+        }
+    }
+}
+
+fn create_profile(args: &ProfileCreateArgs) -> Result<Value> {
+    profiles::validate_name(&args.name)?;
+    if [profiles::EVERYDAY, profiles::AGENT, profiles::CUSTOM].contains(&args.name.as_str()) {
+        return Err(Error::InvalidArgument(format!(
+            "{} is a built-in profile name",
+            args.name
+        )));
+    }
+    let connection = if args.existing {
+        Connection::Existing {
+            profile: args
+                .dir
+                .clone()
+                .expect("clap requires --dir with --existing"),
+        }
+    } else {
+        Connection::Managed {
+            profile: match &args.dir {
+                Some(dir) => dir.clone(),
+                None => config::config_dir()?.join("profiles").join(&args.name),
+            },
+            port: 0,
+            browser_path: args.browser_path.clone(),
+        }
+    };
+    profiles::update(|registry| {
+        if registry.profiles.contains_key(&args.name) {
+            return Err(Error::InvalidArgument(format!(
+                "a profile named {} already exists",
+                args.name
+            )));
+        }
+        let connection = match connection {
+            Connection::Managed {
+                profile,
+                browser_path,
+                ..
+            } => {
+                let taken: BTreeSet<u16> = registry
+                    .profiles
+                    .values()
+                    .filter_map(|profile| match &profile.connection {
+                        Some(Connection::Managed { port, .. }) => Some(*port),
+                        _ => None,
+                    })
+                    .chain([profiles::DEFAULT_MANAGED_PORT])
+                    .collect();
+                let port = match args.port {
+                    Some(port) if taken.contains(&port) => {
+                        return Err(Error::InvalidArgument(format!(
+                            "port {port} already belongs to another profile"
+                        )));
+                    }
+                    Some(port) => port,
+                    None => (profiles::DEFAULT_MANAGED_PORT + 1..=u16::MAX)
+                        .find(|port| !taken.contains(port))
+                        .ok_or_else(|| Error::InvalidArgument("no free CDP port".to_owned()))?,
+                };
+                Connection::Managed {
+                    profile,
+                    port,
+                    browser_path,
+                }
+            }
+            other => other,
+        };
+        registry.profiles.insert(
+            args.name.clone(),
+            profiles::Profile {
+                connection: Some(connection),
+                ..profiles::Profile::default()
+            },
+        );
+        let mut value = describe_browser(profiles::browser_of(registry, &args.name)?.as_ref());
+        value["name"] = json!(args.name);
+        Ok(value)
+    })
+}
+
+fn describe_browser(browser: Option<&Browser>) -> Value {
+    match browser {
+        Some(Browser::Existing(dir)) => json!({
+            "kind": "existing",
+            "dir": dir
+                .clone()
+                .or_else(|| discovery::existing_chrome_profile().ok())
+                .map(|dir| dir.display().to_string()),
+        }),
+        Some(Browser::Managed { dir, port, .. }) => json!({
+            "kind": "managed",
+            "dir": dir.display().to_string(),
+            "port": port,
+        }),
+        Some(Browser::Endpoint(endpoint)) => json!({ "kind": "endpoint", "endpoint": endpoint }),
+        None => json!({}),
+    }
+}
+
+async fn policy(cli: &Cli, command: &PolicyCommand) -> Result<()> {
+    let target = match command {
+        PolicyCommand::Show(profile)
+        | PolicyCommand::Reset(profile)
+        | PolicyCommand::Tabs { profile, .. } => profile,
+        PolicyCommand::Block(rules)
+        | PolicyCommand::Allow(rules)
+        | PolicyCommand::Remove(rules) => &rules.profile,
+    };
+    let name = policy_profile_name(target).await?;
+    let (policy, changed) = profiles::update(|registry| {
+        if profiles::browser_of(registry, &name)?.is_none() {
+            return Err(Error::ProfileNotFound(name.clone()));
+        }
+        let entry = registry.profiles.entry(name.clone()).or_default();
+        let changed = match command {
+            PolicyCommand::Show(_) => Vec::new(),
+            PolicyCommand::Block(rules) => Policy::add(&mut entry.policy.block, &rules.sites)?,
+            PolicyCommand::Allow(rules) => Policy::add(&mut entry.policy.allow, &rules.sites)?,
+            PolicyCommand::Remove(rules) => entry.policy.remove(&rules.sites)?,
+            PolicyCommand::Tabs { access, .. } => {
+                entry.policy.tabs = *access;
+                Vec::new()
+            }
+            PolicyCommand::Reset(_) => {
+                entry.policy = Policy::default();
+                Vec::new()
+            }
+        };
+        Ok((entry.policy.clone(), changed))
+    })?;
+    let mut value = json!({ "ok": true, "profile": name, "policy": policy });
+    match command {
+        PolicyCommand::Block(_) | PolicyCommand::Allow(_) => value["added"] = json!(changed),
+        PolicyCommand::Remove(_) => value["removed"] = json!(changed),
+        _ => {}
+    }
+    print_json(&value, cli.pretty)
+}
+
+/// The profile a policy command changes: the one named, else the active one.
+async fn policy_profile_name(target: &PolicyProfile) -> Result<String> {
+    if let Some(name) = &target.profile {
+        return Ok(name.clone());
+    }
+    let registry = profiles::load()?;
+    let saved = config::load().await?;
+    profiles::name_for(&registry, saved.connection.as_ref()).ok_or_else(|| {
+        Error::InvalidArgument(
+            "no profile is active yet; pass --profile <name> or connect first".to_owned(),
+        )
+    })
+}
+
+async fn cookies(
+    cli: &Cli,
+    client: &mut CdpClient,
+    boundary: &Boundary,
+    command: &CookiesCommand,
+) -> Result<()> {
     match command {
         CookiesCommand::List { url, show_values } => {
+            if let Some(url) = url {
+                boundary.policy.check_url(url)?;
+            }
             let params = url
                 .as_ref()
                 .map_or_else(|| json!({}), |url| json!({ "urls": [url] }));
             let mut value = client.send_page("Network.getCookies", params).await?;
+            if let Some(cookies) = value.get_mut("cookies").and_then(Value::as_array_mut) {
+                cookies.retain(|cookie| {
+                    cookie
+                        .get("domain")
+                        .and_then(Value::as_str)
+                        .is_some_and(|domain| boundary.policy.allows_cookie_domain(domain))
+                });
+            }
             if !show_values
                 && let Some(cookies) = value.get_mut("cookies").and_then(Value::as_array_mut)
             {
@@ -1169,6 +1703,7 @@ async fn cookies(cli: &Cli, client: &mut CdpClient, command: &CookiesCommand) ->
             print_json(&json!({ "ok": true, "cookies": value }), cli.pretty)
         }
         CookiesCommand::Set { name, value, url } => {
+            boundary.policy.check_url(url)?;
             let result = client
                 .send_page(
                     "Network.setCookie",
@@ -1178,6 +1713,7 @@ async fn cookies(cli: &Cli, client: &mut CdpClient, command: &CookiesCommand) ->
             print_json(&json!({ "ok": true, "result": result }), cli.pretty)
         }
         CookiesCommand::Delete { name, url } => {
+            boundary.policy.check_url(url)?;
             let result = client
                 .send_page("Network.deleteCookies", json!({ "name": name, "url": url }))
                 .await?;

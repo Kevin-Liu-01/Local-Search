@@ -42,6 +42,19 @@ pub enum Error {
     #[error("browser target not found: {0}")]
     TargetNotFound(String),
 
+    #[error(
+        "{site} is off limits in this profile ({rule}). Do not try to reach it another way; tell the user. Only change `lsearch policy` if the user asks"
+    )]
+    SiteBlocked { site: String, rule: String },
+
+    #[error(
+        "tab {0} was not opened by lsearch, and this profile only lets agents use their own tabs. Open one with `lsearch tabs new`, or ask the user to hand this tab over with `lsearch tabs grant {0}`"
+    )]
+    TabNotAllowed(String),
+
+    #[error("no profile named {0}; run `lsearch profile list` to see profiles")]
+    ProfileNotFound(String),
+
     #[error("browser backend does not support {feature}: {backend}")]
     Unsupported { backend: String, feature: String },
 
@@ -91,6 +104,9 @@ impl Error {
             Self::BrowserBusy => "browser_busy",
             Self::UpdateCheck(_) => "update_check_failed",
             Self::TargetNotFound(_) => "target_not_found",
+            Self::SiteBlocked { .. } => "site_blocked",
+            Self::TabNotAllowed(_) => "tab_not_allowed",
+            Self::ProfileNotFound(_) => "profile_not_found",
             Self::Unsupported { .. } => "unsupported",
             Self::Protocol { .. } => "protocol_error",
             Self::Timeout { .. } => "timeout",
