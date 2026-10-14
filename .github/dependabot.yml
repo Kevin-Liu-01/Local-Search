@@ -20,6 +20,10 @@ updates:
       # Bump the major by hand once typescript-eslint supports it.
       - dependency-name: "typescript"
         update-types: ["version-update:semver-major"]
+      # eslint-plugin-react 7.37 (through eslint-config-next) fails to load rules on ESLint 10
+      # ("contextOrFilename.getFilename is not a function").
+      - dependency-name: "eslint"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: github-actions
     directory: /
