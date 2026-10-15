@@ -4,78 +4,46 @@ import { ImageResponse } from "next/og";
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { LocalSearchLogo } from "@/components/brand-logo";
-import { SOCIAL_IMAGE_ALT } from "@/lib/seo";
+import { SITE_URL, SOCIAL_IMAGE_ALT } from "@/lib/seo";
+import { brandAsset, card, socialBackdrop } from "@/lib/social-scene";
 
-export const socialImageSize = { width: 1200, height: 630 };
+export const socialImageSize = { width: card.width, height: card.height };
 export const socialImageContentType = "image/png";
 export const socialImageAlt = SOCIAL_IMAGE_ALT;
 
 const color = {
-  background: "#f5f5f2",
-  accent: "#168b90",
-  accentSoft: "#c9f1ef",
   ink: "#151515",
+  muted: "#5e625c",
   line: "#d7d7d1",
-  muted: "#6f6f69",
-  white: "#ffffff",
+  panel: "#ffffff",
+  accentSoft: "#c9f1ef",
+  accentDeep: "#0d6f74",
 };
 
-function publicAsset(relativePath: string, mimeType: string) {
-  const encoded = readFileSync(path.join(process.cwd(), "public", relativePath)).toString("base64");
-  return `data:${mimeType};base64,${encoded}`;
+// Static instances of the site's Manrope (docs/launch/fonts), since Satori
+// cannot read a variable font's weight axis. The 400 instance has no kerning
+// table: Satori widens the space after commas when it applies Manrope's.
+function font(weight: 400 | 620 | 750) {
+  return readFileSync(path.join(process.cwd(), "assets", "fonts", `Manrope-${weight}.ttf`));
 }
 
-const diagram = publicAsset("social/local-search-isometric.png", "image/png");
-const cargo = publicAsset("brand/cargo.png", "image/png");
-const npm = publicAsset("brand/npm.svg", "image/svg+xml");
-
-const searchEngines = [
-  ["Google", publicAsset("brand/google.svg", "image/svg+xml")],
-  ["Bing", publicAsset("brand/bing.svg", "image/svg+xml")],
-  ["Brave", publicAsset("brand/brave.svg", "image/svg+xml")],
-  ["DuckDuckGo", publicAsset("brand/duckduckgo.svg", "image/svg+xml")],
+const fonts = [
+  { name: "Manrope", data: font(400), weight: 400 as const, style: "normal" as const },
+  { name: "Manrope", data: font(620), weight: 600 as const, style: "normal" as const },
+  { name: "Manrope", data: font(750), weight: 700 as const, style: "normal" as const },
 ];
 
-const agents = [
-  ["Claude Code", publicAsset("brand/claude.svg", "image/svg+xml")],
-  ["Codex", publicAsset("brand/codex.svg", "image/svg+xml")],
-  ["Cursor", publicAsset("brand/cursor-mono.svg", "image/svg+xml")],
-  ["OpenClaw", publicAsset("brand/openclaw.svg", "image/svg+xml")],
+const backdrop = socialBackdrop();
+const proof = [
+  ["Built with Rust", brandAsset("rust-mono.svg")],
+  ["Compact JSON", brandAsset("json-schema.svg")],
+  ["Your browser, your choice", brandAsset("chromium.svg")],
 ];
-
-function LogoRow({
-  items,
-  size,
-}: {
-  items: string[][];
-  size: number;
-}) {
-  return (
-    <div style={{ display: "flex", alignItems: "center" }}>
-      {items.map(([label, source], index) => (
-        <div
-          key={label}
-          style={{
-            width: size,
-            height: size,
-            marginRight: index === items.length - 1 ? 0 : 8,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            overflow: "hidden",
-            border: `1px solid ${color.line}`,
-            borderRadius: 10,
-            backgroundColor: "rgba(255,255,255,.82)",
-          }}
-        >
-          <img alt={label} src={source} width={size - 16} height={size - 16} />
-        </div>
-      ))}
-    </div>
-  );
-}
+const host = new URL(SITE_URL).host;
 
 export function createSocialImage() {
+  const { margin } = card;
+
   return new ImageResponse(
     (
       <div
@@ -84,156 +52,111 @@ export function createSocialImage() {
           height: "100%",
           display: "flex",
           position: "relative",
-          overflow: "hidden",
           color: color.ink,
-          backgroundColor: color.background,
-          fontFamily: "Manrope, Arial, sans-serif",
+          fontFamily: "Manrope",
         }}
       >
-        <img
-          alt=""
-          src={diagram}
-          width="982"
-          height="630"
+        <img alt="" src={backdrop} width={card.width} height={card.height} style={{ position: "absolute", inset: 0 }} />
+
+        <div
           style={{
             position: "absolute",
             top: 0,
-            right: 0,
-            width: 982,
-            height: 630,
-            objectFit: "contain",
-          }}
-        />
-
-        <div
-          style={{
-            position: "absolute",
-            top: 55,
-            left: 58,
+            left: margin,
+            right: margin,
+            height: 112,
             display: "flex",
             alignItems: "center",
-          }}
-        >
-          <LocalSearchLogo style={{ width: 52, height: 36, color: color.accent }} />
-          <div
-            style={{
-              marginLeft: 12,
-              display: "flex",
-              fontSize: 23,
-              fontWeight: 750,
-              letterSpacing: -0.7,
-            }}
-          >
-            local-search
-          </div>
-        </div>
-
-        <div
-          style={{
-            position: "absolute",
-            top: 158,
-            left: 58,
-            width: 660,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "flex-start",
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "baseline", fontSize: 47, lineHeight: 1, fontWeight: 720, letterSpacing: -2.4 }}>
-            <div style={{ display: "flex" }}>A Local Browser API&nbsp;</div>
-            <div style={{ display: "flex", color: color.accent }}>for Agents</div>
-          </div>
-
-          <div
-            style={{
-              marginTop: 7,
-              display: "flex",
-              color: color.accent,
-              fontSize: 64,
-              lineHeight: 1.1,
-              fontWeight: 500,
-              letterSpacing: -2.4,
-            }}
-          >
-            No API Key. No Billing.
-          </div>
-
-          <div style={{ marginTop: 24, display: "flex", alignItems: "center" }}>
-            <div
-              style={{
-                width: 150,
-                display: "flex",
-                color: color.muted,
-                fontSize: 16,
-                fontWeight: 650,
-                letterSpacing: -0.1,
-              }}
-            >
-              Search using...
-            </div>
-            <LogoRow items={searchEngines} size={54} />
-          </div>
-
-          <div style={{ marginTop: 10, display: "flex", alignItems: "center" }}>
-            <div
-              style={{
-                width: 150,
-                display: "flex",
-                color: color.muted,
-                fontSize: 16,
-                fontWeight: 650,
-                letterSpacing: -0.1,
-              }}
-            >
-              Compatible with...
-            </div>
-            <LogoRow items={agents} size={54} />
-          </div>
-        </div>
-
-        <div
-          style={{
-            position: "absolute",
-            left: 58,
-            bottom: 27,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "flex-start",
-            color: color.ink,
-            fontSize: 19,
-            fontWeight: 650,
-            letterSpacing: -0.3,
+            justifyContent: "space-between",
           }}
         >
           <div style={{ display: "flex", alignItems: "center" }}>
-            <img
-              alt="Cargo"
-              src={cargo}
-              width="35"
-              height="35"
-              style={{ width: 35, height: 35, objectFit: "contain" }}
-            />
-            <span style={{ marginLeft: 13, marginRight: 10, display: "flex", color: color.accent }}>
-              $
-            </span>
-            <span style={{ display: "flex" }}>cargo install local-search</span>
+            <LocalSearchLogo style={{ width: 40, height: 30, color: color.ink }} />
+            <div style={{ marginLeft: 12, display: "flex", fontSize: 22, fontWeight: 700, letterSpacing: -0.66 }}>
+              local-search
+            </div>
           </div>
-          <div style={{ marginTop: 6, display: "flex", alignItems: "center" }}>
-            <img
-              alt="npm"
-              src={npm}
-              width="35"
-              height="35"
-              style={{ width: 35, height: 35, objectFit: "contain" }}
-            />
-            <span style={{ marginLeft: 13, marginRight: 10, display: "flex", color: color.accent }}>
-              $
-            </span>
-            <span style={{ display: "flex" }}>npm install -g @kevinliu01/localsearch</span>
+          <div style={{ display: "flex", color: color.muted, fontSize: 18, fontWeight: 600, letterSpacing: -0.2 }}>
+            {host}
+          </div>
+        </div>
+
+        <div
+          style={{
+            position: "absolute",
+            top: 150,
+            left: margin,
+            width: 620,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-start",
+          }}
+        >
+          <div style={{ display: "flex", flexDirection: "column", fontSize: 66, lineHeight: 1.09, fontWeight: 600, letterSpacing: -3.3 }}>
+            <div style={{ display: "flex" }}>A local browser API</div>
+            <div style={{ display: "flex", color: color.accentDeep }}>for your agents.</div>
+          </div>
+
+          <div style={{ marginTop: 22, display: "flex", width: 610, color: color.muted, fontSize: 22, lineHeight: 1.55, fontWeight: 400 }}>
+            Let your agent search, read pages, and use signed-in sites through your browser. You approve access.
+          </div>
+
+          <div
+            style={{
+              marginTop: 26,
+              padding: 7,
+              display: "flex",
+              alignItems: "center",
+              border: `1px solid ${color.line}`,
+              borderRadius: 8,
+              backgroundColor: color.panel,
+            }}
+          >
+            <div
+              style={{
+                padding: 5,
+                display: "flex",
+                border: "1px solid #addcda",
+                borderRadius: 6,
+                backgroundColor: color.accentSoft,
+              }}
+            >
+              <div
+                style={{
+                  padding: "9px 16px",
+                  display: "flex",
+                  alignItems: "center",
+                  borderRadius: 4,
+                  backgroundColor: color.panel,
+                  boxShadow: "0 1px 3px rgba(13, 111, 116, .12)",
+                  fontSize: 18,
+                  fontWeight: 600,
+                }}
+              >
+                <img alt="" src={brandAsset("cargo.png")} width={20} height={20} style={{ marginRight: 8 }} />
+                Cargo
+              </div>
+              <div style={{ padding: "9px 16px", display: "flex", alignItems: "center", color: color.accentDeep, fontSize: 18, fontWeight: 600 }}>
+                <img alt="" src={brandAsset("npm.svg")} width={18} height={18} style={{ marginRight: 8 }} />
+                npm
+              </div>
+            </div>
+            <div style={{ marginLeft: 18, marginRight: 14, display: "flex", fontSize: 19, fontWeight: 600, letterSpacing: -0.2 }}>
+              cargo install local-search
+            </div>
+          </div>
+
+          <div style={{ marginTop: 24, display: "flex", alignItems: "center", color: color.muted, fontSize: 17 }}>
+            {proof.map(([label, source], index) => (
+              <div key={label} style={{ marginLeft: index === 0 ? 0 : 22, display: "flex", alignItems: "center" }}>
+                <img alt="" src={source} width={20} height={20} style={{ marginRight: 8 }} />
+                {label}
+              </div>
+            ))}
           </div>
         </div>
       </div>
     ),
-    socialImageSize,
+    { ...socialImageSize, fonts },
   );
 }
