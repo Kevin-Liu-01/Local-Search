@@ -89,6 +89,8 @@ smoke checks. npm `latest` points to 0.2.1 and pins native 0.2.1. See [the 0.2.1
 
 ## October 14, 2026 minor release
 
-Native `local-search` 0.3.0 and npm `@kevinliu01/localsearch` 0.3.0 add named
-browser profiles, per-profile site allowlists and blocklists, and an opt-in
-own-tabs-only mode. See [the 0.3.0 release evidence](releases/0.3.0.md).
+Native `local-search` 0.3.0 and npm `@kevinliu01/localsearch` 0.3.0 are published.
+They add named browser profiles, per-profile site allowlists and blocklists, and an
+opt-in own-tabs-only mode. Both passed fresh registry installations, alias checks
+and isolated-config smoke checks. npm `latest` points to 0.3.0 and pins native
+0.3.0. See [the 0.3.0 release evidence](releases/0.3.0.md).
