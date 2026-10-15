@@ -1,13 +1,14 @@
 const configuredSiteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://localsearch.kevinliu.studio";
 
 export const SITE_URL = configuredSiteUrl.replace(/\/$/, "");
-export const SITE_LAST_UPDATED = "2026-09-25";
+export const SITE_LAST_UPDATED = "2026-10-14";
+export const RELEASE_VERSION = "0.3.0";
 export const SITE_NAME = "local-search";
 export const SITE_TITLE = "local-search: A Local Browser API for AI Agents";
 export const SITE_DESCRIPTION = "Let your agent search, read pages, and use signed-in sites through your browser. Choose existing Chrome with approval or a separate profile. No cookie export.";
 export const SOCIAL_TITLE = "A Local Browser API for Agents";
-export const SOCIAL_DESCRIPTION = "Let your agent search, read pages, and use signed-in sites through your local browser. You choose the profile.";
-export const SOCIAL_IMAGE_ALT = "local-search connects AI agents to a browser on your machine for web search, reading pages, and using signed-in sites.";
+export const SOCIAL_DESCRIPTION = "Let your agent search, read pages, and use signed-in sites through your local browser. You choose the profile and which sites it can reach.";
+export const SOCIAL_IMAGE_ALT = "local-search: a local browser API for your agents. An agent connects through local-search to Google, Bing, Brave Search, and DuckDuckGo. Install with cargo install local-search.";
 
 export const REPOSITORY_URL = "https://github.com/Kevin-Liu-01/Local-Search";
 export const CRATE_URL = "https://crates.io/crates/local-search";
@@ -141,7 +142,7 @@ export const STRUCTURED_DATA = {
       description: SITE_DESCRIPTION,
       applicationCategory: "DeveloperApplication",
       applicationSubCategory: "Local browser API for AI agents",
-      softwareVersion: "0.3.0",
+      softwareVersion: RELEASE_VERSION,
       operatingSystem: "macOS, Linux, and Windows with Chrome or Chromium",
       runtimePlatform: "Chrome or Chromium",
       downloadUrl: [CRATE_URL, NPM_URL],
@@ -195,7 +196,7 @@ export const STRUCTURED_DATA = {
       codeRepository: REPOSITORY_URL,
       programmingLanguage: "Rust",
       runtimePlatform: "Chrome or Chromium",
-      version: "0.3.0",
+      version: RELEASE_VERSION,
       dateModified: SITE_LAST_UPDATED,
       license: "https://opensource.org/license/mit",
       author: { "@id": `${SITE_URL}/#author` },
