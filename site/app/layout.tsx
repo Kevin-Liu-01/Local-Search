@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Manrope } from "next/font/google";
+import { GoogleAnalytics } from "@/components/google-analytics";
 import { THEME_INIT_SCRIPT } from "@/lib/theme";
 import {
   AUTHOR_URL,
@@ -104,7 +105,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
       </head>
-      <body className={manrope.variable}>{children}</body>
+      <body className={manrope.variable}>
+        {children}
+        <GoogleAnalytics />
+      </body>
     </html>
   );
 }

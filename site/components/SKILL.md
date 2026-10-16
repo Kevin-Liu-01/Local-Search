@@ -21,6 +21,8 @@ theme-toggle owns persisted light/dark selection and follows system changes only
 until the visitor chooses a theme. lib/theme.ts initializes it before first paint.
 site-header is shared by the homepage and docs, with Docs visible on mobile.
 docs-code keeps commands selectable and copyable with success/failure feedback.
+google-analytics loads GA4 with Consent Mode defaults, only on the production host
+(the static export has no server to read VERCEL_ENV, so it checks the hostname).
 
 ## Patterns to follow / invariants
 <!-- agent-docs:fill:patterns -->
