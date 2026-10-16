@@ -104,6 +104,13 @@ export const STRUCTURED_DATA = {
       knowsAbout: ["Rust", "browser automation", "AI coding agents", "structured web search"],
     },
     {
+      "@type": "Organization",
+      "@id": `${SITE_URL}/#organization`,
+      name: SITE_NAME,
+      url: SITE_URL,
+      logo: `${SITE_URL}/icon-512.png`,
+    },
+    {
       "@type": "WebSite",
       "@id": `${SITE_URL}/#website`,
       url: SITE_URL,

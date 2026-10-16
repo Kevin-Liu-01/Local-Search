@@ -10,6 +10,9 @@ __pycache__/
 *.png
 !docs/images/0[1-7]-*.png
 !site/public/brand/*.png
+!site/app/apple-icon.png
+!site/public/icon-192.png
+!site/public/icon-512.png
 !site/public/social/local-search-benchmark.png
 !site/public/social/local-search-isometric.png
 # Authored launch artwork only. Keep arbitrary browser captures ignored.
